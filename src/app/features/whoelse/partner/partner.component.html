@@ -1,0 +1,85 @@
+<div class="partner-container">
+  <!-- Hero Section -->
+  <h1 class="titolo" [@fadeIn]>{{ 'PARTNER_BENEFIT.titolo' | translate }}</h1>
+  <p class="descrizione-generale" [@fadeIn]>
+    {{ 'PARTNER_BENEFIT.sottotitolo' | translate }}
+  </p>
+
+  <!-- Partner Grid -->
+  <div class="partner-grid">
+    <div class="partner-card" *ngFor="let partner of partners; let i = index" 
+         [@flipIn] [style.animation-delay]="i * 200 + 'ms'">
+      <img [src]="partner.logo" [alt]="partner.name" class="partner-logo">
+      <h2 class="partner-name">{{ partner.name }}</h2>
+      <p class="partner-description">{{ partner.description }}</p>
+      <div class="partner-link-container">
+        <a [href]="partner.website" class="partner-link" target="_blank" rel="noopener noreferrer">
+          <span class="partner-link-text">  {{ 'PARTNER_BENEFIT.sito' | translate }}</span>
+          <i class="material-icons partner-link-icon">open_in_new</i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefits Section -->
+  <section class="benefits-section" [@fadeIn]>
+    <h2 class="section-title">{{ 'PARTNER_BENEFIT.diventaPartner' | translate }}</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card" *ngFor="let benefit of benefits; let i = index" 
+           [@slideIn] [style.animation-delay]="i * 150 + 'ms'">
+        <i class="material-icons benefit-icon">{{benefit.icon}}</i>
+        <h3 class="benefit-title">{{benefit.title}}</h3>
+        <p class="benefit-description">{{benefit.description}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collaboration Form Section -->
+  <section class="collaboration-section" [@fadeIn]>
+    <div class="collaboration-content">
+      <h2 class="section-title">{{ 'PARTNER_BENEFIT.collabora' | translate }}</h2>
+      <p class="section-description">
+        {{ 'PARTNER_BENEFIT.collabora_descr' | translate }}
+            </p>
+      
+      <form [formGroup]="collaborationForm" (ngSubmit)="onSubmit()" class="collaboration-form"
+            *ngIf="!isFormSubmitted">
+        <div class="form-group">
+          <input type="text" formControlName="companyName" placeholder="Nome Azienda" 
+                 [class.invalid]="collaborationForm.get('companyName')?.touched && 
+                                 collaborationForm.get('companyName')?.invalid">
+        </div>
+        <div class="form-group">
+          <input type="text" formControlName="contactPerson" placeholder="Persona di Riferimento"
+                 [class.invalid]="collaborationForm.get('contactPerson')?.touched && 
+                                 collaborationForm.get('contactPerson')?.invalid">
+        </div>
+        <div class="form-group">
+          <input type="email" formControlName="email" placeholder="Email"
+                 [class.invalid]="collaborationForm.get('email')?.touched && 
+                                 collaborationForm.get('email')?.invalid">
+        </div>
+        <div class="form-group">
+          <input type="tel" formControlName="phone" placeholder="Telefono"
+                 [class.invalid]="collaborationForm.get('phone')?.touched && 
+                                 collaborationForm.get('phone')?.invalid">
+        </div>
+        <div class="form-group">
+          <textarea formControlName="message" placeholder="Il tuo messaggio"
+                    [class.invalid]="collaborationForm.get('message')?.touched && 
+                                    collaborationForm.get('message')?.invalid"></textarea>
+        </div>
+        <button type="submit" class="submit-button" [disabled]="!collaborationForm.valid">
+          Invia Richiesta
+          <i class="material-icons">send</i>
+        </button>
+      </form>
+
+      <div class="success-message" *ngIf="isFormSubmitted">
+        <i class="material-icons success-icon">check_circle</i>
+        <h3>{{ 'PARTNER_BENEFIT.form_thanks' | translate }}</h3>
+        <p>{{ 'PARTNER_BENEFIT.contatteremo' | translate }}</p>
+      </div>
+    </div>
+  </section>
+</div>

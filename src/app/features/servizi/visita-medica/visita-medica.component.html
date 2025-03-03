@@ -1,0 +1,34 @@
+<div class="container">
+    <h1 [@fadeIn] class="titolo">
+      {{ 'SERVIZI_VISITA.titolo' | translate }}
+      <span class="sottotitolo">{{ 'SERVIZI_VISITA.sottotitolo' | translate }}</span>
+    </h1>
+    
+    <div [@fadeIn] class="content-box">
+      <p class="descrizione">{{ 'SERVIZI_VISITA.descrizione' | translate }}</p>
+      
+      <h2 class="procedura-titolo">{{ 'SERVIZI_VISITA.proc' | translate }}</h2>
+      <ol class="procedura-lista">
+        <li *ngFor="let s of procedura; let i = index" 
+            [@slideInFromLeft]
+            [style.animation-delay]="i * 100 + 'ms'"
+            class="procedura-item">
+          <span class="procedura-numero">{{ i + 1 }}</span>
+          <span>{{ s.step }}</span>
+        </li>
+      </ol>
+    </div>
+    
+    <div class="button-container">
+      <button (click)="scaricaDocumento()" class="download-button">
+        <span class="button-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </span>
+        <span class="button-text">
+          Compila il form
+        </span>
+      </button>
+    </div>
+  </div>

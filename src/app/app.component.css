@@ -1,0 +1,21 @@
+:root {
+  --primary-color: #1a1a1a; /* Blu scuro */
+  --secondary-color: #ff7f00; /* Arancione */
+  --background-color: #f9f9f9; /* Grigio chiaro */
+  --text-color: #ffffff; /* Bianco */
+}
+
+.app-container {
+  min-height: 100vh;
+  position: relative;
+  background-image: url('/assets/test.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+}
+
+.main-content {
+  padding-top: 12.67vh; /* Altezza della navbar */
+}
+

@@ -1,0 +1,250 @@
+<!-- tornei.component.html -->
+<div class="tornei-container">
+    <h1 class="titolo">
+      Tornei
+      <span class="sottotitolo">L'eccellenza della competizione</span>
+    </h1>
+  
+    <div class="societa-selector">
+      <div 
+        *ngFor="let s of societa"
+        class="societa-tab"
+        [class.active]="selectedSocieta?.nome === s.nome"
+        (click)="selectSocieta(s)"
+        [@fadeIn]>
+        <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
+        <span>{{ s.nome }}</span>
+      </div>
+    </div>
+  
+    <div class="tornei-content" *ngIf="selectedSocieta" [@slideIn]>
+      <div class="tab-navigation">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'organizzati'"
+          (click)="setActiveTab('organizzati')">
+          Tornei Organizzati
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'partecipati'"
+          (click)="setActiveTab('partecipati')">
+          Tornei Partecipati
+        </button>
+      </div>
+  
+      <div class="view-toggle">
+        <button 
+          class="view-button" 
+          [class.active]="viewMode === 'grid'"
+          (click)="toggleViewMode()">
+          <span class="material-icons">grid_view</span>
+        </button>
+        <button 
+          class="view-button" 
+          [class.active]="viewMode === 'bracket'"
+          (click)="toggleViewMode()">
+          <span class="material-icons">account_tree</span>
+        </button>
+      </div>
+  
+      <ng-container *ngIf="!selectedTorneo">
+        <div class="tornei-grid" *ngIf="viewMode === 'grid'">
+          <div 
+            class="torneo-card" 
+            *ngFor="let torneo of activeTab === 'organizzati' ? selectedSocieta.torneiOrganizzati : selectedSocieta.torneiPartecipati"
+            (click)="selectTorneo(torneo)"
+            [@fadeIn]>
+            <div class="torneo-header">
+              <h3>{{ torneo.nome }}</h3>
+              <span [class]="'stato-badge ' + getStatoClass(torneo.stato)">
+                {{ getStatoText(torneo.stato) }}
+              </span>
+            </div>
+            <div class="torneo-info">
+              <div class="info-row">
+                <span class="material-icons">event</span>
+                <span>{{ torneo.dataInizio | date:'shortDate' }} - {{ torneo.dataFine | date:'shortDate' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="material-icons">group</span>
+                <span>{{ torneo.numeroSquadre }} Squadre</span>
+              </div>
+              <div class="info-row">
+                <span class="material-icons">place</span>
+                <span>{{ torneo.location }}</span>
+              </div>
+            </div>
+            <div class="torneo-footer">
+              <span class="categoria">{{ torneo.categoria }}</span>
+              <button class="details-button">Dettagli</button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Aggiungi questa sezione nel tornei.component.html dove c'era il commento -->
+<div class="tornei-bracket" *ngIf="viewMode === 'bracket'">
+    <div class="bracket-container">
+      <div class="bracket-round" *ngFor="let round of getBracketRounds(); let roundIndex = index">
+        <div class="round-title">{{ getRoundName(roundIndex, 6) }}</div>
+        <div class="bracket-matches">
+          <div class="bracket-match" *ngFor="let match of round; let matchIndex = index"
+               [class.match-completed]="match.completato"
+               [class.has-winner]="match.vincitore">
+            <div class="match-connector" *ngIf="roundIndex > 0"></div>
+            <div class="match-card">
+              <div class="team-slot" [class.winner]="match.vincitore === match.squadraCasa">
+                <div class="team-info">
+                  <img *ngIf="getTeamLogo(match.squadraCasa)" [src]="getTeamLogo(match.squadraCasa)" 
+                       [alt]="match.squadraCasa" class="team-logo">
+                  <span class="team-name">{{ match.squadraCasa || 'TBD' }}</span>
+                </div>
+                <div class="team-score">{{ match.punteggioCasa || '-' }}</div>
+              </div>
+              <div class="team-slot" [class.winner]="match.vincitore === match.squadraOspite">
+                <div class="team-info">
+                  <img *ngIf="getTeamLogo(match.squadraOspite)" [src]="getTeamLogo(match.squadraOspite)" 
+                       [alt]="match.squadraOspite" class="team-logo">
+                  <span class="team-name">{{ match.squadraOspite || 'TBD' }}</span>
+                </div>
+                <div class="team-score">{{ match.punteggioOspite || '-' }}</div>
+              </div>
+              <div class="match-details">
+                <span class="match-date">{{ match.data | date:'shortDate' }}</span>
+                <button class="match-info-btn" (click)="showMatchDetails(match)">
+                  <span class="material-icons">info</span>
+                </button>
+              </div>
+            </div>
+            <div class="match-connector" *ngIf="roundIndex < getBracketRounds().length - 1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Match Details Modal -->
+    <div class="match-modal" *ngIf="selectedMatch" (click)="closeMatchDetails()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="closeMatchDetails()">
+          <span class="material-icons">close</span>
+        </button>
+        <div class="modal-header">
+          <h3>Dettagli Partita</h3>
+          <span class="match-phase">{{ selectedMatch.fase }}</span>
+        </div>
+        <div class="modal-teams">
+          <div class="modal-team" [class.winner]="selectedMatch.vincitore === selectedMatch.squadraCasa">
+            <img [src]="getTeamLogo(selectedMatch.squadraCasa)" [alt]="selectedMatch.squadraCasa">
+            <h4>{{ selectedMatch.squadraCasa }}</h4>
+            <div class="score">{{ selectedMatch.punteggioCasa || '-' }}</div>
+          </div>
+          <div class="modal-vs">VS</div>
+          <div class="modal-team" [class.winner]="selectedMatch.vincitore === selectedMatch.squadraOspite">
+            <img [src]="getTeamLogo(selectedMatch.squadraOspite)" [alt]="selectedMatch.squadraOspite">
+            <h4>{{ selectedMatch.squadraOspite }}</h4>
+            <div class="score">{{ selectedMatch.punteggioOspite || '-' }}</div>
+          </div>
+        </div>
+        <div class="modal-details">
+          <div class="detail-item">
+            <span class="material-icons">event</span>
+            <span>{{ selectedMatch.data | date:'full' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">place</span>
+            <span>{{ selectedMatch.location }}</span>
+          </div>
+        </div>
+        <div class="modal-status">
+          <span class="status-badge" [class.completed]="selectedMatch.completato">
+            {{ selectedMatch.completato ? 'Completata' : 'In Programma' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+      </ng-container>
+  
+      <div class="torneo-detail" *ngIf="selectedTorneo" [@slideIn]>
+        <div class="detail-header">
+          <button class="back-button" (click)="selectedTorneo = null">
+            <span class="material-icons">arrow_back</span>
+          </button>
+          <h2>{{ selectedTorneo.nome }}</h2>
+          <span [class]="'stato-badge ' + getStatoClass(selectedTorneo.stato)">
+            {{ getStatoText(selectedTorneo.stato) }}
+          </span>
+        </div>
+  
+        <div class="detail-content">
+          <div class="info-section">
+            <h3>Informazioni Generali</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="material-icons">event</span>
+                <div>
+                  <strong>Date</strong>
+                  <p>{{ selectedTorneo.dataInizio | date:'shortDate' }} - {{ selectedTorneo.dataFine | date:'shortDate' }}</p>
+                </div>
+              </div>
+              <!-- ... altri dettagli -->
+            </div>
+          </div>
+  
+          <div class="squadre-section">
+            <h3>Squadre Partecipanti</h3>
+            <div class="squadre-grid">
+              <div class="squadra-card" *ngFor="let squadra of selectedTorneo.squadrePartecipanti">
+                <img [src]="squadra.logo" [alt]="squadra.nome">
+                <h4>{{ squadra.nome }}</h4>
+                <div class="stats">
+                  <div class="stat">
+                    <span>V</span>
+                    <strong>{{ squadra.vittorie }}</strong>
+                  </div>
+                  <div class="stat">
+                    <span>S</span>
+                    <strong>{{ squadra.sconfitte }}</strong>
+                  </div>
+                  <div class="stat">
+                    <span>PF</span>
+                    <strong>{{ squadra.puntiSegnati }}</strong>
+                  </div>
+                  <div class="stat">
+                    <span>PS</span>
+                    <strong>{{ squadra.puntiSubiti }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="partite-section" *ngIf="selectedTorneo.matchs">
+            <h3>Partite</h3>
+            <div class="partite-timeline">
+              <div class="match-card" *ngFor="let match of selectedTorneo.matchs">
+                <div class="match-header">
+                  <span class="fase">{{ match.fase }}</span>
+                  <span class="data">{{ match.data | date:'shortDate' }}</span>
+                </div>
+                <div class="match-teams">
+                  <div class="team">
+                    <span>{{ match.squadraCasa }}</span>
+                    <strong>{{ match.punteggioCasa || '-' }}</strong>
+                  </div>
+                  <span class="vs">VS</span>
+                  <div class="team">
+                    <span>{{ match.squadraOspite }}</span>
+                    <strong>{{ match.punteggioOspite || '-' }}</strong>
+                  </div>
+                </div>
+                <div class="match-status" *ngIf="match.completato">
+                  Completata
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

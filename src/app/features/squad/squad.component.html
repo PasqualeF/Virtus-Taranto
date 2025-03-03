@@ -1,0 +1,35 @@
+<div class="squad-container" *ngIf="selectedSquad">
+    <h1 class="team-name">{{ selectedSquad.name }}</h1>
+    <img *ngIf="selectedSquad.foto" 
+                 [src]="selectedSquad.foto" 
+                 class="">
+    <div class="sponsors-section">
+      <app-sposor-section></app-sposor-section>
+    </div>
+  
+    <div class="tabs-container">
+      <div class="tabs">
+        <button *ngFor="let tab of tabs" 
+                (click)="setView(tab.value)" 
+                [class.active]="selectedView === tab.value">
+          {{ tab.label }}
+        </button>
+      </div>
+  
+      <div class="tab-content">
+        <table *ngIf="getDisplayData().length > 0">
+          <thead>
+            <tr>
+              <th *ngFor="let header of getTableHeaders()">{{ header | titlecase }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of getDisplayData()">
+              <td *ngFor="let header of getTableHeaders()">{{ row[header] }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="getDisplayData().length === 0">Nessun dato disponibile per questa sezione.</p>
+      </div>
+    </div>
+  </div>

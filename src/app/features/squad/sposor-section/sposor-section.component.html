@@ -1,0 +1,13 @@
+   <!-- Sponsors Section (Bianco) -->
+   <section class="sponsors-section" style="background-color: #002b49a0;">
+    <div class="sponsor-titolo">I nostri sponsor</div>
+    <div class="sponsor-carousel-container">
+     <div class="sponsor-carousel" #sponsorCarousel>
+       <ng-container *ngFor="let sponsor of sponsors">
+         <img [src]="sponsor.imageUrl" [alt]="sponsor.name" 
+              (mouseenter)="pauseAnimation(sponsorCarousel)" 
+              (mouseleave)="resumeAnimation(sponsorCarousel)">
+       </ng-container>
+     </div>
+   </div>
+ </section>

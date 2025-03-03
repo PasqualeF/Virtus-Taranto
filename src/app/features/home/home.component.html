@@ -1,0 +1,150 @@
+<div class="home-container" [class.loading]="isLoading">
+  <!-- Progress Bar -->
+  <div class="scroll-progress" [style.width.%]="scrollProgress"></div>
+
+  <!-- Loading Screen Migliorata -->
+  <div class="loading-screen" *ngIf="isLoading">
+    <div class="loading-content">
+      <div class="logos-wrapper">
+        <div class="logo-container" *ngFor="let logo of logos; let i = index">
+          <img [src]="logo" 
+               [class.loaded]="logoLoadStates[i]"
+               class="loading-logo"
+               (load)="onLogoLoad(i)"
+               alt="Logo">
+          <div class="logo-glow"></div>
+        </div>
+      </div>
+      <div class="loading-progress-container">
+        <div class="loading-bar">
+          <div class="loading-progress" [style.width.%]="loadingProgress"></div>
+        </div>
+        <div class="loading-percentage">{{ loadingProgress }}%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div role="main" [class.content-loaded]="!isLoading">
+    <!-- Hero Section -->
+    <section id="hero" class="section hero-section" [class.active]="currentSection === 'hero'">
+        <div class="content-wrapper">
+          <!-- Logos Container -->
+          <div class="logos-container">
+            <div class="logo-wrapper" *ngFor="let logo of logos; let i = index" [class.appear]="logoAnimationStates[i]">
+              <div class="logo-3d" [class.appear]="logoAnimationStates[i]">
+                <img [src]="logo" alt="Logo" class="floating-logo">
+                <div class="logo-glow"></div>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Text Content -->
+          <div class="text-content">
+            <h1 class="main-title" [class.appear]="titleAnimationState">
+              <span class="title-line">Benvenuti nel</span>
+              <span class="title-highlight">Basket Tarantino</span>
+            </h1>
+      
+            <!-- Stats Counter -->
+            <div class="hero-stats" [class.appear]="titleAnimationState">
+              <div class="stat-item">
+                <div class="stat-value">75+</div>
+                <div class="stat-label">Anni di Storia</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1500+</div>
+                <div class="stat-label">Giovani Atleti</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">25</div>
+                <div class="stat-label">Trofei Vinti</div>
+              </div>
+            </div>
+      
+            <div class="typewriter-container">
+              <span class="typewriter-text" #typewriterText></span>
+              <span class="cursor" [class.typing]="isTyping"></span>
+            </div>
+      
+            <div class="cta-container" [class.appear]="buttonAnimationState">
+              <button class="cta-button" (mouseenter)="handleButtonHover($event)">
+                Scopri la Nostra Storia
+                <div class="particle-container">
+                  <div class="particles"></div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section id="sponsors" class="sponsors-section" [class.active]="currentSection === 'sponsors'">
+      <div class="sponsor-carousel-container">
+        <div class="sponsor-carousel" 
+             #sponsorCarousel
+             (mouseenter)="pauseAnimation(sponsorCarousel)"
+             (mouseleave)="resumeAnimation(sponsorCarousel)">
+          <div class="sponsor-item" *ngFor="let sponsor of sponsors">
+            <img [src]="sponsor.imageUrl" [alt]="sponsor.name">
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Component Sections -->
+    <app-story id="story" class="section" [class.active]="currentSection === 'story'">
+    </app-story>
+
+    <!-- Achievement Section -->
+    <section id="achievements" class="section achievements-section" [class.active]="currentSection === 'achievements'">
+      <div class="achievements-content">
+        <h2 class="section-title">I Nostri Successi</h2>
+        <div class="achievements-grid">
+          <div class="achievement-card" *ngFor="let achievement of achievements">
+            <div class="achievement-icon">
+              <i class="lucide" [class]="achievement.icon"></i>
+            </div>
+            <div class="achievement-year">{{ achievement.year }}</div>
+            <h3 class="achievement-title">{{ achievement.title }}</h3>
+            <p class="achievement-description">{{ achievement.description }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <app-news  id="social"  class="section"  [class.active]="currentSection === 'social'"></app-news>
+
+    <app-matches-section id="matches" 
+                        class="section" 
+                        [class.active]="currentSection === 'matches'"
+                        [upcomingMatches]="upcomingMatches">
+    </app-matches-section>
+
+
+    <app-teams-section id="teams" 
+                      class="section" 
+                      [class.active]="currentSection === 'teams'"
+                      [teams]="teams">
+    </app-teams-section>
+
+
+    <app-shop-preview id="shop" 
+                      class="section" 
+                      [class.active]="currentSection === 'shop'">
+    </app-shop-preview>
+</div>
+
+  <!-- Navigation Dots -->
+  <div class="navigation-dots">
+    <button *ngFor="let section of sections"
+            class="nav-dot"
+            [class.active]="currentSection === section.id"
+            (click)="scrollToSection(section.id)">
+      <span class="dot-label">{{section.name}}</span>
+    </button>
+  </div>
+</div>

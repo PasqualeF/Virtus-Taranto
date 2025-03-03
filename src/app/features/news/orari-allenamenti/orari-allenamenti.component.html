@@ -1,0 +1,59 @@
+<div class="orari-allenamenti-container">
+  <h1 class="section-title animate-in">Orari Allenamenti</h1>
+
+  <div class="filters-container animate-in">
+    <select class="filter-select" [(ngModel)]="filtroGruppo" (ngModelChange)="filtraOrari()">
+      <option value="">Tutti i gruppi</option>
+      <option *ngFor="let gruppo of gruppiUnici" [value]="gruppo">
+        {{gruppo}}
+      </option>
+    </select>
+
+    <select class="filter-select" [(ngModel)]="filtroOrario" (ngModelChange)="filtraOrari()">
+      <option value="">Tutti gli orari</option>
+      <option *ngFor="let orario of orariUnici" [value]="orario">
+        {{orario}}
+      </option>
+    </select>
+
+    <select class="filter-select" [(ngModel)]="filtroPalestra" (ngModelChange)="filtraOrari()">
+      <option value="">Tutte le palestre</option>
+      <option *ngFor="let palestra of palestreUniche" [value]="palestra">
+        {{palestra}}
+      </option>
+    </select>
+  </div>
+
+  <div class="table-container animate-in">
+    <table mat-table [dataSource]="dataSource">
+      <!-- Gruppo Column -->
+      <ng-container matColumnDef="gruppo">
+        <th mat-header-cell *matHeaderCellDef>Gruppo</th>
+        <td mat-cell *matCellDef="let element" [attr.data-label]="'Gruppo'">
+          {{element.gruppo}}
+        </td>
+      </ng-container>
+
+      <!-- Dynamic Day Columns -->
+      <ng-container *ngFor="let giorno of giorni" [matColumnDef]="giorno">
+        <th mat-header-cell *matHeaderCellDef>{{giorno}}</th>
+        <td mat-cell *matCellDef="let element" [attr.data-label]="giorno">
+          <div class="orario-cell" *ngFor="let orario of element[giorno]">
+            <span class="orario">{{orario.orario}}</span>
+            <span class="palestra">
+              <i class="fas fa-map-marker-alt"></i>
+              {{orario.palestra}}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="info-text animate-in">
+    * Il seguente calendario è da considerarsi ufficioso. Eventuali variazioni o cancellazioni verranno comunicate attraverso i canali ufficiali o tramite i gruppi dedicati.
+  </div>
+</div>

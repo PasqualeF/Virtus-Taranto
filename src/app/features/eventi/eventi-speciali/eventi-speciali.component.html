@@ -1,0 +1,154 @@
+<!-- eventi-speciali.component.html -->
+<div class="eventi-container">
+    <h1 class="titolo">
+      Eventi Speciali
+      <span class="sottotitolo">Esperienze uniche oltre il campo</span>
+    </h1>
+  
+    <div class="societa-selector">
+      <div 
+        *ngFor="let s of societa"
+        class="societa-tab"
+        [class.active]="selectedSocieta?.nome === s.nome"
+        (click)="selectSocieta(s)"
+        [@fadeIn]>
+        <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
+        <span>{{ s.nome }}</span>
+      </div>
+    </div>
+  
+    <div class="eventi-content" *ngIf="selectedSocieta" [@slideIn]>
+      <div class="filters-bar">
+        <div class="view-toggle">
+          <button class="view-button" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+            <span class="material-icons">grid_view</span>
+          </button>
+          <button class="view-button" [class.active]="viewMode === 'timeline'" (click)="viewMode = 'timeline'">
+            <span class="material-icons">timeline</span>
+          </button>
+        </div>
+  
+        <div class="filter-group">
+          <select [(ngModel)]="filterTipo" class="filter-select">
+            <option value="TUTTI">Tutti i tipi</option>
+            <option value="MOTIVAZIONALE">Incontri Motivazionali</option>
+            <option value="FAMIGLIA">Eventi Famiglia</option>
+            <option value="OPEN_DAY">Open Day</option>
+            <option value="SOCIALE">Iniziative Sociali</option>
+            <option value="FORMAZIONE">Formazione</option>
+          </select>
+  
+          <select [(ngModel)]="filterStato" class="filter-select">
+            <option value="TUTTI">Tutti gli stati</option>
+            <option value="PROGRAMMATO">Programmati</option>
+            <option value="IN_CORSO">In Corso</option>
+            <option value="CONCLUSO">Conclusi</option>
+          </select>
+        </div>
+      </div>
+  
+      <!-- Grid View -->
+      <div class="eventi-grid" *ngIf="viewMode === 'grid'">
+        <div 
+          class="evento-card" 
+          *ngFor="let evento of getEventiFiltrati()"
+          [@expandCard]="expandedCardId === evento.id ? 'expanded' : 'collapsed'"
+          (click)="toggleCardExpansion(evento.id)">
+          <div class="evento-cover" [style.backgroundImage]="'url(' + evento.immagineCopertina + ')'">
+            <div class="evento-overlay">
+              <span [class]="'tipo-badge ' + evento.tipo.toLowerCase()">
+                {{ getTipoEvento(evento.tipo) }}
+              </span>
+            </div>
+          </div>
+  
+          <div class="evento-content">
+            <h3 class="evento-title">{{ evento.titolo }}</h3>
+            
+            <div class="evento-meta">
+              <div class="meta-item">
+                <span class="material-icons">event</span>
+                <span>{{ evento.data | date:'fullDate':'':'it' }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="material-icons">schedule</span>
+                <span>{{ evento.orario }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="material-icons">place</span>
+                <span>{{ evento.location }}</span>
+              </div>
+            </div>
+  
+            <p class="evento-description">{{ evento.descrizione }}</p>
+  
+            <div class="evento-highlights" *ngIf="evento.highlights">
+              <h4>Highlights</h4>
+              <ul>
+                <li *ngFor="let highlight of evento.highlights">{{ highlight }}</li>
+              </ul>
+            </div>
+  
+            <div class="evento-programma" *ngIf="evento.programma">
+              <h4>Programma</h4>
+              <div class="timeline-programma">
+                <div class="programma-item" *ngFor="let item of evento.programma">
+                  <div class="time">{{ item.orario }}</div>
+                  <div class="content">
+                    <h5>{{ item.attivita }}</h5>
+                    <p>{{ item.descrizione }}</p>
+                    <span class="durata">{{ item.durata }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="evento-footer">
+              <div class="posti-info" *ngIf="evento.maxPartecipanti">
+                <div class="progress-bar">
+                    <div class="progress" 
+                    [style.width.%]="getProgressWidth(evento)">
+                </div>
+                </div>
+                <span>{{ getPostiDisponibili(evento) }} posti disponibili</span>
+              </div>
+  
+              <button class="iscrizione-btn" 
+              [disabled]="isEventoCompleto(evento)"
+              (click)="iscrivitiEvento(evento, $event)">
+         {{ isEventoCompleto(evento) ? 'Evento Completo' : 'Iscriviti' }}
+      </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Timeline View -->
+      <div class="eventi-timeline" *ngIf="viewMode === 'timeline'">
+        <div class="timeline">
+          <div class="timeline-item" *ngFor="let evento of getEventiFiltrati()" [@fadeIn]>
+            <div class="timeline-marker" [class]="getStatoClass(evento.stato)"></div>
+            <div class="timeline-content">
+              <div class="timeline-card">
+                <div class="timeline-header">
+                  <span class="timeline-date">{{ evento.data | date:'mediumDate' }}</span>
+                  <span [class]="'tipo-badge ' + evento.tipo.toLowerCase()">
+                    {{ getTipoEvento(evento.tipo) }}
+                  </span>
+                </div>
+                
+                <h3>{{ evento.titolo }}</h3>
+                <p>{{ evento.descrizione }}</p>
+                
+                <div class="timeline-footer">
+                  <button class="details-btn" (click)="selectEvento(evento)">
+                    Dettagli
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

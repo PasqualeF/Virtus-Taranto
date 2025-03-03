@@ -1,0 +1,624 @@
+/* tornei.component.css */
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .tornei-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+  }
+  
+  .titolo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .sottotitolo {
+    display: block;
+    font-size: 1.75rem;
+    color: #fde68a;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    -webkit-text-fill-color: #fde68a;
+  }
+  
+  /* Societa Selector - stessi stili del componente storia */
+  .societa-selector {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .societa-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    width: 300px;
+    height: 250px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .societa-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+  }
+  
+  .societa-tab.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .societa-tab.active::before {
+    opacity: 0.1;
+  }
+  
+  /* Navigation Tabs */
+  .tab-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+  
+  .tab-button.active {
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+    border-color: transparent;
+  }
+  
+  /* View Toggle */
+  .view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .view-button {
+    padding: 0.5rem;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .view-button.active {
+    background: #3b82f6;
+    border-color: transparent;
+  }
+  
+  /* Tornei Grid */
+  .tornei-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .torneo-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+  
+  .torneo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .torneo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .torneo-header h3 {
+    color: #fde68a;
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  
+  .stato-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .stato-in-corso {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+  }
+  
+  .stato-programmato {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+  
+  .stato-concluso {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+  }
+  
+  .torneo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .torneo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  
+  .categoria {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .details-button {
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .details-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+  }
+  
+  /* Tornei Detail View */
+  .torneo-detail {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-top: 2rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .back-button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Squadre Grid */
+  .squadre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .squadra-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .squadra-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+  }
+  
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stat span {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .stat strong {
+    font-size: 1.125rem;
+    color: #fde68a;
+  }
+  
+  /* Partite Timeline */
+  .partite-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .match-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .vs {
+    color: #fde68a;
+    font-weight: 600;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .societa-selector {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .societa-tab {
+      width: 250px;
+      height: 200px;
+    }
+  
+    .tornei-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .squadre-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+  
+    .match-teams {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  /* Aggiungi questi stili al tuo file CSS esistente */
+
+.tornei-bracket {
+    padding: 2rem;
+    overflow-x: auto;
+    min-height: 600px;
+  }
+  
+  .bracket-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    min-width: max-content;
+    padding: 1rem;
+  }
+  
+  .bracket-round {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 280px;
+  }
+  
+  .round-title {
+    text-align: center;
+    color: #fde68a;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .bracket-matches {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .bracket-match {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .match-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  .match-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .team-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .team-slot:last-child {
+    margin-bottom: 0;
+  }
+  
+  .team-slot.winner {
+    background: rgba(59, 130, 246, 0.15);
+    border-left: 3px solid #3b82f6;
+  }
+  
+  .team-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .team-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  
+  .team-name {
+    font-size: 0.875rem;
+    color: white;
+  }
+  
+  .team-score {
+    font-weight: 600;
+    color: #fde68a;
+  }
+  
+  .match-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .match-date {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .match-info-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+  }
+  
+  .match-info-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .match-connector {
+    position: absolute;
+    width: 2rem;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .match-connector::before,
+  .match-connector::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Match Modal Styles */
+  .match-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+  }
+  
+  .modal-content {
+    background: linear-gradient(135deg, #1a2e4c 0%, #0f172a 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0;
+  }
+  
+  .modal-team {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .modal-team img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-vs {
+    font-size: 1.5rem;
+    color: #fde68a;
+    margin: 0 2rem;
+  }
+  
+  .modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-badge.completed {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+  }
+  
+  @media (max-width: 768px) {
+    .bracket-container {
+      gap: 1rem;
+    }
+  
+    .bracket-round {
+      min-width: 220px;
+    }
+  
+    .modal-teams {
+      flex-direction: column;
+      gap: 2rem;
+    }
+  
+    .modal-vs {
+      margin: 1rem 0;
+    }
+  }

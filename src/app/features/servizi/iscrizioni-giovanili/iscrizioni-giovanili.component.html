@@ -1,0 +1,48 @@
+<div class="container">
+    <h1 [@fadeIn] class="titolo">
+      {{ 'SERVIZI_ISCRIZIONI.titolo' | translate }}
+      <span class="sottotitolo">{{ 'SERVIZI_ISCRIZIONI.sottotitolo' | translate }}
+      </span>
+    </h1>
+    
+    <div [@fadeIn] class="content-box">
+      <p class="descrizione">{{ 'SERVIZI_ISCRIZIONI.descrizione' | translate }}</p>
+      
+      <div class="procedure-container">
+        <div class="procedura-box support">
+          <h2 class="procedura-titolo">{{ 'SERVIZI_ISCRIZIONI.proc_support' | translate }}</h2>
+          <ol class="procedura-lista">
+            <li *ngFor="let s of proceduraSupport; let i = index" 
+                [@slideInFromLeft]
+                [style.animation-delay]="i * 100 + 'ms'"
+                class="procedura-item">
+              <span class="procedura-numero">{{ i + 1 }}</span>
+              <span>{{ s.step }}</span>
+            </li>
+          </ol>
+        </div>
+  
+        <div class="procedura-box virtus">
+          <h2 class="procedura-titolo">{{ 'SERVIZI_ISCRIZIONI.proc_virtus' | translate }}</h2>
+          <ol class="procedura-lista">
+            <li *ngFor="let s of proceduraVirtus; let i = index" 
+                [@slideInFromLeft]
+                [style.animation-delay]="(i + 5) * 100 + 'ms'"
+                class="procedura-item">
+              <span class="procedura-numero">{{ i + 1 }}</span>
+              <span>{{ s.step }}</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    
+    <div class="button-container">
+      <a href="#" class="iscrizione-button support-button">
+        <span class="button-text">{{ 'SERVIZI_ISCRIZIONI.bottoneSupport' | translate }}</span>
+      </a>
+      <a href="#" class="iscrizione-button virtus-button">
+        <span class="button-text">{{ 'SERVIZI_ISCRIZIONI.bottoneVirtus' | translate }}</span>
+      </a>
+    </div>
+  </div>

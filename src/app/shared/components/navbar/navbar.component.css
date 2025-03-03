@@ -1,0 +1,520 @@
+/* Stile base della navbar */
+.navbar {
+  background-color: rgba(0, 43, 73, 0.908); /* Semi-transparent background */
+  height: 12.67vh;
+  width: 100%;
+  padding-left: 5.0vw;
+  padding-right: 5.0vw;
+  display: flex;
+  align-items: center;
+  position: fixed; /* Change to fixed */
+  top: 0; /* Ensure it's at the top */
+  left: 0; /* Ensure it spans the full width */
+  padding-top: 0px;
+  padding-bottom: 0px;
+  z-index: 1000; /* Ensure it's above other content */
+  transition: background-color 0.3s ease;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+}
+.navbar-hidden {
+  transform: translateY(-100%);
+}
+
+.navbar-transparent {
+  background-color: rgba(0, 43, 73, 0.066); /* More transparent when not hovered */
+}
+/* Contenitore per le sezioni */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Parte sinistra e destra */
+.navbar-left {
+  width: 45.8vw; /* Approssimativamente 587px su un display 1080p */
+  display: flex;
+  justify-content: flex-start;
+}
+
+.navbar-right {
+  width: 43.4vw; /* Approssimativamente 555px su un display 1080p */
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Pulsanti della navbar */
+.nav-item {
+  height: 8.1vh; /* Approssimativamente 78px su un display 1080p */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer; 
+  padding: 0 1vw;
+  transition: box-shadow 0.3s ease;
+  font-family: fantasy,sans-serif;    /* font-family: "poppins-medium", sans-serif; */
+
+}
+
+
+/* Illumina i bordi al passaggio del mouse 
+.nav-item:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.518);
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}*/
+
+/* Parte centrale con il logo */
+.navbar-center {
+  width: 6.1vw; /* Approssimativamente 78px su un display 1080p */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-logo img {
+  height: 6.3vw; /* Approssimativamente 78px su un display 1080p */
+  width: 6.0vw;
+  padding-bottom: 14px;
+}
+
+
+
+
+/* Submenu che appare al hover */
+.submenu {
+  position: absolute;
+  top: 100%; /* Posiziona il submenu appena sotto la navbar */
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 43, 73, 0.908);
+  padding: 15px 5.2vw;
+  z-index: 9;
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  min-height: 120px;
+  height: auto;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  padding-bottom: 0px;
+  padding-top: 3vh;
+
+}
+
+/* Quando l'elemento ha hover, mostra il submenu */
+.nav-item:hover .submenu,
+.submenu:hover {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Layout del submenu */
+.submenu-title {
+  font-size: 1.5vw; /* Circa 22px su uno schermo da 1440px di larghezza */
+  font-weight: bold;
+  color: #ffffffad;
+  width: 15%; /* Ridotto da 30% per adattarsi meglio */
+  margin-bottom: 0.1vh; /* Circa 5px su uno schermo da 1080px di altezza */
+  padding-right: 1vw; /* Aggiunge un po' di spazio a destra */
+  padding-top: 15vh; /* Aumentato da 10vh a 12vh per abbassare il titolo */
+  min-width: 150px; /* Assicura una larghezza minima su schermi molto piccoli */
+  max-width: 250px; /* Limita la larghezza massima su schermi molto grandi */
+}
+
+.submenu-items {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-direction: row; /*flex-direction: column;*/
+  justify-content: flex-start;
+  width: 85%;  /*width: 70%;*/
+  gap: 1rem; /* Riduce lo spazio tra le colonne */
+
+}
+
+.submenu-items li {
+  color: #ffffffad;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+}
+
+.submenu-items li:hover {
+  color: #ffffffef;  
+}
+
+/* Animazione per l'apparizione del submenu */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aggiungi uno spazio tra il titolo del submenu e gli elementi */
+.submenu-title {
+  margin-bottom: 15px;
+}
+
+.submenu-title,
+.submenu-items li {
+  animation: fadeIn 0.7s ease-out forwards;
+  opacity: 0;
+}
+
+.submenu-items li:nth-child(1) { animation-delay: 0.1s; }
+.submenu-items li:nth-child(2) { animation-delay: 0.2s; }
+.submenu-items li:nth-child(3) { animation-delay: 0.3s; }
+.submenu-items li:nth-child(4) { animation-delay: 0.4s; }
+
+
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+.menu-toggle span {
+  width: 2rem;
+  height: 0.25rem;
+  background: #ffffff;
+  border-radius: 10px;
+  transition: all 0.3s linear;
+  position: relative;
+  transform-origin: 1px;
+}
+
+/* Stili per la sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background-color: rgba(0, 43, 73, 0.95);
+  z-index: 1001;
+  transition: left 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.sidebar-header img {
+  height: 50px;
+}
+
+.close-sidebar {
+  font-size: 2rem;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.sidebar-item {
+  padding: 1rem;
+}
+
+.sidebar-item > a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.sidebar-submenu {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.sidebar-submenu li {
+  padding: 0.5rem 0;
+}
+
+.sidebar-submenu a {
+  color: #ffffffad;
+  text-decoration: none;
+}
+
+.sport-category {
+  flex: 1;
+}
+
+.sport-category h3 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.sport-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sport-category li {
+  margin-bottom: 0.3rem;
+}
+
+.sport-category a {
+  color: #ffffffad;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.sport-category a:hover {
+  color: #ffffff;
+}
+
+
+@keyframes colorLetters {
+  0% { color: #ffffffad; }
+  100% { color: #ffffff; }
+}
+
+.sport-category a:hover span {
+  display: inline-block;
+  animation: colorLetters 0.5s forwards;
+}
+
+.sport-category a:hover span {
+  display: inline-block;
+  animation: colorLetters 0.5s forwards;
+}
+
+.sport-category a span {
+  display: inline-block;
+  white-space: pre; /* Preserva gli spazi */
+}
+
+
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.8rem 1.2rem;
+    height: 70px;
+    background-color: rgba(0, 43, 73, 0.95);
+  }
+
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Menu Toggle Button */
+  .menu-toggle {
+    width: 30px;
+    height: 24px;
+    position: relative;
+    cursor: pointer;
+    z-index: 1002;
+  }
+
+  .menu-toggle span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: white;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .menu-toggle span:nth-child(1) { top: 0; }
+  .menu-toggle span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+  .menu-toggle span:nth-child(3) { bottom: 0; }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Logo */
+  .navbar-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  /* Fullscreen Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1001;
+    overflow-y: auto;
+    padding: 80px 1.5rem 2rem;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Close Button */
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  /* Mobile Navigation Items */
+  .mobile-nav {
+    height: 100%;
+  }
+
+  .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .main-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    cursor: pointer;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  .arrow {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .arrow.open {
+    transform: rotate(90deg);
+  }
+
+  /* Submenu */
+  .submenu {
+    display: none;
+    padding: 0.5rem 0 1rem 1rem;
+  }
+
+  .submenu.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  /* Category Styles */
+  .category {
+    margin-bottom: 1rem;
+  }
+
+  .category h3 {
+    color: #fde68a;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .category-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .category-items a,
+  .submenu a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+  }
+
+  .category-items a:hover,
+  .submenu a:hover {
+    color: white;
+  }
+
+  /* Overlay */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Utility class for when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+}

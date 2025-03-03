@@ -1,0 +1,123 @@
+<nav class="navbar"  [class.navbar-hidden]="!isNavbarVisible">
+  <div class="navbar-container">
+    <div class="menu-toggle" (click)="toggleSidebar()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="navbar-left">
+      <div *ngFor="let item of navItems.slice(0, 4)" class="nav-item" (mouseenter)="showSubmenu(item.label)">
+        <a [routerLink]="item.route">{{ item.label }}</a>
+
+        <div class="submenu" *ngIf="activeSubmenu === item.label" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
+          <div class="submenu-title">
+            {{ item.label }}
+          </div>
+          <div class="submenu-items">
+            <ng-container *ngFor="let subItem of item.submenuItems">
+              <ng-container *ngIf="isSportCategory(subItem); else regularItem">
+                <div class="sport-category">
+                  <h3>{{ subItem.label }}</h3>
+                  <ul>
+                    <li *ngFor="let sportItem of subItem.items">
+                      <a [routerLink]="sportItem.route">
+                        <ng-container *ngFor="let letter of sportItem.name.split(''); let i = index">
+                          <span [style.animation-delay]="i * 0.03 + 's'">{{ letter }}</span>
+                        </ng-container>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </ng-container>
+              <ng-template #regularItem>
+                <ng-container *ngIf="isComplexSubmenuItem(subItem); else simpleItem">
+                  <li><a [routerLink]="subItem.route">{{ subItem.name }}</a></li>
+                </ng-container>
+                <ng-template #simpleItem>
+                  <li>{{ subItem }}</li>
+                </ng-template>
+              </ng-template>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-center">
+      <a class="navbar-logo" routerLink="/">
+        <img src="assets/logo-virtus-taranto.svg" alt="Virtus Taranto Logo">
+      </a>
+    </div>
+
+    <div class="navbar-right">
+      <div *ngFor="let item of navItems.slice(4)" class="nav-item" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
+        <a [routerLink]="item.route">{{ item.label }}</a>
+
+        <div class="submenu" *ngIf="activeSubmenu === item.label" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
+          <div class="submenu-title">
+            {{ item.label }}
+          </div>
+          <div class="submenu-items">
+            <ng-container *ngFor="let subItem of item.submenuItems">
+              <ng-container *ngIf="isSportCategory(subItem); else regularItem">
+                <div class="sport-category">
+                  <h3>{{ subItem.label }}</h3>
+                  <ul>
+                    <li *ngFor="let sportItem of subItem.items">
+                      <a [routerLink]="sportItem.route">
+                        <ng-container *ngFor="let letter of sportItem.name.split(''); let i = index">
+                          <span [style.animation-delay]="i * 0.03 + 's'">{{ letter }}</span>
+                        </ng-container>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </ng-container>
+              <ng-template #regularItem>
+                <ng-container *ngIf="isComplexSubmenuItem(subItem); else simpleItem">
+                  <li><a [routerLink]="subItem.route">{{ subItem.name }}</a></li>
+                </ng-container>
+                <ng-template #simpleItem>
+                  <li>{{ subItem }}</li>
+                </ng-template>
+              </ng-template>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="sidebar" [class.active]="isSidebarOpen">
+  <div class="sidebar-header">
+    <img src="assets/logo-virtus-taranto.svg" alt="Virtus Taranto Logo">
+    <div class="close-sidebar" (click)="toggleSidebar()">×</div>
+  </div>
+  <div *ngFor="let item of navItems" class="sidebar-item">
+    <a [routerLink]="item.route" (click)="toggleSidebar()">{{ item.label }}</a>
+    <ul class="sidebar-submenu">
+      <ng-container *ngFor="let subItem of item.submenuItems">
+        <ng-container *ngIf="isSportCategory(subItem); else regularSidebarItem">
+          <li>
+            <strong>{{ subItem.label }}</strong>
+            <ul>
+              <li *ngFor="let sportItem of subItem.items">
+                <a [routerLink]="sportItem.route" (click)="toggleSidebar()">{{ sportItem.name }}</a>
+              </li>
+            </ul>
+          </li>
+        </ng-container>
+        <ng-template #regularSidebarItem>
+          <li *ngIf="isComplexSubmenuItem(subItem); else simpleSidebarItem">
+            <a [routerLink]="subItem.route" (click)="toggleSidebar()">{{ subItem.name }}</a>
+          </li>
+          <ng-template #simpleSidebarItem>
+            <li>{{ subItem }}</li>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </ul>
+  </div>
+</div>

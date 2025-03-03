@@ -1,0 +1,60 @@
+<section class="matches-section">
+  <div class="container-fluid">
+    <h2 class="section-title">Prossime Partite</h2>
+
+    <div class="matches-carousel">
+      <div class="matches-container" [style.transform]="getCarouselTransform()">
+        <div class="match-card" *ngFor="let match of upcomingMatches; let i = index"
+             [ngClass]="{'home-match': match.isHome, 'away-match': !match.isHome}"
+             [style.backgroundImage]="'url(' + match.backgroundImage + ')'">
+               <!-- Pattern Overlay -->
+          <div class="match-pattern"></div>
+          <div class="location-icon">
+            <!-- Home Icon -->
+            <svg *ngIf="match.isHome" viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <!-- Away Icon -->
+            <svg *ngIf="!match.isHome" viewBox="0 0 24 24">
+              <path d="M22 2L11 13"></path>
+              <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+            </svg>
+          </div>
+
+
+          <div class="card-body">
+            <div class="match-header">
+              <div class="match-date">{{ getFormattedDate(match.date) }}</div>
+              <div class="match-venue">{{ match.venue }}</div>
+            </div>
+
+            <div class="match-info">
+              <div class="match-time">{{ match.time }}</div>
+              <div class="match-league">{{ match.league }}</div>
+            </div>
+
+            <div class="match-teams">
+              <div class="team home">{{ match.homeTeam }}</div>
+              <div class="vs">VS</div>
+              <div class="team away">{{ match.awayTeam }}</div>
+            </div>
+
+            <div class="countdown" *ngIf="i === currentMatchIndex">
+              Inizio partita tra: {{ getCountdown(match.date) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="carousel-control prev" (click)="previousMatches()" 
+              [disabled]="currentMatchIndex === 0">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="carousel-control next" (click)="nextMatches()" 
+              [disabled]="currentMatchIndex === upcomingMatches.length - 1">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>

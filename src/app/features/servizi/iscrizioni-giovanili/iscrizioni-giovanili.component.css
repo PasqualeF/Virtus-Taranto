@@ -1,0 +1,176 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .titolo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .sottotitolo {
+    display: block;
+    font-size: 1.75rem;
+    color: #fde68a;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    -webkit-text-fill-color: #fde68a;
+  }
+  
+  .content-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  .content-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .descrizione {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    text-align: center;
+  }
+  
+  .procedure-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  
+  .procedura-box {
+    flex: 1;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .procedura-box:hover {
+    transform: translateY(-5px);
+  }
+  
+  .support {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  .virtus {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .procedura-titolo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fde68a;
+    margin-bottom: 1rem;
+  }
+  
+  .procedura-lista {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .procedura-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .procedura-item:hover {
+    transform: translateX(5px);
+  }
+  
+  .procedura-numero {
+    background-color: #3b82f6;
+    border-radius: 9999px;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .virtus .procedura-numero {
+    background-color: #ef4444;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .iscrizione-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .support-button {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .virtus-button {
+    background-color: #ef4444;
+    color: white;
+  }
+  
+  .iscrizione-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .support-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .virtus-button:hover {
+    background-color: #dc2626;
+  }
+  
+  @media (max-width: 768px) {
+    .procedure-container {
+      flex-direction: column;
+    }
+  }

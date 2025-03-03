@@ -1,0 +1,228 @@
+/* footer.component.css */
+.footer {
+  background-color: #002b49;
+  color: #ffffff;
+  font-family: "transducer-condensed", sans-serif;
+  width: 100%;
+  padding: 4rem 0 3rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.footer-content {
+  width: 100%;
+  padding: 0 3%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.sponsor-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.sponsor-title {
+  font-size: 2rem;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.sponsor-button {
+  background-color: #ffffff;
+  color: #002b49;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.sponsor-button:hover {
+  background-color: #f0f0f0;
+}
+
+.sponsor-logos {
+  width: 100vw;
+  overflow: hidden;
+  padding: 1.5rem 0;
+  margin-left: calc(-50vw + 50%);
+}
+
+.sponsor-carousel-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.sponsor-carousel {
+  display: flex;
+  animation: scroll 20s linear infinite;
+}
+
+.sponsor-carousel img {
+  height: 40px;
+  margin: 0 20px;
+  flex-shrink: 0;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.sponsor-carousel:hover {
+  animation-play-state: paused;
+}
+
+.social-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-logo {
+  height: 110px;
+  margin-bottom: 1.5rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.social-icons a {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.footer-divider {
+  border: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.sitemap {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.sitemap-column h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sitemap-column ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sitemap-column li {
+  margin-bottom: 0.75rem;
+}
+
+.sitemap-column a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 1rem;
+}
+
+.sitemap-column a:hover {
+  color: #f0f0f0;
+}
+
+.legal-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.legal-links {
+  margin-bottom: 1rem;
+}
+
+.legal-links a {
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0 0.75rem;
+}
+
+.company-info p {
+  margin: 0.5rem 0;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    padding: 0 7%;
+  }
+
+  .sponsor-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sponsor-title {
+    font-size: 2.25rem;
+    text-align: left;
+  }
+
+  .sponsor-button {
+    margin-top: 0;
+  }
+
+  .social-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    margin-bottom: 0;
+  }
+
+  .sitemap {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .legal-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .legal-links {
+    margin-bottom: 0;
+  }
+
+  .sponsor-carousel img {
+    height: 50px;
+  }
+}
+
+@media (min-width: 992px) {
+  .footer-content {
+    padding: 0 10%;
+  }
+
+  .sponsor-carousel img {
+    height: 60px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .footer-content {
+    padding: 0 15%;
+  }
+}

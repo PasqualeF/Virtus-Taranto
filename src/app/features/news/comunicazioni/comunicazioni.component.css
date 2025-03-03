@@ -1,0 +1,531 @@
+
+/* Aggiungi queste classi CSS per gestire i colori delle intestazioni */
+.card-header.from-red-500.to-red-700 {
+  background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
+}
+
+.card-header.from-yellow-500.to-yellow-700 {
+  background: linear-gradient(90deg, #f59e0b 0%, #b45309 100%);
+}
+
+.card-header.from-blue-500.to-blue-700 {
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+/* Modifica le variabili CSS per i colori */
+:root {
+    --header-start: rgba(59, 130, 246, 0.1);
+    --header-end: rgba(29, 78, 216, 0.2);
+}
+
+/* comunicazioni.component.css */
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .comunicazioni-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Header Styles */
+  .header-section {
+    margin-bottom: 3rem;
+  }
+  
+  .titolo {
+    font-size: 4.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 7rem;
+    line-height: 1.8;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Controls Container */
+  .controls-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .search-box {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    stroke: #64748b;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+  
+  .filters-container {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .filter-select {
+    padding: 0.75rem 2rem 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+  }
+  
+  /* Loading State */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 1rem;
+  }
+  
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .loading-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    stroke: currentColor;
+    margin-bottom: 1rem;
+  }
+  
+  /* Comunicazione Card */
+  .comunicazione-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .comunicazione-card.nuovo {
+    border-color: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  }
+  
+  .comunicazione-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-header {
+    padding: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, var(--header-start) 0%, var(--header-end) 100%);
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+  }
+  
+  .tipo-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .tipo-badge.urgente {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+  }
+  
+  .tipo-badge.importante {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fcd34d;
+  }
+  
+  .tipo-badge.standard {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+  }
+  
+  .comunicazione-titolo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+  }
+  
+  .data {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+/* Continuazione del CSS precedente... */
+
+.new-indicator {
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 1rem;
+  }
+  
+  .expand-icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    transition: transform 0.3s ease;
+  }
+  
+  .expand-icon.rotated {
+    transform: rotate(180deg);
+  }
+  
+  /* Card Content */
+/* Fix per il contenuto espanso */
+.card-content {
+    height: auto;
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+  }
+
+  
+.card-content.ng-animating {
+    overflow: hidden;
+  }
+  
+  .autore-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fde68a;
+    font-weight: 600;
+  }
+  
+  .autore-dettagli {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nome {
+    font-weight: 600;
+    color: #fde68a;
+  }
+  
+  .ruolo {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .contenuto {
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Destinatari */
+  .destinatari {
+    margin-bottom: 1.5rem;
+  }
+  
+  .destinatari h4 {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+  }
+  
+  .destinatari-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .tag {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Allegati */
+  .allegati {
+    margin-bottom: 1.5rem;
+  }
+  
+  .allegati h4 {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+  }
+  
+  .allegati-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+  }
+  
+  .allegato-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .allegato-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .file-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #93c5fd;
+  }
+  
+  .allegato-info {
+    flex: 1;
+  }
+  
+  .allegato-nome {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .allegato-dettagli {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .download-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #93c5fd;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .allegato-item:hover .download-icon {
+    opacity: 1;
+  }
+  
+  /* Actions */
+  .azioni {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+  }
+  
+  .action-button:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .action-button.archive {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+  }
+  
+  .action-button.archive:hover {
+    background: rgba(239, 68, 68, 0.3);
+  }
+  
+  .action-icon {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+  }
+  
+  /* Animations */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .comunicazioni-container {
+      padding: 1rem;
+    }
+  
+    .titolo {
+      font-size: 2.5rem;
+    }
+  
+    .controls-container {
+      flex-direction: column;
+    }
+  
+    .search-box {
+      min-width: auto;
+    }
+  
+    .filters-container {
+      flex-direction: column;
+    }
+  
+    .filter-select {
+      width: 100%;
+    }
+  
+    .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  
+    .data {
+      margin-left: 0;
+    }
+  
+    .azioni {
+      flex-direction: column;
+    }
+  
+    .action-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  /* Focus Styles */
+  :focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+  
+  /* Utility Classes */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }

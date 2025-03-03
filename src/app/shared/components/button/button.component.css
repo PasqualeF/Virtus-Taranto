@@ -1,0 +1,15 @@
+.btn-primary {
+  background-color: #ff7f00; /* Arancione per pulsante primario */
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #1a1a1a; /* Blu scuro per pulsante secondario */
+  color: white;
+  border: 1px solid #ff7f00; /* Bordo arancione per il pulsante secondario */
+}
+
+.btn:hover {
+  opacity: 0.8;
+}

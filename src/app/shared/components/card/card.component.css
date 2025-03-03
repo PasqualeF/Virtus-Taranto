@@ -1,0 +1,22 @@
+.card {
+    border: 1px solid #ddd;
+    background-color: #f9f9f9; /* Grigio chiaro per lo sfondo */
+  }
+  
+  .card-title {
+    color: #1a1a1a; /* Blu scuro per il titolo */
+  }
+  
+  .card-text {
+    color: #666;
+  }
+  
+  .btn-primary {
+    background-color: #ff7f00; /* Arancione per i pulsanti */
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+  

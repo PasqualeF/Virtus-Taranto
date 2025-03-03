@@ -1,0 +1,426 @@
+/* orari-allenamenti.component.css */
+.orari-allenamenti-container {
+  background: linear-gradient(135deg, #1a365d 0%, #0f172a 100%);
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background particle effect */
+.orari-allenamenti-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    rgba(19, 30, 51, 0.7) 0%,
+    rgba(0, 43, 73, 0.9) 100%);
+  pointer-events: none;
+}
+
+/* Stile titolo migliorato */
+.section-title-container {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 2;
+}
+
+.section-title {
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  position: relative;
+  text-shadow: 0 0 30px rgba(147, 197, 253, 0.3);
+}
+
+.section-title::after {
+  content: 'VIRTUS TARANTO';
+  position: absolute;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 8px;
+  color: #3b82f6;
+  opacity: 0.8;
+}
+
+.section-title::before {
+  content: '2023/24';
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fde68a;
+  letter-spacing: 4px;
+}
+
+
+.section-title::after {
+  content: 'VIRTUS TARANTO';
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  border-radius: 2px;
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+}
+
+.filter-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-select option {
+  background-color: #1a365d;
+  color: white;
+}
+
+.filter-select::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.filter-select:hover::before {
+  opacity: 1;
+}
+
+.filter-select:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+}
+
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 1600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.mat-mdc-table {
+  width: 100%;
+  background: transparent;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.mat-mdc-header-row {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb) !important;
+  border-radius: 12px !important;
+  margin: 8px 0 16px 0 !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.mat-mdc-header-row::before {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #93c5fd, #fde68a);
+}
+
+.mat-mdc-header-cell {
+  color: #fde68a !important;
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 1.5rem 1.2rem !important;
+  text-align: center !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.mat-mdc-header-cell:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.mat-mdc-header-cell:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.mat-mdc-header-cell::after {
+  content: '';
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 2px;
+  background: #fde68a;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.mat-mdc-header-cell:hover::after {
+  opacity: 1;
+  width: 60%;
+}
+
+.mat-mdc-row {
+  background: #1e3a8a !important;
+  margin: 8px 0 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.mat-mdc-row:nth-child(odd) {
+  background: #1e3a8a !important;
+}
+
+.mat-mdc-row:nth-child(even) {
+  background: #1e4899 !important;
+}
+
+.mat-mdc-row:hover {
+  background: #2563eb !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+.mat-mdc-cell {
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  padding: 1.2rem !important;
+  border: none !important;
+}
+
+.orario-cell {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin: 0.3rem 0;
+}
+
+.orario {
+  color: #93c5fd !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.palestra {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.palestra::before {
+  content: '📍';
+  font-size: 1rem;
+}
+
+.info-text {
+  max-width: 1600px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 1rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+
+@media screen and (max-width: 768px) {
+  .table-container {
+    padding: 0.5rem;
+    margin: 0 0.5rem;
+  }
+
+  /* Stile card per mobile */
+  .mat-mdc-row {
+    display: block !important;
+    margin: 1rem 0 !important;
+    border-radius: 12px !important;
+    background: #1e3a8a !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+  }
+
+  .mat-mdc-row:nth-child(odd) {
+    background: #1e3a8a !important;
+  }
+
+  .mat-mdc-row:nth-child(even) {
+    background: #1e4899 !important;
+  }
+
+  .mat-mdc-cell {
+    display: block !important;
+    width: auto !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Intestazione della card (nome gruppo) */
+  .mat-mdc-cell:first-of-type {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    padding: 1.2rem !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* Giorni della settimana */
+  .mat-mdc-cell[data-label] {
+    position: relative;
+    padding-top: 2.5rem !important;
+  }
+
+  .mat-mdc-cell[data-label]::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #93c5fd;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Contenitore orari per mobile */
+  .orario-cell {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  /* Stile orario per mobile */
+  .orario {
+    color: #fde68a !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Stile palestra per mobile */
+  .palestra {
+    color: #e2e8f0 !important;
+    font-size: 1rem !important;
+    padding-left: 1.5rem;
+  }
+
+  /* Nascondi header tabella su mobile */
+  .mat-mdc-header-row {
+    display: none !important;
+  }
+
+  /* Animazione hover per card mobile */
+  .mat-mdc-row:active {
+    transform: scale(0.98);
+    transition: transform 0.2s;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  .orari-allenamenti-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .mat-mdc-cell:first-of-type {
+    font-size: 1.1rem !important;
+    padding: 1rem !important;
+  }
+
+  .mat-mdc-cell[data-label]::before {
+    font-size: 0.9rem;
+  }
+
+  .orario {
+    font-size: 1.1rem !important;
+  }
+
+  .palestra {
+    font-size: 0.9rem !important;
+  }
+
+  .orario-cell {
+    padding: 0.8rem;
+    margin: 0.4rem 0;
+  }
+}
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}

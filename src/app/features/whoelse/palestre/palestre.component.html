@@ -1,0 +1,52 @@
+<div class="palestre-container">
+  <h1 class="titolo" [@fadeIn]>
+    Le Nostre Palestre
+  </h1>
+  
+  <p class="descrizione-generale" [@fadeIn]>
+    Scopri le nostre strutture all'avanguardia dove i nostri atleti si allenano e competono ogni giorno.
+  </p>
+
+  <div class="palestre-grid">
+    <div *ngFor="let palestra of palestre; let i = index" 
+         class="palestra-card"
+         [@flipIn]
+         [style.animation-delay]="i * 200 + 'ms'">
+      <img [src]="palestra.immagine" 
+           [alt]="palestra.nome" 
+           class="palestra-image">
+      <h2 class="palestra-nome">{{ palestra.nome }}</h2>
+      <p class="palestra-indirizzo">{{ palestra.indirizzo }}</p>
+      <button class="dettagli-button" (click)="showDetails(palestra)">
+        <span>Scopri di più</span>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             class="w-5 h-5" 
+             fill="none" 
+             viewBox="0 0 24 24" 
+             stroke="currentColor">
+          <path stroke-linecap="round" 
+                stroke-linejoin="round" 
+                stroke-width="2" 
+                d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div *ngIf="selectedPalestra" 
+     class="modal-overlay" 
+     [@detailExpand]="detailState"
+     (click)="closeDetails()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeDetails()">×</button>
+    <img [src]="selectedPalestra.immagine" 
+         [alt]="selectedPalestra.nome"
+         class="palestra-image">
+    <h2 class="palestra-nome">{{ selectedPalestra.nome }}</h2>
+    <p class="palestra-indirizzo">{{ selectedPalestra.indirizzo }}</p>
+    <p class="mt-4">{{ selectedPalestra.descrizione }}</p>
+    <!-- Qui puoi aggiungere altre informazioni come orari, attrezzature, etc. -->
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<!-- calendario.component.html -->
+<div class="calendario-container">
+    <h1 class="titolo">
+      Calendario Eventi
+      <span class="sottotitolo">Scopri tutte le nostre attività</span>
+    </h1>
+  
+    <div class="societa-selector">
+      <div 
+        *ngFor="let s of societa"
+        class="societa-tab"
+        [class.active]="selectedSocieta?.nome === s.nome"
+        (click)="selectSocieta(s)"
+        [@fadeIn]>
+        <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
+        <span>{{ s.nome }}</span>
+      </div>
+    </div>
+  
+    <div class="calendar-wrapper" *ngIf="selectedSocieta" [@slideIn]>
+      <div class="calendar-header">
+        <h2>{{ selectedSocieta.nome }}</h2>
+      </div>
+  
+      <div class="calendar-content">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+      </div>
+    </div>
+  
+    <div class="legenda" *ngIf="selectedSocieta">
+      <h3>Legenda Eventi</h3>
+      <div class="legenda-item">
+        <span class="color-dot partita"></span>
+        <span>Partite</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-dot allenamento"></span>
+        <span>Allenamenti</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-dot evento"></span>
+        <span>Eventi Speciali</span>
+      </div>
+    </div>
+  </div>

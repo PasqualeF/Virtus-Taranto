@@ -1,0 +1,424 @@
+/* Matches Section Base */
+.matches-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #1a365d 0%, #0f172a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.matches-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assets/basketball-court.jpg') center center;
+  background-size: cover;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* Section Title */
+.section-title {
+  text-align: center;
+  color: white;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.section-title::before {
+  content: 'MATCHES';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 6rem;
+  font-weight: 900;
+  opacity: 0.05;
+  letter-spacing: 10px;
+  white-space: nowrap;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  border-radius: 2px;
+}
+
+/* Matches Carousel */
+.matches-carousel {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  padding: 20px 0;
+}
+
+.matches-container {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  padding-left: 67px;
+}
+
+/* Match Card Base */
+.match-card {
+  flex: 0 0 480px;
+  height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  margin-right: 48px;
+  transform: translateY(0);
+  transition: all 0.4s ease;
+  background: #1a365d;
+}
+
+/* Card Background Patterns */
+.match-card {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.1' /%3E%3Cstop offset='100%25' style='stop-color:%23ffffff;stop-opacity:0.3' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 0h100v100H0z' fill='url(%23grad)'/%3E%3Cpath d='M10 10h80v80H10z' fill='none' stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.1'/%3E%3Cpath d='M30 30l40 40M70 30l-40 40' stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.1'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.1'/%3E%3C/svg%3E");
+  background-size: 50px;
+}
+
+.match-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.3) 0%,
+    rgba(0,0,0,0.4) 50%,
+    rgba(0,0,0,0.8) 100%
+  );
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.home-match::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 102, 0, 0.3) 0%,
+    rgba(255, 102, 0, 0.4) 50%,
+    rgba(255, 102, 0, 0.6) 100%
+  );
+}
+
+.away-match::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 75, 124, 0.3) 0%,
+    rgba(7, 75, 124, 0.4) 50%,
+    rgba(7, 75, 124, 0.6) 100%
+  );
+}
+
+/* Pattern Overlay */
+.match-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.match-pattern::before,
+.match-pattern::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  transition: all 0.3s ease;
+}
+
+.home-match .match-pattern::before,
+.home-match .match-pattern::after {
+  border: 2px solid rgba(255, 107, 0, 0.3);
+  border-radius: 50%;
+}
+
+.away-match .match-pattern::before,
+.away-match .match-pattern::after {
+  border: 2px solid rgba(7, 75, 124, 0.3);
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.match-pattern::before {
+  top: -100px;
+  right: -100px;
+}
+
+.match-pattern::after {
+  bottom: -100px;
+  left: -100px;
+}
+
+/* Location Icon */
+.location-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: all 0.3s ease;
+}
+
+.location-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+}
+
+.home-match .location-icon {
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.2), rgba(255, 102, 0, 0.4));
+}
+
+.away-match .location-icon {
+  background: linear-gradient(135deg, rgba(7, 75, 124, 0.2), rgba(7, 75, 124, 0.4));
+}
+
+/* Card Content */
+.card-body {
+  height: 100%;
+  padding: 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+/* Match Header */
+.match-header {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.match-date {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.match-venue {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 5px;
+}
+
+/* Match Info */
+.match-info {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.match-time {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.match-league {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Match Teams */
+.match-teams {
+  text-align: center;
+  margin-top: auto;
+}
+
+.team {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 10px 0;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+/* Hover Effects */
+.match-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.match-card:hover .team {
+  transform: scale(1.05);
+}
+
+.match-card:hover .location-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.match-card:hover .location-icon svg {
+  transform: scale(1.1);
+}
+
+.match-card:hover .match-pattern {
+  opacity: 0.2;
+}
+
+/* Countdown */
+.countdown {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.match-card:hover .countdown {
+  transform: translateY(0);
+}
+
+/* Carousel Controls */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-control::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.carousel-control:hover::before {
+  opacity: 1;
+}
+
+.carousel-control:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.carousel-control.prev {
+  left: 20px;
+}
+
+.carousel-control.next {
+  right: 20px;
+}
+
+.carousel-control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes homeIconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes awayIconFly {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(5px, -5px); }
+}
+
+.home-match .location-icon svg {
+  animation: homeIconFloat 3s ease-in-out infinite;
+}
+
+.away-match .location-icon svg {
+  animation: awayIconFly 3s ease-in-out infinite;
+}
+
+@keyframes patternFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(5px, -5px) rotate(2deg); }
+}
+
+.match-pattern {
+  animation: patternFloat 10s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2.5rem;
+  }
+
+  .section-title::before {
+    font-size: 4rem;
+  }
+
+  .matches-container {
+    padding-left: 20px;
+  }
+
+  .match-card {
+    flex: 0 0 90%;
+    height: 500px;
+    margin-right: 20px;
+  }
+
+  .match-time {
+    font-size: 3rem;
+  }
+
+  .team {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,620 @@
+/* Base styles */
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.organigramma-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.sottotitolo {
+  display: block;
+  font-size: 1.75rem;
+  color: #fde68a;
+  margin-bottom: 3rem;
+  text-align: center;
+  -webkit-text-fill-color: #fde68a;
+}
+
+/* Società selector */
+.societa-selector {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.societa-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 280px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.societa-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.societa-card:hover::before {
+  opacity: 1;
+}
+
+.societa-card.active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-10px);
+  border-color: #fde68a;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.societa-icon {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  padding: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.societa-card:hover .societa-icon {
+  transform: scale(1.1) rotate(5deg);
+  border-color: rgba(253, 230, 138, 0.5);
+}
+
+.societa-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.societa-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.societa-card:hover .societa-name {
+  color: #fde68a;
+}
+
+/* View toggle */
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.toggle-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.toggle-button.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.view-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+}
+
+/* Staff grid */
+.staff-grid {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+
+.level-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #fde68a);
+  border-radius: 3px;
+}
+
+
+
+/* Presidente section */
+.presidente-section .staff-cards {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  justify-content: center;
+  gap: 2rem;
+}
+
+.staff-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.staff-card.presidente {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(253, 230, 138, 0.1) 100%);
+  border: 2px solid rgba(253, 230, 138, 0.2);
+}
+
+.member-photo-container {
+  position: relative;
+  width: 100%;
+  height: 200px; /* Altezza fissa per tutte le immagini */
+  overflow: hidden;
+}
+
+.member-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.member-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+
+.staff-card:hover .member-photo {
+  transform: scale(1.1);
+}
+
+.staff-card:hover .member-overlay {
+  opacity: 1;
+}
+
+/* Hover effects migliorati */
+.staff-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.staff-card:hover .member-photo {
+  transform: scale(1.05);
+}
+
+/* Assicurarsi che il contenuto non si estenda oltre i limiti */
+.member-contact {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.contact-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-info {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.member-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fde68a;
+  margin-bottom: 0.5rem;
+}
+
+.member-role {
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+}
+
+.member-description {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+}
+
+.member-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #3b82f6;
+  transform: translateX(5px);
+}
+
+.contact-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 1rem;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design Migliorato */
+@media (max-width: 1400px) {
+  .staff-cards,
+  .presidente-section .staff-cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 1200px) {
+  .staff-cards,
+  .presidente-section .staff-cards {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .member-photo-container {
+    height: 180px;
+  }
+}
+
+@media (max-width: 992px) {
+  .staff-cards,
+  .presidente-section .staff-cards {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .member-photo-container {
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .organigramma-container {
+    padding: 1rem;
+  }
+
+  .staff-cards,
+  .presidente-section .staff-cards {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .titolo {
+    font-size: 2rem;
+  }
+
+  .sottotitolo {
+    font-size: 1.125rem;
+  }
+
+  .member-photo-container {
+    height: 150px;
+  }
+
+  .member-name {
+    font-size: 1.125rem;
+  }
+
+  .member-info {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .staff-cards,
+  .presidente-section .staff-cards {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .member-photo-container {
+    height: 180px;
+  }
+}
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
+
+
+
+
+/* Aggiornamento titolo */
+.titolo {
+  font-size: 4rem; /* Aumentato da 3.5rem */
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+}
+
+/* Aggiornamento spaziatura sezioni */
+.level-section {
+  margin-bottom: 5rem; /* Aumentato lo spazio tra le sezioni */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.level-title {
+  font-size: 2.25rem; /* Leggermente più grande */
+  color: #fde68a;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1.5rem;
+  margin-bottom: 3rem; /* Aumentato lo spazio dopo il titolo */
+}
+
+/* Centraggio e dimensione fissa delle card */
+.staff-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 320px); /* Dimensione fissa */
+  gap: 2rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Vista ad albero */
+.org-tree {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  overflow-x: auto;
+}
+
+.tree-container {
+  min-height: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tree-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tree-level {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.tree-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  width: 280px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tree-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: #fde68a;
+}
+
+.tree-card.presidente {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(253, 230, 138, 0.1) 100%);
+  border: 2px solid rgba(253, 230, 138, 0.2);
+}
+
+.tree-connector {
+  position: absolute;
+  width: 2px;
+  background: rgba(253, 230, 138, 0.3);
+  animation: connectLine 1s ease forwards;
+  transform-origin: top;
+}
+
+.tree-connector-horizontal {
+  position: absolute;
+  height: 2px;
+  background: rgba(253, 230, 138, 0.3);
+  animation: connectHorizontal 1s ease forwards;
+  transform-origin: left;
+}
+
+@keyframes connectLine {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes connectHorizontal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.tree-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 2px solid rgba(253, 230, 138, 0.3);
+  object-fit: cover;
+}
+
+.tree-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fde68a;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.tree-role {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Animations for tree view */
+.tree-appear {
+  animation: treeAppear 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes treeAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

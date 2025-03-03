@@ -1,0 +1,93 @@
+<div class="shop-coming-soon">
+    <div class="content-container" [@fadeInUp]>
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <img src="assets/logo-virtus-taranto.svg" alt="Virtus Shop Logo" class="shop-logo">
+      </div>
+  
+      <!-- Main Content -->
+      <div class="main-content">
+        <h1 class="title">
+          Shop Virtus Taranto
+          <span class="subtitle">Coming Soon</span>
+        </h1>
+  
+        <div class="message">
+          <p class="description">
+            Stiamo preparando qualcosa di speciale per te. 
+            Presto potrai acquistare il merchandise ufficiale della Virtus Taranto.
+          </p>
+        </div>
+  
+        <!-- Countdown -->
+        <div class="countdown">
+          <div class="countdown-item">
+            <span class="number">{{countdown.days}}</span>
+            <span class="label">Giorni</span>
+          </div>
+          <div class="countdown-item">
+            <span class="number">{{countdown.hours}}</span>
+            <span class="label">Ore</span>
+          </div>
+          <div class="countdown-item">
+            <span class="number">{{countdown.minutes}}</span>
+            <span class="label">Minuti</span>
+          </div>
+          <div class="countdown-item">
+            <span class="number">{{countdown.seconds}}</span>
+            <span class="label">Secondi</span>
+          </div>
+        </div>
+  
+        <!-- Newsletter Signup -->
+        <div class="newsletter-section">
+          <h2>Resta Aggiornato</h2>
+          <p>Iscriviti alla newsletter per essere il primo a sapere quando lo shop sarà online!</p>
+          
+          <form class="signup-form" (ngSubmit)="onSubscribe(emailInput.value)" #shopForm="ngForm">
+            <div class="input-group">
+              <input type="email" 
+                     #emailInput
+                     placeholder="{{emailPlaceholder}}"
+                     required
+                     email
+                     [class.subscribed]="isSubscribed">
+              <button type="submit" 
+                      [disabled]="!shopForm.valid"
+                      (mouseenter)="onMouseEnter()"
+                      (mouseleave)="onMouseLeave()"
+                      [@pulse]="isHovered ? 'pulse' : 'normal'">
+                <span *ngIf="!isSubscribed">Avvisami</span>
+                <span *ngIf="isSubscribed" class="success-message">
+                  <i class="material-icons">check</i> Iscritto!
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+  
+        <!-- Social Links -->
+        <div class="social-links">
+          <p>Seguici sui social per gli ultimi aggiornamenti</p>
+          <div class="social-icons">
+            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
+              <i class="material-icons">facebook</i>
+            </a>
+            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
+              <i class="material-icons">photo_camera</i>
+            </a>
+            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
+              <i class="material-icons">sports_basketball</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Decorative Elements -->
+    <div class="decorative-elements">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+  </div>

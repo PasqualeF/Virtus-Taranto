@@ -1,0 +1,346 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .titolo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
+  }
+  
+  .sottotitolo {
+    font-size: 1.25rem;
+    max-width: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .descrizione-generale {
+    font-size: 1.25rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+  .societa-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+  }
+  
+  .societa-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 450px; /* Aumentato da 350px */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .societa-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .societa-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1.5rem; /* Aggiunto spazio tra logo e nome */
+  }
+  
+  .societa-logo {
+    width: 80px; /* Aumentato da 50px */
+    height: 80px; /* Aumentato da 50px */
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Rimosso effetto neon dal titolo e sostituito con stile più elegante */
+  .titolo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .sottotitolo {
+    display: block;
+    font-size: 1.75rem;
+    color: #fde68a;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+  }
+  
+  /* Nuovo stile per l'espansione hover della card */
+  .contatti-dettagli {
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 0 1rem;
+    margin-top: 0;
+  }
+  
+  .societa-box:hover .contatti-dettagli {
+    max-height: 500px;
+    opacity: 1;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  /* Rimuoviamo il pulsante expand visto che ora usiamo l'hover */
+  .expand-button {
+    display: none;
+  }
+  
+  /* Aggiungiamo un indicatore visivo per l'hover */
+  .societa-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #fde68a);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .societa-box:hover::after {
+    transform: scaleX(1);
+  }
+  
+  /* Effetto di rotazione leggera per il logo su hover */
+  .societa-box:hover .societa-logo {
+    transform: rotate(5deg) scale(1.1);
+  }
+  
+  /* Miglioramento responsive */
+  @media (max-width: 968px) {
+    .societa-box {
+      max-width: 100%;
+    }
+    
+    .titolo {
+      font-size: 2.5rem;
+    }
+    
+    .sottotitolo {
+      font-size: 1.5rem;
+    }
+  }
+
+
+  /* Sezione Form */
+.form-section {
+    width: 100%;
+    max-width: 800px;
+    margin: 4rem auto 3rem;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: #fde68a;
+  }
+  
+  .form-description {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    position: relative;
+  }
+  
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  
+  .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  .form-actions {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .submit-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .button-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-section {
+      padding: 1.5rem;
+    }
+    
+    .form-title {
+      font-size: 1.75rem;
+    }
+  }
+
+
+  /* Stili per la select */
+select.form-input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+  }
+  
+  select.form-input option {
+    background-color: #1a202c;
+    color: white;
+    padding: 0.75rem;
+  }
+  
+  select.form-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  
+  /* Stile per l'opzione disabled/placeholder */
+  select.form-input option[value=""][disabled] {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Supporto per Firefox */
+  select.form-input:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 white;
+  }
+  
+  /* Supporto per IE */
+  select::-ms-expand {
+    display: none;
+  }

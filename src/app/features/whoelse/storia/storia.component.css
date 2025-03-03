@@ -1,0 +1,311 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.titolo {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sottotitolo {
+  display: block;
+  font-size: 1.75rem;
+  color: #fde68a;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+  -webkit-text-fill-color: #fde68a;
+}
+
+.storia-valori-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+/* Societa Selector */
+.societa-selector {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.societa-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  width: 300px; /* Dimensione fissa */
+  height: 250px; /* Dimensione fissa */
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.societa-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1;
+
+}
+
+.societa-tab.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.societa-tab.active::before {
+  opacity: 0.1;
+}
+
+.societa-tab:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+
+.societa-logo {
+  width: 120px; /* Logo più grande */
+  height: 120px; /* Logo più grande */
+  object-fit: contain;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.societa-tab:hover .societa-logo {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.societa-tab.active .societa-logo {
+  transform: scale(1.15);
+}
+
+.societa-tab:hover .societa-logo {
+  transform: scale(1.1);
+}
+
+.societa-tab span {
+  font-size: 1.25rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.societa-tab.active span {
+  color: #fde68a;
+  transform: scale(1.1);
+}
+
+.societa-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #fde68a);
+  animation: shine 2s infinite;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border-color: transparent;
+}
+
+.tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Content Section */
+.content-section {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.content-section h2 {
+  color: #fde68a;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+/* Valori Grid */
+.valori-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.valore-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.valore-card:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.achievement-card {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.achievement-card:hover {
+  transform: translateX(10px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.achievement-year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fde68a;
+  min-width: 100px;
+}
+
+/* Quick Links */
+.quick-links {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.links-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.link-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.link-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.link-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .societa-selector {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .links-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@keyframes shine {
+  0% {
+    opacity: 0.5;
+    transform: scaleX(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scaleX(0.95);
+  }
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .titolo {
+    font-size: 2.5rem;
+  }
+
+  .sottotitolo {
+    font-size: 1.25rem;
+  }
+
+  .societa-tab {
+    width: 250px;
+    height: 200px;
+  }
+
+  .societa-logo {
+    width: 100px;
+    height: 100px;
+  }
+}

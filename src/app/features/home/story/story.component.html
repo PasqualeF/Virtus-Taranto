@@ -1,0 +1,12 @@
+
+
+<div class="card-container">
+  <div class="card-single" *ngFor="let card of storyCards">
+    <img [src]="card.image" [alt]="card.title">
+    <div class="card-content">
+      <h3 class="card-title">{{ card.title }}</h3>
+      <p class="card-brief">{{ card.brief }}</p>
+      <a [routerLink]="card.link" class="read-more">Continua a leggere</a>
+    </div>
+  </div>
+</div>

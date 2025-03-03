@@ -1,0 +1,45 @@
+/*sponsor*/
+.sponsors-section {
+    height: 25%;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+  }
+  .sponsor-titolo { 
+    font-size: 1.4rem;
+    font-family: "transducer-condensed", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    color: #f8f9fa;
+    text-align: center;
+    position: relative;
+    padding: 20px 0 20px 0;
+
+
+  }
+  
+  .sponsor-carousel-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .sponsor-carousel {
+    display: flex;
+    animation: scroll 20s linear infinite;
+  }
+  
+  .sponsor-carousel img {
+    height: 60px;
+    margin: 0 0px;
+    flex-shrink: 0;
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+  
+  .sponsor-carousel:hover {
+    animation-play-state: paused;
+  }
+  

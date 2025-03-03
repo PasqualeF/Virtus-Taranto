@@ -1,0 +1,140 @@
+<!-- comunicazioni.component.html -->
+<div class="comunicazioni-container">
+    <div class="header-section">
+      <h1 class="titolo">Comunicazioni Staff</h1>
+      
+      <div class="controls-container">
+        <div class="search-box">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            [formControl]="searchControl"
+            type="text" 
+            placeholder="Cerca comunicazioni..." 
+            class="search-input">
+        </div>
+  
+        <div class="filters-container">
+          <select [(ngModel)]="filterType" (change)="filterComunicazioni('')" class="filter-select">
+            <option value="tutti">Tutti i tipi</option>
+            <option value="urgente">Urgenti</option>
+            <option value="importante">Importanti</option>
+            <option value="standard">Standard</option>
+          </select>
+  
+          <select [(ngModel)]="filterStatus" (change)="filterComunicazioni('')" class="filter-select">
+            <option value="tutti">Tutti gli stati</option>
+            <option value="nuovo">Non letti</option>
+            <option value="letto">Letti</option>
+            <option value="archiviato">Archiviati</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="loading" class="loading-container">
+      <div class="loader"></div>
+      <span class="loading-text">Caricamento comunicazioni...</span>
+    </div>
+  
+    <div *ngIf="!loading && filteredComunicazioni.length === 0" class="empty-state">
+      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+      <h3>Nessuna comunicazione trovata</h3>
+      <p>Prova a modificare i filtri di ricerca</p>
+    </div>
+  
+    <div class="comunicazioni-list" #scrollContainer [@listAnimation]="filteredComunicazioni.length">
+      <div *ngFor="let comunicazione of filteredComunicazioni" 
+           class="comunicazione-card"
+           [class.nuovo]="comunicazione.stato === 'nuovo'"
+           [class.expanded]="expandedId === comunicazione.id"
+           [@pulseAnimation]="pulseStates[comunicazione.id]">
+        
+        <div class="card-header" 
+             [ngClass]="getHeaderColor(comunicazione.tipo)"
+             (click)="toggleExpand(comunicazione.id)">
+          <div class="header-content">
+            <div class="tipo-badge" [ngClass]="comunicazione.tipo">
+              {{ comunicazione.tipo }}
+            </div>
+            <h3 class="comunicazione-titolo">{{ comunicazione.titolo }}</h3>
+            <span class="data">{{ formatDate(comunicazione.data) }}</span>
+          </div>
+          <div class="header-indicators">
+            <span *ngIf="comunicazione.stato === 'nuovo'" class="new-indicator">NUOVO</span>
+            <svg class="expand-icon" [class.rotated]="expandedId === comunicazione.id" 
+                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+  
+        <div class="card-content" [@expandCollapse]="expandedId === comunicazione.id ? 'expanded' : 'collapsed'">
+          <div class="autore-info">
+            <img [src]="comunicazione.avatar" [alt]="comunicazione.autore" class="avatar">
+            <div class="autore-dettagli">
+              <span class="nome">{{ comunicazione.autore }}</span>
+              <span class="ruolo">{{ comunicazione.ruoloAutore }}</span>
+            </div>
+          </div>
+  
+          <div class="contenuto">{{ comunicazione.contenuto }}</div>
+  
+          <div class="destinatari">
+            <h4>Destinatari:</h4>
+            <div class="destinatari-tags">
+              <span class="tag" *ngFor="let destinatario of comunicazione.destinatari">
+                {{ destinatario }}
+              </span>
+            </div>
+          </div>
+  
+          <div class="allegati" *ngIf="comunicazione.allegati?.length">
+            <h4>Allegati:</h4>
+            <div class="allegati-list">
+              <div *ngFor="let allegato of comunicazione.allegati" 
+                   class="allegato-item"
+                   (click)="downloadAttachment(allegato.url)">
+                <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                  <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <div class="allegato-info">
+                  <span class="allegato-nome">{{ allegato.nome }}</span>
+                  <span class="allegato-dettagli">{{ allegato.tipo.toUpperCase() }} • {{ allegato.dimensione }}</span>
+                </div>
+                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+            </div>
+          </div>
+  
+          <div class="azioni">
+            <button class="action-button" (click)="markAsRead(comunicazione)" 
+                    *ngIf="comunicazione.stato === 'nuovo'">
+              <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 6L9 17l-5-5"></path>
+              </svg>
+              Segna come letto
+            </button>
+            <button class="action-button archive" (click)="archiveCommunication(comunicazione)"
+                    *ngIf="comunicazione.stato !== 'archiviato'">
+              <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                <rect x="1" y="3" width="22" height="5"></rect>
+                <line x1="10" y1="12" x2="14" y2="12"></line>
+              </svg>
+              Archivia
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

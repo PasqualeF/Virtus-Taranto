@@ -1,0 +1,142 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .titolo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .sottotitolo {
+    display: block;
+    font-size: 1.75rem;
+    color: #fde68a;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    -webkit-text-fill-color: #fde68a;
+  }
+  
+  .descrizione-generale {
+    font-size: 1.25rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+  
+  .societa-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .societa-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 350px;
+    transition: all 0.3s ease;
+  }
+  
+  .societa-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .societa-nome {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .societa-descrizione {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+
+  }
+  
+  .download-button {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 0.25rem;
+    background-color: #3b82f6;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .download-button:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .button-icon {
+    margin-right: 0.5rem;
+    transition: all 0.3s ease;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .download-button:hover .button-icon {
+    transform: translateY(-2px);
+  }
+  
+  .button-text {
+    transition: all 0.3s ease;
+  }
+  
+  .download-button:hover .button-text {
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .societa-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .societa-box {
+      max-width: 100%;
+    }
+  }

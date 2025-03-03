@@ -1,0 +1,70 @@
+<div class="container">
+    <h1 [@fadeIn] class="titolo">{{ titolo }}</h1>
+    
+    <div [@fadeIn] class="content-box">
+      <p class="descrizione">{{ descrizione }}</p>
+      
+      <h2 class="procedura-titolo">Procedura:</h2>
+      <ol class="procedura-lista">
+        <li *ngFor="let step of procedura; let i = index" 
+            [@slideInFromLeft]
+            [style.animation-delay]="i * 100 + 'ms'"
+            class="procedura-item">
+          <span class="procedura-numero">{{ i + 1 }}</span>
+          <span>{{ step }}</span>
+        </li>
+      </ol>
+  
+      <div class="button-container">
+        <button (click)="scaricaModuloFip()" class="download-button">
+          <span class="button-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </span>
+          <span class="button-text">Scarica Modulo FIP</span>
+        </button>
+      </div>
+    </div>
+  
+    <div [@fadeIn] class="content-box convenzione">
+      <h2 class="convenzione-titolo">{{ convenzioneTitolo }}</h2>
+      <p class="convenzione-descrizione">{{ convenzioneDescrizione }}</p>
+      <h3 class="vantaggi-titolo">Vantaggi della convenzione:</h3>
+      <ul class="vantaggi-lista">
+        <li *ngFor="let vantaggio of vantaggiConvenzione; let i = index"
+            [@slideInFromLeft]
+            [style.animation-delay]="(i + procedura.length) * 100 + 'ms'"
+            class="vantaggio-item">
+          {{ vantaggio }}
+        </li>
+      </ul>
+   
+    <div class="contatti-agenzia">
+      <h3 class="contatti-titolo">Contatti dell'Agenzia:</h3>
+      <ul class="contatti-lista">
+        <li class="contatto-item">
+          <strong>Rosanna D'Andria</strong> (PMI e Abitazione)<br>
+          <span class="contatto-telefono">Cell. 3471421232</span>
+        </li>
+        <li class="contatto-item">
+          <strong>Daniele Basta</strong> (ramo Auto)<br>
+          <span class="contatto-telefono">Cell. 34509290025</span>
+        </li>
+        <li class="contatto-item">
+          <strong>Tiziana Tagliente</strong> (COVID e Welfare)<br>
+          <span class="contatto-telefono">Cell. 3206214593</span>
+        </li>
+        <li class="contatto-item">
+          <strong>Vito Iacono</strong> (Previdenza)<br>
+          <span class="contatto-telefono">Cell. 3920463922</span>
+        </li>
+        <li class="contatto-item">
+          <strong>Evelina Romanelli</strong> (Conti corrente, prestiti e mutuo)<br>
+          <span class="contatto-telefono">Cell. 3293093638</span>
+        </li>
+      </ul>
+    </div>
+
+    
+  </div>

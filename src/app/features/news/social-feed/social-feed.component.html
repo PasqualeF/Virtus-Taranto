@@ -1,0 +1,124 @@
+<div class="social-feed-container">
+    <!-- Header con controlli -->
+    <div class="feed-header">
+      <div class="section-title-container">
+        <h2 class="section-title">Social Feed</h2>
+      </div>
+  
+      <div class="feed-controls">
+        <div class="platform-toggle">
+          <button [class.active]="selectedPlatform === 'all'"
+                  (click)="selectedPlatform = 'all'">
+            <i class="fas fa-globe"></i> Tutti
+          </button>
+          <button [class.active]="selectedPlatform === 'facebook'"
+                  (click)="selectedPlatform = 'facebook'">
+            <i class="fab fa-facebook"></i> Facebook
+          </button>
+          <button [class.active]="selectedPlatform === 'instagram'"
+                  (click)="selectedPlatform = 'instagram'">
+            <i class="fab fa-instagram"></i> Instagram
+          </button>
+        </div>
+        
+        <div class="view-toggle">
+          <button [class.active]="view === 'grid'"
+                  (click)="changeView('grid')">
+            <i class="fas fa-th"></i>
+          </button>
+          <button [class.active]="view === 'masonry'"
+                  (click)="changeView('masonry')">
+            <i class="fas fa-columns"></i>
+          </button>
+          <button [class.active]="view === 'carousel'"
+                  (click)="changeView('carousel')">
+            <i class="fas fa-film"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Loading Skeleton -->
+    <div class="loading-skeleton" *ngIf="loading">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+  
+    <!-- Feed Content -->
+    <ng-container *ngIf="!loading && !error">
+      <div [ngSwitch]="view">
+        <!-- Grid View -->
+        <div class="feed-grid" *ngSwitchCase="'grid'">
+          <div class="post-card" *ngFor="let post of getFilteredPosts()">
+            <div class="post-header">
+              <img [src]="post.author.avatar" [alt]="post.author.name" class="author-avatar">
+              <div class="post-meta">
+                <span class="author-name">{{post.author.name}}</span>
+                <span class="post-timestamp">{{formatTimestamp(post.timestamp)}}</span>
+              </div>
+              <div class="platform-icon">
+                <i [class]="post.platform === 'facebook' ? 'fab fa-facebook' : 'fab fa-instagram'"></i>
+              </div>
+            </div>
+  
+            <div class="post-content" [ngClass]="{'has-media': post.mediaUrl}">
+              <p class="post-text" *ngIf="post.content">{{post.content}}</p>
+              <div class="media-container" *ngIf="post.mediaUrl">
+                <img *ngIf="post.type === 'image'" [src]="post.mediaUrl" [alt]="post.content">
+                <video *ngIf="post.type === 'video'" [src]="post.mediaUrl" controls></video>
+              </div>
+            </div>
+  
+            <div class="post-footer">
+              <div class="engagement-stats">
+                <span class="stat">
+                  <i class="far fa-heart"></i> {{post.likes}}
+                </span>
+                <span class="stat">
+                  <i class="far fa-comment"></i> {{post.comments}}
+                </span>
+                <span class="stat" *ngIf="post.shares">
+                  <i class="far fa-share-square"></i> {{post.shares}}
+                </span>
+              </div>
+              <a [href]="post.link" target="_blank" class="view-post">
+                Visualizza Post <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Masonry View -->
+        <div class="feed-masonry" *ngSwitchCase="'masonry'">
+          <ng-container *ngFor="let post of getFilteredPosts()">
+            <!-- Stesso contenuto del post-card qui -->
+            <div class="post-card">
+              <!-- ... (stesso contenuto del post-card dalla vista grid) ... -->
+            </div>
+          </ng-container>
+        </div>
+  
+        <!-- Carousel View -->
+        <div class="feed-carousel" *ngSwitchCase="'carousel'">
+          <div class="carousel-track">
+            <ng-container *ngFor="let post of getFilteredPosts()">
+              <!-- Stesso contenuto del post-card qui -->
+              <div class="post-card">
+                <!-- ... (stesso contenuto del post-card dalla vista grid) ... -->
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>

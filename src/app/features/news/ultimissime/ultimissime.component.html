@@ -1,0 +1,57 @@
+<!-- news.component.html -->
+<div class="news-container">
+  <h1 class="titolo" [@staggerFade]>Ultime Notizie</h1>
+  
+  <div class="news-grid" [@staggerFade]>
+    <div class="news-card" *ngFor="let item of paginatedNews">
+      <div class="news-image-container">
+        <img [src]="item.immagine" [alt]="item.titolo" class="news-image">
+        <div class="news-date">
+          {{ formatDate(item.data) }}
+        </div>
+      </div>
+      <div class="news-content">
+        <h3 class="news-title">{{ item.titolo }}</h3>
+        <button class="read-more-button" (click)="showNewsDetails(item)">
+          Leggi di più
+          <svg xmlns="http://www.w3.org/2000/svg" class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="news.length > itemsPerPage">
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)">
+      ←
+    </button>
+    <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+    <button 
+      class="pagination-button" 
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)">
+      →
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="selectedNews" [@overlay] (click)="closeNewsDetails()">
+    <div class="modal-content" [@newsModal] (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="closeNewsDetails()">×</button>
+      <div class="modal-image-container">
+        <img [src]="selectedNews.immagine" [alt]="selectedNews.titolo" class="modal-image">
+        <div class="modal-date">{{ formatDate(selectedNews.data) }}</div>
+      </div>
+      <h2 class="modal-title">{{ selectedNews.titolo }}</h2>
+      <div class="modal-body">
+        <!-- Qui potrai aggiungere il contenuto completo della news quando sarà disponibile -->
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+    </div>
+  </div>
+</div>

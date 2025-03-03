@@ -1,0 +1,95 @@
+<div class="youth-container">
+    <!-- Header Section -->
+    <div class="header-section" [@fadeIn]>
+      <h1 class="titolo">Settore Giovanile
+        <span class="sottotitolo">Crescere insieme, vincere nel futuro</span>
+      </h1>
+      <p class="descrizione-generale">
+        Il nostro settore giovanile è il cuore pulsante della Virtus Taranto. 
+        Qui formiamo non solo atleti, ma persone complete attraverso sport, 
+        divertimento e valori.
+      </p>
+    </div>
+  
+    <!-- Categories Navigation -->
+    <div class="category-nav" [@fadeIn]>
+      <button class="category-btn" 
+              [class.active]="selectedCategory === 'all'"
+              (click)="filterTeams('all')">
+        Tutte le Squadre
+      </button>
+      <button class="category-btn" 
+              [class.active]="selectedCategory === 'basket'"
+              (click)="filterTeams('basket')">
+        Minibasket
+      </button>
+      <button class="category-btn" 
+              [class.active]="selectedCategory === 'volley'"
+              (click)="filterTeams('volley')">
+        Minivolley
+      </button>
+    </div>
+  
+    <!-- Teams Grid -->
+    <div class="teams-grid">
+      <div class="team-card" *ngFor="let team of youthTeams" 
+           [@expandCard]="isExpanded(team.category) ? 'expanded' : 'collapsed'"
+           [@fadeIn]>
+        <!-- Card Header -->
+        <div class="card-header">
+          <span class="team-mascot">{{ team.mascot }}</span>
+          <div class="team-info">
+            <h2 class="team-name">{{ team.category | titlecase }}</h2>
+            <span class="age-range">{{ team.ageRange }}</span>
+          </div>
+        </div>
+  
+        <!-- Card Content -->
+        <div class="card-content" [class.expanded]="isExpanded(team.category)">
+          <p class="team-description">{{ team.description }}</p>
+          
+          <!-- Skills Section -->
+          <div class="skills-section">
+            <h3>Competenze Sviluppate</h3>
+            <div class="skills-grid">
+              <div class="skill-item" *ngFor="let skill of team.skills">
+                {{ skill }}
+              </div>
+            </div>
+          </div>
+  
+          <!-- Activities Section -->
+          <div class="activities-section">
+            <h3>Attività</h3>
+            <ul class="activities-list">
+              <li *ngFor="let activity of team.activities">{{ activity }}</li>
+            </ul>
+          </div>
+        </div>
+  
+        <!-- Expand Button -->
+        <button class="expand-btn" (click)="toggleCard(team.category)">
+          <span>{{ isExpanded(team.category) ? 'Mostra meno' : 'Scopri di più' }}</span>
+          <i class="material-icons" [@rotateIcon]="isExpanded(team.category) ? 'expanded' : 'collapsed'">
+            expand_more
+          </i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Call to Action -->
+    <div class="cta-section" [@fadeIn]>
+      <h2>Unisciti alla Nostra Famiglia</h2>
+      <p>Scopri il percorso di crescita ideale per il tuo bambino</p>
+      <div class="cta-buttons">
+        <a href="#" class="cta-btn primary">
+          Prenota una Prova Gratuita
+          <i class="material-icons">sports_basketball</i>
+        </a>
+        <a href="#" class="cta-btn secondary">
+          Contattaci
+          <i class="material-icons">mail</i>
+        </a>
+      </div>
+    </div>
+  </div>
