@@ -1,0 +1,262 @@
+{
+    "STORIA": {
+      "TITOLO": "Storia e Valori",
+      "SOTTOTITOLO": "La nostra tradizione, il nostro futuro",
+      "TAB": {
+        "STORIA": "Storia",
+        "VALORI": "Valori",
+        "PALMARES": "Palmares"
+      },
+      "SEZIONI": {
+        "STORIA_TITOLO": "La Nostra Storia",
+        "VALORI_TITOLO": "I Nostri Valori",
+        "PALMARES_TITOLO": "I Nostri Successi"
+      },
+      "QUICK_LINKS" : {
+        "TITOLO" : "",
+        "CONTATTI" : "I nostri contatti",
+        "PALESTRE" : "Le nostre palestre"
+      },
+      "SOCIETA": {
+        "VIRTUS TARANTO": {
+          "nome": "Virtus Taranto",
+          "logo": "assets/virtusLogo.png",
+          "storia": "Fondata nel 1960, la Virtus Taranto ha rappresentato per oltre mezzo secolo l'eccellenza della pallacanestro tarantina. Dal primo pallone rimbalzato sul parquet del PalaFiom, la società ha formato generazioni di atleti, unendo sport e valori.",
+          "valori": [
+            "Eccellenza sportiva e umana",
+            "Formazione giovanile",
+            "Spirito di squadra",
+            "Legame con il territorio"
+          ],
+          "palmares": [
+            {
+              "anno": "1985",
+              "titolo": "Promozione in Serie B",
+              "descrizione": "Prima storica promozione in Serie B nazionale"
+            },
+            {
+              "anno": "2002",
+              "titolo": "Campioni Regionali U18",
+              "descrizione": "Vittoria del campionato regionale giovanile"
+            }
+          ]
+        },
+        "SUPPORT_O": 
+        {
+          "nome": "Support_o",
+          "logo": "assets/support_logo.png",
+          "storia": "Support_o nasce nel 2015 con l'obiettivo di rendere lo sport accessibile a tutti. Un progetto innovativo che unisce l'aspetto agonistico all'inclusione sociale, creando un modello unico nel panorama sportivo locale.",
+          "valori": [
+            "Inclusione sociale",
+            "Innovazione sportiva",
+            "Sostenibilità",
+            "Comunità attiva"
+          ],
+          "palmares": [
+            {
+              "anno": "2018",
+              "titolo": "Premio Innovazione Sociale",
+              "descrizione": "Riconoscimento CONI per il progetto di inclusione sportiva"
+            },
+            {
+              "anno": "2020",
+              "titolo": "Campioni Provinciali U16",
+              "descrizione": "Vittoria del campionato provinciale giovanile"
+            }
+          ]
+        },
+        "POLISPORTIVA 74020": 
+        {
+          "nome": "Polisportiva 74020",
+          "logo": "assets/poliLogo.png",
+          "storia": "La Polisportiva 74020, attiva dal 1990, rappresenta un punto di riferimento per lo sport tarantino. Una realtà multidisciplinare che ha saputo creare sinergie tra diverse discipline sportive.",
+          "valori": [
+            "Multidisciplinarietà",
+            "Crescita personale",
+            "Fair play",
+            "Sviluppo territoriale"
+          ],
+          "palmares": [
+            {
+              "anno": "2010",
+              "titolo": "Centro CONI di Eccellenza",
+              "descrizione": "Riconoscimento come centro di eccellenza formativa"
+            },
+            {
+              "anno": "2019",
+              "titolo": "Coppa Puglia",
+              "descrizione": "Vittoria della Coppa Puglia senior"
+            }
+          ]
+        }
+      }
+    }
+,
+ "CONTATTI": {
+        "titolo": "Contatti Società",
+        "sottotitolo":"Virtus Taranto, Support_o & Polisportiva 74020",
+        "descrizione": "Trova qui i contatti delle nostre società sportive. Siamo sempre pronti ad ascoltarti e a rispondere alle tue domande.",
+        "societa": {
+        "VIRTUS TARANTO": {
+            "nome": "Virtus Taranto",
+            "logo": "assets/virtusLogo.png",
+            "descrizione": "La storica società di basket di Taranto, impegnata nella promozione dello sport e dei valori del fairplay.",
+            "indirizzo": "Via delle Palestre, 123 - 74121 Taranto",
+            "telefono": "+39 099 1234567",
+            "email": "info@virtustaranto.it",
+            "sito": "www.virtustaranto.it"
+          },
+          "SUPPORT_O": 
+          {
+            "nome": "Support_o",
+            "logo": "assets/support_logo.png",
+            "descrizione": "Associazione sportiva dedicata al supporto e all'inclusione attraverso lo sport.",
+            "indirizzo": "Viale dello Sport, 45 - 74122 Taranto",
+            "telefono": "+39 099 7654321",
+            "email": "contatti@supporto.it",
+            "sito": "www.supporto.it"
+          },
+          "POLISPORTIVA 74020": 
+          {
+            "nome": "Polisportiva 74020",
+            "logo": "assets/poliLogo.png",
+            "descrizione": "Polisportiva che promuove diverse discipline sportive per tutte le età.",
+            "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
+            "telefono": "+39 099 9876543",
+            "email": "info@polisportiva74020.it",
+            "sito": "www.polisportiva74020.it"
+          }
+        }
+      },
+
+  "SERVIZI_ETICO" : {
+    "titolo" : "Codice Etico",
+    "sottotitolo" : "Virtus Taranto, Support_o & Polisportiva 74020",
+    "descrizione": "Il Codice Etico rappresenta i valori fondamentali delle nostre società. Scarica e leggi il documento per conoscere i principi che guidano le nostre azioni.",
+    "societa" : [
+      {
+        "nome": "Support_o",
+        "descrizione": "Il Codice Etico di Support_o promuove l integrità, il rispetto e la passione per lo sport come valori centrali della nostra comunità.",
+        "documentoUrl": "https://drive.google.com/file/d/1Bi77JInByWDVDH65hmt6H6P9fEvbmIcn/view?usp=sharing"
+      },
+      {
+        "nome": "Virtus Taranto",
+        "descrizione": "Virtus Taranto si impegna a mantenere alti standard etici, promuovendo il fair play e lo sviluppo personale attraverso il nostro Codice Etico.",
+        "documentoUrl": "https://drive.google.com/file/d/1mlXe5AacltclQDvpE6D4NCR8ABShZzpX/view?usp=sharing"
+      },
+      {
+        "nome": "Polisportiva 74020",
+        "descrizione": "Il Codice Etico del Polisportiva 74020 riflette il nostro impegno per l eccellenza accademica e sportiva, promuovendo valori di inclusione e spirito di squadra.",
+        "documentoUrl": "https://drive.google.com/file/d/1H5qjMmcta9cJrnsizfiDGtICDhs_CIua/view?usp=sharing"
+      }
+    ],
+    "bottoneDownload" : "Scarica Codice Etico"
+  },
+
+  "SERVIZI_ISCRIZIONI" : {
+    "titolo" : "Iscrizioni Settore Giovanile",
+    "sottotitolo" : "Support & Virtus Taranto",
+    "descrizione": "Benvenuti alle iscrizioni per il settore giovanile. Segui le procedure specifiche per Support o Virtus Taranto.",
+    "proc_virtus" : "Procedura Virtus Taranto:", 
+    "proc_support":"Procedura Support:",
+    "bottoneVirtus" : "Iscrizione Virtus",
+    "bottoneSupport" : "Iscrizione Support",
+    "proceduraSupport1": [
+     {"step":"Compila il modulo di pre-iscrizione online sul sito ufficiale Support." },
+     {"step":"Attendi la conferma via email per la disponibilità nel gruppo desiderato."} ,
+     {"step": "Effettua il pagamento della quota di iscrizione tramite bonifico bancario."},
+     {"step":"Presenta il certificato medico sportivo valido presso la segreteria."},
+     {"step":"Ritira il kit sportivo ufficiale Support presso il punto vendita indicato."}
+    ],
+    "proceduraVirtus1": [
+     {"step":"Contatta la segreteria Virtus Taranto per verificare la disponibilità nei gruppi." },
+     {"step":"Scarica e compila il modulo di iscrizione dal sito web Virtus Taranto."} ,
+     {"step": "Consegna il modulo compilato e il certificato medico sportivo in segreteria."},
+     {"step":"Effettua il pagamento della quota associativa in contanti o con POS."},
+     {"step":"Partecipa alla riunione di benvenuto per ricevere il kit sportivo Virtus."}
+    ]
+  },
+  "SERVIZI_VISITA" : {
+    "titolo" : "Direttive per la Visita Medica",
+    "sottotitolo" : "Support & Virtus Taranto",
+    "descrizione": "PROCEDURA RICHIESTA VISITA MEDICA CENTRO MEDICINA SPORTIVA O CENTRO CONVENZIONATO",
+    "proc" : "Procedura:", 
+    "procedura": [
+     {"step":"Si riepilogano tutti i metodi per poter svolgere la visita medica agonistica." },
+     {"step":"Prenotazione da parte della famiglia al CMS in Via Lazio (costo attuale 35 euro)"} ,
+     {"step": "⁠Prenotazione tramite associazione Centro Convenzionato Otosalus - Panacea (prezzo a noi riservato di 35 euro)'"},
+     {"step":"In entrambi i casi sopra riportati i certificato viene spedito all’associazione"},
+     {"step":"⁠Recarsi presso il proprio medico curante con Istanza della Società. Per emissione ricetta bianca, con la quale potrete prenotare presso il CUP in una struttura ASL (Via Ancona, Tramontone…) del territorio. La visita in dovrebbe essere gratuita e il certificato verrà consegnato all’atleta dopo un dato periodo e deve essere consegnato all’associazione'"},
+     {"step":"In tutti i casi la Società deve rilasciare istanza in seguito a richiesta dell’atleta (sul drive sotto riportato). L’istanza sarà spedita direttamente alla mail indicata sul drive"},
+     {"step":"Si ricorda che senza un certificato medico valido non è possibile svolgere allenamenti ne tantomeno partite."}
+    ],
+    "documentoUrl" : "https://docs.google.com/forms/d/e/1FAIpQLSdw3W6tZjVYZt4EHzdk-afzaqBel4SNsLdwi0vnN4dCVkcrAA/viewform"
+    },
+
+  "PARTNER_BENEFIT" : {
+      "titolo" : "I Nostri Partner",
+      "sottotitolo" : "Grazie al supporto dei nostri preziosi partner, continuiamo a crescere e a promuovere l'eccellenza nel basket a Taranto e in tutta Italia.",
+      "sito" : "Visita il sito",
+      "diventaPartner" : "Perché Diventare Partner",
+      "collabora" : "Collabora con noi",
+      "collabora_descr" :"Entra a far parte della famiglia Virtus Taranto e costruiamo insieme il futuro del basket.",
+      "form_thanks": "Grazie per il tuo interesse!",
+      "contatteremo":"Ti contatteremo presto per discutere delle opportunità di collaborazione.",
+      "benefit" : [
+        {
+          "title": "Visibilità Nazionale",
+          "description": "Presenza del brand durante tutti gli eventi e le partite della Virtus Taranto.",
+          "icon": "visibility"
+        },
+        {
+          "title": "Network Esclusivo",
+          "description": "Accesso al nostro network di partner e opportunità di business networking.",
+          "icon": "group"
+        },
+        {
+          "title": "Impatto Sociale",
+          "description": "Contributo allo sviluppo del basket giovanile e alla comunità locale.",
+          "icon": "favorite"
+        },
+        {
+          "title": "Content Marketing",
+          "description": "Creazione di contenuti esclusivi e storytelling del brand sui nostri canali.",
+          "icon": "campaign"
+        }
+    ]
+    },
+    "PARTNER" : {
+      "sponsor" : [   
+             {
+          "name": "Azienda A",
+          "logo": "assets/fondazione251.png",
+          "description": "Leader nel settore tecnologico, supporta lo sviluppo dei giovani talenti.",
+          "website": "https://www.aziendaa.com"
+        },
+        {
+          "name": "Azienda B",
+          "logo": "assets/nu.png",
+          "description": "Fornitore di attrezzature sportive di alta qualità per le nostre squadre.",
+          "website": "https://www.aziendab.com"
+        },
+        {
+          "name": "Azienda C",
+          "logo": "assets/mlogtrasparente1.png",
+          "description": "Sostiene le iniziative di inclusione sociale attraverso lo sport.",
+          "website": "https://www.aziendac.com"
+        },
+        {
+          "name": "Azienda D",
+          "logo": "assets/bialetti.png",
+          "description": "Sostiene le iniziative di inclusione sociale attraverso lo sport.",
+          "website": "https://www.aziendac.com"
+        },
+        {
+          "name": "Azienda E",
+          "logo": "assets/vibe.png",
+          "description": "Sostiene le iniziative di inclusione sociale attraverso lo sport.",
+          "website": "https://www.aziendac.com"
+        }
+    ]}
+    
+  }
