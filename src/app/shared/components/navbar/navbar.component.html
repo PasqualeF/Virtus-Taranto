@@ -1,11 +1,13 @@
-<nav class="navbar"  [class.navbar-hidden]="!isNavbarVisible">
+<nav class="navbar" [class.navbar-hidden]="!isNavbarVisible">
   <div class="navbar-container">
-    <div class="menu-toggle" (click)="toggleSidebar()">
+    <!-- Menu toggle button solo per mobile -->
+    <div class="menu-toggle" (click)="openMobileMenu()">
       <span></span>
       <span></span>
       <span></span>
     </div>
 
+    <!-- Desktop navbar - left side (ORIGINALE) -->
     <div class="navbar-left">
       <div *ngFor="let item of navItems.slice(0, 4)" class="nav-item" (mouseenter)="showSubmenu(item.label)">
         <a [routerLink]="item.route">{{ item.label }}</a>
@@ -44,12 +46,14 @@
       </div>
     </div>
 
+    <!-- Logo centrale (ORIGINALE) -->
     <div class="navbar-center">
       <a class="navbar-logo" routerLink="/">
         <img src="assets/logo-virtus-taranto.svg" alt="Virtus Taranto Logo">
       </a>
     </div>
 
+    <!-- Desktop navbar - right side (ORIGINALE) -->
     <div class="navbar-right">
       <div *ngFor="let item of navItems.slice(4)" class="nav-item" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
         <a [routerLink]="item.route">{{ item.label }}</a>
@@ -90,33 +94,104 @@
   </div>
 </nav>
 
-<div class="sidebar" [class.active]="isSidebarOpen">
-  <div class="sidebar-header">
+<!-- Overlay per sfondo scuro quando il menu mobile è aperto -->
+<div class="mobile-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+
+<!-- Menu mobile a schermo intero -->
+<div class="mobile-sidebar" [class.active]="isMobileMenuOpen">
+  <!-- Header con logo e X per chiudere -->
+  <div class="mobile-sidebar-header">
     <img src="assets/logo-virtus-taranto.svg" alt="Virtus Taranto Logo">
-    <div class="close-sidebar" (click)="toggleSidebar()">×</div>
+    <button class="mobile-close-button" (click)="closeMobileMenu()"></button>
   </div>
-  <div *ngFor="let item of navItems" class="sidebar-item">
-    <a [routerLink]="item.route" (click)="toggleSidebar()">{{ item.label }}</a>
-    <ul class="sidebar-submenu">
-      <ng-container *ngFor="let subItem of item.submenuItems">
-        <ng-container *ngIf="isSportCategory(subItem); else regularSidebarItem">
-          <li>
-            <strong>{{ subItem.label }}</strong>
-            <ul>
-              <li *ngFor="let sportItem of subItem.items">
-                <a [routerLink]="sportItem.route" (click)="toggleSidebar()">{{ sportItem.name }}</a>
+  
+  <!-- Lista delle voci menu -->
+  <div class="mobile-sidebar-content">
+    <div *ngFor="let item of navItems" class="mobile-nav-item">
+      <!-- Se ha sottomenu, apre la schermata dedicata -->
+      <a class="mobile-nav-link" (click)="openSubmenuScreen(item)" *ngIf="hasSubmenuItems(item); else simpleMobileNavLink">
+        <span>{{ item.label }}</span>
+        <span class="mobile-chevron-right"></span>
+      </a>
+      <ng-template #simpleMobileNavLink>
+        <a [routerLink]="item.route" class="mobile-nav-link" (click)="closeMobileMenu()">
+          {{ item.label }}
+        </a>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Schermata sottomenu mobile - elenco verticale -->
+<div class="mobile-submenu-screen" [class.active]="activeSubmenuScreen">
+  <!-- Header con freccia indietro, titolo e X -->
+  <div class="mobile-submenu-header">
+    <button class="mobile-back-button" (click)="closeSubmenuScreen()">
+      <span class="mobile-chevron-left"></span>
+    </button>
+    <div class="mobile-submenu-title">
+      {{ activeSubmenuScreenTitle }}
+    </div>
+    <button class="mobile-close-button" (click)="closeMobileMenu()"></button>
+  </div>
+  
+  <!-- Contenuto sottomenu come elenco verticale -->
+  <div class="mobile-submenu-content">
+    <ng-container *ngIf="activeSubmenuScreenData">
+      <!-- Categorie con titolo e lista elementi -->
+      <ng-container *ngFor="let subItem of activeSubmenuScreenData.submenuItems">
+        <ng-container *ngIf="isSportCategory(subItem) && subItem.items.length > 0">
+          <div class="mobile-category">
+            <div class="mobile-category-title" *ngIf="subItem.label">{{ subItem.label }}</div>
+            <ul class="mobile-category-items">
+              <li *ngFor="let sportItem of subItem.items" class="mobile-category-item">
+                <a [routerLink]="sportItem.route" class="mobile-category-link" (click)="closeMobileMenu()">
+                  {{ sportItem.name }}
+                </a>
               </li>
             </ul>
-          </li>
+          </div>
         </ng-container>
-        <ng-template #regularSidebarItem>
-          <li *ngIf="isComplexSubmenuItem(subItem); else simpleSidebarItem">
-            <a [routerLink]="subItem.route" (click)="toggleSidebar()">{{ subItem.name }}</a>
-          </li>
-          <ng-template #simpleSidebarItem>
-            <li>{{ subItem }}</li>
-          </ng-template>
-        </ng-template>
+      </ng-container>
+      
+      <!-- Elementi semplici -->
+      <ul class="mobile-simple-items">
+        <ng-container *ngFor="let subItem of activeSubmenuScreenData.submenuItems">
+          <ng-container *ngIf="!isSportCategory(subItem) && isComplexSubmenuItem(subItem)">
+            <li class="mobile-simple-item">
+              <a [routerLink]="subItem.route" class="mobile-simple-link" (click)="closeMobileMenu()">
+                {{ subItem.name }}
+              </a>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ul>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Per eventuali sottomenu annidati -->
+<div class="mobile-nested-menu-screen" [class.active]="activeNestedMenuScreen">
+  <!-- Header con freccia indietro e X -->
+  <div class="mobile-submenu-header">
+    <button class="mobile-back-button" (click)="closeNestedMenuScreen()">
+      <span class="mobile-chevron-left"></span>
+    </button>
+    <div class="mobile-submenu-title">
+      {{ activeNestedMenuTitle }}
+    </div>
+    <button class="mobile-close-button" (click)="closeMobileMenu()"></button>
+  </div>
+  
+  <!-- Contenuto annidato -->
+  <div class="mobile-submenu-content">
+    <ul class="mobile-simple-items">
+      <ng-container *ngIf="activeNestedMenuItems">
+        <li *ngFor="let item of activeNestedMenuItems" class="mobile-simple-item">
+          <a [routerLink]="item.route" class="mobile-simple-link" (click)="closeMobileMenu()">
+            {{ item.name }}
+          </a>
+        </li>
       </ng-container>
     </ul>
   </div>

@@ -25,25 +25,56 @@
 }
 
 .sponsor-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin: 0 0 1.5rem 0;
   text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sponsor-title:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #ff6b00;
 }
 
 .sponsor-button {
-  background-color: #ffffff;
-  color: #002b49;
-  padding: 0.75rem 1.5rem;
+  background-color: #ff6b00;
+  color: #ffffff;
+  padding: 0.75rem 1.8rem;
   text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 30px;
+  transition: all 0.3s ease;
   display: inline-block;
   margin-top: 1.5rem;
   font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
 }
 
 .sponsor-button:hover {
-  background-color: #f0f0f0;
+  background-color: #ff8c3f;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.sponsor-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
 
 .sponsor-logos {
@@ -67,6 +98,14 @@
   height: 40px;
   margin: 0 20px;
   flex-shrink: 0;
+  filter: grayscale(100%);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.sponsor-carousel img:hover {
+  filter: grayscale(0%);
+  opacity: 1;
 }
 
 @keyframes scroll {
@@ -89,14 +128,45 @@
   margin-bottom: 1.5rem;
 }
 
+.social-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+}
+
 .social-icons {
   display: flex;
   gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 .social-icons a {
   color: #ffffff;
   font-size: 1.5rem;
+  transition: all 0.3s ease;
+  transform: scale(1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.social-icons a:hover {
+  transform: scale(1.15);
+  background-color: #ff6b00;
+}
+
+.social-icons svg {
+  width: 26px;
+  height: 26px;
+  fill: #ffffff;
 }
 
 .footer-divider {
@@ -116,6 +186,22 @@
 .sitemap-column h3 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sitemap-column h3:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background-color: #ff6b00;
 }
 
 .sitemap-column ul {
@@ -133,10 +219,28 @@
   text-decoration: none;
   transition: color 0.3s ease;
   font-size: 1rem;
+  position: relative;
+  padding-left: 0;
+  transition: all 0.3s ease;
 }
 
 .sitemap-column a:hover {
-  color: #f0f0f0;
+  color: #ff6b00;
+  padding-left: 8px;
+}
+
+.sitemap-column a:before {
+  content: '▹';
+  position: absolute;
+  left: -15px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: #ff6b00;
+}
+
+.sitemap-column a:hover:before {
+  opacity: 1;
+  left: 0;
 }
 
 .legal-section {
@@ -155,10 +259,16 @@
   color: #ffffff;
   text-decoration: none;
   margin: 0 0.75rem;
+  transition: color 0.3s ease;
+}
+
+.legal-links a:hover {
+  color: #ff6b00;
 }
 
 .company-info p {
   margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 @media (min-width: 768px) {
@@ -173,8 +283,13 @@
   }
 
   .sponsor-title {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     text-align: left;
+  }
+  
+  .sponsor-title:after {
+    left: 0;
+    transform: none;
   }
 
   .sponsor-button {
@@ -193,6 +308,10 @@
 
   .sitemap {
     grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .sitemap-expanded {
+    grid-template-columns: repeat(6, 1fr);
   }
 
   .legal-section {

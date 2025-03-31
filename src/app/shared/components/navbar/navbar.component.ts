@@ -1,7 +1,6 @@
-import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener, Renderer2, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-
-
+import { Subscription } from 'rxjs';
 
 interface SubMenuItem {
   name: string;
@@ -17,7 +16,7 @@ interface NavItem {
   label: string;
   route?: string;
   submenuItems: (string | SubMenuItem | SportCategory)[];
-  isOpen?: boolean;  // Aggiunta questa proprietà
+  isOpen?: boolean;
 }
 
 @Component({
@@ -25,28 +24,44 @@ interface NavItem {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   activeSubmenu: string | null = null;
   private lastScrollTop = 0;
   private readonly SCROLL_THRESHOLD = 50;
-  isSidebarOpen = false;
+  isMobileMenuOpen = false;
   isNavbarVisible = true;
   submenuTimer: any = null;
+  isTransparent = true;
+  
+  // Variabili per schermata sottomenu
+  activeSubmenuScreen = false;
+  activeSubmenuScreenTitle = '';
+  activeSubmenuScreenData: NavItem | null = null;
+  
+  // Variabili per sottomenu annidati
+  activeNestedMenuScreen = false;
+  activeNestedMenuTitle = '';
+  activeNestedMenuItems: SubMenuItem[] | null = null;
+  
+  private routerSubscription: Subscription;
 
-
-
-  constructor(private renderer: Renderer2, 
+  constructor(
+    private renderer: Renderer2, 
     private el: ElementRef,
-    private router: Router) {
-// Ascolta i cambi di route per chiudere la sidebar
-this.router.events.subscribe((event) => {
-if (event instanceof NavigationEnd) {
-this.closeSidebar();
-}
-});
-}
+    private router: Router
+  ) {
+    // Ascolta i cambi di route per chiudere la sidebar
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.closeMobileMenu();
+      }
+    });
+  }
+
+  // Array di elementi di navigazione - uguale all'originale
   navItems: NavItem[] = [
-    { label: 'News', 
+    { 
+      label: 'News', 
       submenuItems: [
         {
           label: '',
@@ -57,8 +72,10 @@ this.closeSidebar();
             { name: 'Comunicazioni', route: '/news/comunicazioni' }
           ]
         },
-        ] },
-    { label: 'Media', 
+      ] 
+    },
+    { 
+      label: 'Media', 
       submenuItems: [
         {
           label: '',
@@ -67,37 +84,39 @@ this.closeSidebar();
             { name: 'Video', route: '/news/ultimissime' }
           ]
         },
-        ] },
+      ] 
+    },
     {      
-        label: 'Squadre', 
-        submenuItems: [
-          {
-            label: 'Basket',
-            items: [
-              { name: 'Under 19  gold', route: '/squadra/basket/Under 19  gold' },
-              { name: 'Under 19  silver', route: '/squadra/basket/Under 19  silver' },
-              { name: 'Under 17  ecc', route: '/squadra/basket/Under 17  ecc' },
-              { name: 'Under 17  gold', route: '/squadra/basket/Under 17  gold' },
-              { name: 'Under 15  ecc', route: '/squadra/basket/Under 15  ecc' },
-              { name: 'Under 15  silver', route: '/squadra/basket/Under 15  silver' },
-              { name: 'Under 14  gold', route: '/squadra/basket/Under 14  gold' },
-              { name: 'Under 13  gold', route: '/squadra/basket/Under 13  gold' }
-            ]
-          },
-          {
-            label: 'Volley',
-            items: [
-              { name: 'Under 18', route: '/squadra/volley/under-18' },
-              { name: 'Under 16', route: '/squadra/volley/under-16' }
-            ]
-          },
-          {
-            label: 'Mini',
-            items: [
-              { name: 'Minibasket', route: '/squadra/mini/minibasket' },
-              { name: 'Minivolley', route: '/squadra/mini/minivolley' }
-            ]
-          }]
+      label: 'Squadre', 
+      submenuItems: [
+        {
+          label: 'Basket',
+          items: [
+            { name: 'Under 19  gold', route: '/squadra/basket/Under 19  gold' },
+            { name: 'Under 19  silver', route: '/squadra/basket/Under 19  silver' },
+            { name: 'Under 17  ecc', route: '/squadra/basket/Under 17  ecc' },
+            { name: 'Under 17  gold', route: '/squadra/basket/Under 17  gold' },
+            { name: 'Under 15  ecc', route: '/squadra/basket/Under 15  ecc' },
+            { name: 'Under 15  silver', route: '/squadra/basket/Under 15  silver' },
+            { name: 'Under 14  gold', route: '/squadra/basket/Under 14  gold' },
+            { name: 'Under 13  gold', route: '/squadra/basket/Under 13  gold' }
+          ]
+        },
+        {
+          label: 'Volley',
+          items: [
+            { name: 'Under 18', route: '/squadra/volley/under-18' },
+            { name: 'Under 16', route: '/squadra/volley/under-16' }
+          ]
+        },
+        {
+          label: 'Mini',
+          items: [
+            { name: 'Minibasket', route: '/squadra/mini/minibasket' },
+            { name: 'Minivolley', route: '/squadra/mini/minivolley' }
+          ]
+        }
+      ]
     },
     { 
       label: 'Who Else?', 
@@ -114,53 +133,84 @@ this.closeSidebar();
         },
       ] 
     },
-    { label: 'Store', submenuItems: [
-      
-      {
-        label: '',
-        items: [
-          { name: 'Next-Gen Style', route: '/shop' },
-          { name: 'Game Day Essentials', route: '/servizi/visitaMedica' },
-          { name: 'Urban lifeStyle', route: '/servizi/iscrizioni' }
+    { 
+      label: 'Store', 
+      submenuItems: [
+        {
+          label: '',
+          items: [
+            { name: 'Next-Gen Style', route: '/shop' },
+            { name: 'Game Day Essentials', route: '/servizi/visitaMedica' },
+            { name: 'Urban lifeStyle', route: '/servizi/iscrizioni' }
           ]
-      },
-    ] },
-    { label: 'Eventi', submenuItems: [
-      {
-        label: '',
-        items: [
-          { name: 'Tornei', route: '/eventi/tornei' },
-          { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
-          { name: 'Calendario', route: '/eventi/calendario' }
-                ]
-      },
-   
-    ] },
-    { label: 'Servizi', submenuItems: [
-      {
-        label: '',
-        items: [
-          { name: 'Consulenza Legale e Assicurativa', route: '/servizi/assicurazione' },
-          { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
-          { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
-          { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' }
-        ]
-      },
-    ] }
+        },
+      ] 
+    },
+    { 
+      label: 'Eventi', 
+      submenuItems: [
+        {
+          label: '',
+          items: [
+            { name: 'Tornei', route: '/eventi/tornei' },
+            { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
+            { name: 'Calendario', route: '/eventi/calendario' }
+          ]
+        },
+      ] 
+    },
+    { 
+      label: 'Servizi', 
+      submenuItems: [
+        {
+          label: '',
+          items: [
+            { name: 'Consulenza Legale e Assicurativa', route: '/servizi/assicurazione' },
+            { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
+            { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
+            { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' }
+          ]
+        },
+      ] 
+    }
   ];
 
-
   ngOnInit() {
-    // Inizializza tutti i navItems con isOpen a false
+    // Inizializza lo stato dei menu
     this.navItems = this.navItems.map(item => ({
       ...item,
       isOpen: false
     }));
+
+    // Aggiunge listener per tasti
+    this.setupKeyboardNavigation();
   }
 
+  ngOnDestroy() {
+    // Pulizia risorse
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    this.renderer.removeClass(document.body, 'mobile-menu-open');
+  }
 
+  // Aggiunge listener per tasti
+  private setupKeyboardNavigation() {
+    this.renderer.listen('window', 'keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (this.activeNestedMenuScreen) {
+          this.closeNestedMenuScreen();
+        } else if (this.activeSubmenuScreen) {
+          this.closeSubmenuScreen();
+        } else if (this.isMobileMenuOpen) {
+          this.closeMobileMenu();
+        }
+      }
+    });
+  }
+
+  // METODI ORIGINALI PER IL DESKTOP
   showSubmenu(submenu: string) {
-    // Clear any existing timer
     if (this.submenuTimer) {
       clearTimeout(this.submenuTimer);
       this.submenuTimer = null;
@@ -169,38 +219,34 @@ this.closeSidebar();
   }
 
   hideSubmenu() {
-    // Add a delay before hiding the submenu
     this.submenuTimer = setTimeout(() => {
-      // Check if the mouse is still over the submenu
       const submenuElement = document.querySelector('.submenu:hover');
       const navItemElement = document.querySelector('.nav-item:hover');
       
       if (!submenuElement && !navItemElement) {
         this.activeSubmenu = null;
       }
-    }, 100); // 100ms delay
+    }, 100);
   }
- // Aggiungi questo metodo per gestire il mouse che entra nel submenu
- onSubmenuMouseEnter(submenu: string) {
-  if (this.submenuTimer) {
-    clearTimeout(this.submenuTimer);
-    this.submenuTimer = null;
-  }
-  this.activeSubmenu = submenu;
-}
 
-// Aggiungi questo metodo per gestire il mouse che esce dal submenu
-onSubmenuMouseLeave(event: MouseEvent) {
-  const relatedTarget = event.relatedTarget as HTMLElement;
-  if (!relatedTarget?.closest('.nav-item')) {
-    this.hideSubmenu();
+  onSubmenuMouseEnter(submenu: string) {
+    if (this.submenuTimer) {
+      clearTimeout(this.submenuTimer);
+      this.submenuTimer = null;
+    }
+    this.activeSubmenu = submenu;
   }
-}
+
+  onSubmenuMouseLeave(event: MouseEvent) {
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (!relatedTarget?.closest('.nav-item')) {
+      this.hideSubmenu();
+    }
+  }
+
   isComplexSubmenuItem(item: any): item is { name: string; route: string } {
     return typeof item === 'object' && 'name' in item && 'route' in item;
   }
-
-  isTransparent = true;
 
   @HostListener('mouseenter')
   onMouseEnter() {
@@ -224,7 +270,7 @@ onSubmenuMouseLeave(event: MouseEvent) {
       this.isNavbarVisible = true;
     }
 
-    this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+    this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
   }
   
   isSportCategory(item: any): item is SportCategory {
@@ -236,44 +282,76 @@ onSubmenuMouseLeave(event: MouseEvent) {
     Array.isArray(item.items);
   }
 
-
-
-  toggleMobileSubmenu(event: Event, item: NavItem) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Chiudi tutti gli altri submenu
-    this.navItems.forEach(navItem => {
-      if (navItem !== item) {
-        navItem.isOpen = false;
-      }
-    });
-    
-    item.isOpen = !item.isOpen;
+  // METODI PER MENU MOBILE
+  hasSubmenuItems(item: NavItem): boolean {
+    return item.submenuItems && item.submenuItems.length > 0;
   }
 
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+  // Apre il menu mobile
+  openMobileMenu() {
+    this.isMobileMenuOpen = true;
+    this.renderer.addClass(document.body, 'mobile-menu-open');
+  }
+
+  // Chiude il menu mobile e tutti i sottomenu
+  closeMobileMenu() {
+    this.closeNestedMenuScreen();
+    this.closeSubmenuScreen();
+    this.isMobileMenuOpen = false;
+    this.renderer.removeClass(document.body, 'mobile-menu-open');
+  }
+
+  // Apre la schermata del sottomenu
+  openSubmenuScreen(item: NavItem) {
+    this.activeSubmenuScreenTitle = item.label;
+    this.activeSubmenuScreenData = item;
+    this.activeSubmenuScreen = true;
+  }
+
+  // Chiude la schermata del sottomenu
+  closeSubmenuScreen() {
+    this.closeNestedMenuScreen();
+    this.activeSubmenuScreen = false;
+    setTimeout(() => {
+      this.activeSubmenuScreenData = null;
+      this.activeSubmenuScreenTitle = '';
+    }, 300);
+  }
+
+  // Apre un sottomenu annidato
+  openNestedMenu(title: string, items: SubMenuItem[]) {
+    this.activeNestedMenuTitle = title;
+    this.activeNestedMenuItems = items;
+    this.activeNestedMenuScreen = true;
+  }
+
+  // Chiude il sottomenu annidato
+  closeNestedMenuScreen() {
+    this.activeNestedMenuScreen = false;
+    setTimeout(() => {
+      this.activeNestedMenuItems = null;
+      this.activeNestedMenuTitle = '';
+    }, 300);
+  }
+
+  // Gestisce il tasto back del browser
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    if (this.activeNestedMenuScreen) {
+      event.preventDefault();
+      this.closeNestedMenuScreen();
+      return;
+    }
     
-    if (this.isSidebarOpen) {
-      this.renderer.addClass(document.body, 'sidebar-open');
-      // Aggiunge event listener per chiudere con ESC
-      this.renderer.listen('window', 'keydown', (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
-          this.closeSidebar();
-        }
-      });
-    } else {
-      this.closeSidebar();
+    if (this.activeSubmenuScreen) {
+      event.preventDefault();
+      this.closeSubmenuScreen();
+      return;
+    }
+    
+    if (this.isMobileMenuOpen) {
+      event.preventDefault();
+      this.closeMobileMenu();
     }
   }
-
-  closeSidebar() {
-    this.isSidebarOpen = false;
-    this.renderer.removeClass(document.body, 'sidebar-open');
-    // Chiudi tutti i submenu
-    this.navItems.forEach(item => item.isOpen = false);
-  }
-
-
 }

@@ -8,14 +8,27 @@
 .app-container {
   min-height: 100vh;
   position: relative;
-  background-image: url('/assets/test.jpg');
+  background-image: url('../assets/test.jpg'); /* Percorso relativo corretto */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   position: relative;
 }
 
-.main-content {
-  padding-top: 12.67vh; /* Altezza della navbar */
+/* Fallback nel caso in cui l'immagine non venga caricata */
+.app-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(25, 25, 25, 0.05); /* Overlay leggero */
+  z-index: 1;
 }
 
+.main-content {
+  padding-top: 12.67vh; /* Altezza della navbar */
+  position: relative;
+  z-index: 2;
+}
