@@ -1,6 +1,6 @@
 /* Stile base della navbar invariato */
 .navbar {
-  background-color: rgba(0, 43, 73, 0.908); /* Semi-transparent background */
+  background: linear-gradient(135deg, #0c1425 0%, #1a2942 100%);
   height: 12.67vh;
   width: 100%;
   padding-left: 5.0vw;

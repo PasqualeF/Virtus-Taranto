@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
   private squadService = inject(SquadService);
   // Assets
-  logos = ['assets/virtusLogo.png', 'assets/poliLogo.png', 'assets/support_logo.png'];
+  logos = ['assets/virtusLogo.png', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
 
   // Navigation Sections
   sections = [

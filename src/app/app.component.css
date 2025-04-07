@@ -28,7 +28,7 @@
 }
 
 .main-content {
-  padding-top: 12.67vh; /* Altezza della navbar */
+  padding-top: 8vh; /* Altezza della navbar */
   position: relative;
   z-index: 2;
 }
