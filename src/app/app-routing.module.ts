@@ -34,7 +34,10 @@ export const routes: Routes = [
   { path: 'news/comunicazioni', component: ComunicazioniComponent },
   { path: 'news/social', component: SocialFeedComponent },
 
-   /*fine news*/
+
+
+ 
+    /*fine news*/
    /*who-else*/
   { path: 'who-else/storia', component: StoriaComponent },
   { path: 'who-else/organigramma', component: OrganigrammaComponent },

@@ -23,7 +23,7 @@
     text-align: center;
     margin-bottom: 1rem;
     line-height: 1.2;
-    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -101,7 +101,7 @@
     text-align: center;
     margin-bottom: 1rem;
     line-height: 1.2;
-    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+    background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
     background-clip: text;
 
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);

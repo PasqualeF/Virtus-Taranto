@@ -1,6 +1,6 @@
 /* Stile base della navbar invariato */
 .navbar {
-  background: linear-gradient(135deg, #0c1425 0%, #1a2942 100%);
+  background: linear-gradient(135deg, #002b49 0%, #002b49 100%);
   height: 12.67vh;
   width: 100%;
   padding-left: 5.0vw;
@@ -75,6 +75,7 @@
   height: 6.3vw; /* Approssimativamente 78px su un display 1080p */
   width: 6.0vw;
   padding-bottom: 14px;
+  filter: drop-shadow(0 0 10px rgba(253, 230, 138, 0.3));
 }
 
 /* Submenu che appare al hover */
@@ -506,6 +507,7 @@ body.mobile-menu-open {
   .navbar-logo img {
     height: 50px; /* Logo ingrandito */
     width: auto;
+    padding-right: 30px;
     padding-bottom: 0;
   }
 

@@ -80,7 +80,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         {
           label: '',
           items: [
-            { name: 'Foto', route: '/news/orari-allenamenti' },
+            { name: 'Foto', route: '/media/foto' },
             { name: 'Video', route: '/news/ultimissime' }
           ]
         },

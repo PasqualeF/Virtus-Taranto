@@ -5,17 +5,72 @@
     {{ 'PARTNER_BENEFIT.sottotitolo' | translate }}
   </p>
 
-  <!-- Partner Grid -->
-  <div class="partner-grid">
-    <div class="partner-card" *ngFor="let partner of partners; let i = index" 
-         [@flipIn] [style.animation-delay]="i * 200 + 'ms'">
-      <img [src]="partner.logo" [alt]="partner.name" class="partner-logo">
-      <h2 class="partner-name">{{ partner.name }}</h2>
-      <p class="partner-description">{{ partner.description }}</p>
-      <div class="partner-link-container">
-        <a [href]="partner.website" class="partner-link" target="_blank" rel="noopener noreferrer">
-          <span class="partner-link-text">  {{ 'PARTNER_BENEFIT.sito' | translate }}</span>
-          <i class="material-icons partner-link-icon">open_in_new</i>
+  <!-- NUOVA SEZIONE PARTNER - Banner con Marquee e Showcase Wall -->
+  <div class="partner-showcase" [@fadeIn]>
+    <!-- Marquee continuo di loghi (sempre visibili) -->
+    <div class="partner-marquee">
+      <div class="marquee-content">
+        <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
+          <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo">
+        </div>
+        <!-- Duplicati per looping continuo -->
+        <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
+          <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo">
+        </div>
+      </div>
+    </div>
+
+    <!-- Categorie di partner (opzionale, se hai diverse categorie di sponsor) -->
+    <div class="partner-category-tabs" *ngIf="categories.length > 1">
+      <div class="category-tab" 
+           *ngFor="let category of categories" 
+           [class.active]="selectedCategory === category"
+           (click)="selectCategory(category)">
+        {{ category }}
+      </div>
+    </div>
+
+    <!-- Visualizzazione degli sponsor per categoria -->
+    <div *ngIf="categories.length > 1">
+      <div class="category-section" *ngFor="let category of categories">
+        <h2 class="category-heading" *ngIf="getPartnersByCategory(category).length > 0 && (selectedCategory === 'Tutti' || selectedCategory === category)" [id]="category">
+          {{ category }}
+        </h2>
+        <div class="sponsor-wall" 
+             *ngIf="selectedCategory === 'Tutti' || selectedCategory === category"
+             [class.one-item]="getPartnersByCategory(category).length === 1"
+             [class.two-items]="getPartnersByCategory(category).length === 2">
+          <div class="sponsor-tile" *ngFor="let partner of getPartnersByCategory(category); let i = index" 
+               [@staggerIn]="i" [id]="partner.name">
+            <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
+            <div class="sponsor-logo-wrapper">
+              <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo">
+            </div>
+            <h3 class="sponsor-name">{{ partner.name }}</h3>
+            <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" target="_blank" rel="noopener noreferrer">
+              {{ 'PARTNER_BENEFIT.sito' | translate }}
+              <i class="material-icons">open_in_new</i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualizzazione senza categorie -->
+    <div class="sponsor-wall" 
+         *ngIf="categories.length <= 1"
+         [class.one-item]="partners.length === 1"
+         [class.two-items]="partners.length === 2">
+      <div class="sponsor-tile" *ngFor="let partner of partners; let i = index" 
+           [@staggerIn]="i" [id]="partner.name">
+        <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
+        <div class="sponsor-logo-wrapper">
+          <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo">
+        </div>
+        <h3 class="sponsor-name">{{ partner.name }}</h3>
+        <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" target="_blank" rel="noopener noreferrer">
+          {{ 'PARTNER_BENEFIT.sito' | translate }}
+          <i class="material-icons">open_in_new</i>
         </a>
       </div>
     </div>
@@ -40,7 +95,7 @@
       <h2 class="section-title">{{ 'PARTNER_BENEFIT.collabora' | translate }}</h2>
       <p class="section-description">
         {{ 'PARTNER_BENEFIT.collabora_descr' | translate }}
-            </p>
+      </p>
       
       <form [formGroup]="collaborationForm" (ngSubmit)="onSubmit()" class="collaboration-form"
             *ngIf="!isFormSubmitted">

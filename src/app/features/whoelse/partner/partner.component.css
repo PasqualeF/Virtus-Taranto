@@ -23,7 +23,7 @@
   text-align: center;
   margin-bottom: 1rem;
   line-height: 1.2;
-  background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -39,182 +39,283 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.partner-grid {
+/* NUOVA SOLUZIONE: SHOWCASE INTERATTIVO TIPO BACHECA/GALLERY */
+.partner-showcase {
+  width: 100%;
+  position: relative;
+  margin-bottom: 4rem;
+}
+
+.partner-category-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.category-tab {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.category-tab.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #fde68a;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.category-tab:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.partner-marquee {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  margin: 3rem 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  animation: marquee 30s linear infinite;
+  animation-play-state: running;
+  width: max-content;
+  gap: 3rem;
+  height: 100%;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-item {
+  height: 90px;
+  width: auto;
+  max-width: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: grayscale(100%) opacity(0.7);
+}
+
+.marquee-item:hover {
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.1);
+}
+
+.marquee-logo {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.sponsor-wall {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   width: 100%;
 }
 
-
-.partner-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+/* Per centrare le card quando sono 2 o meno */
+.sponsor-wall.one-item {
+  grid-template-columns: minmax(0, 400px);
+  justify-content: center;
 }
 
-.partner-card:hover .partner-logo {
-  transform: scale(1.05);
-  background-color: rgba(255, 255, 255, 0.1);
+.sponsor-wall.two-items {
+  grid-template-columns: repeat(2, minmax(0, 400px));
+  justify-content: center;
 }
 
-.partner-name {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #fde68a;
-  margin-bottom: 1rem;
-}
-
-.partner-description {
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.partner-link {
-  display: inline-flex;
+.sponsor-tile {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 0.5rem;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
 }
 
-.partner-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-}
-
-.partner-card::after {
+.sponsor-tile::before {
   content: '';
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #fde68a);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 1;
 }
 
-.partner-card:hover::after {
-  transform: scaleX(1);
+.sponsor-tile:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
-  .titolo {
-    font-size: 2.5rem;
-  }
-  
-  .partner-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .partner-card {
-    max-width: 100%;
-  }
+.sponsor-tile:hover::before {
+  opacity: 1;
 }
 
-/* Modifica il container del link */
-.partner-link-container {
-  margin-top: auto;  /* Spinge il link verso il basso */
-  width: 100%;       /* Occupa tutta la larghezza */
-  padding-top: 1.5rem;
-}
-
-.partner-link {
+.sponsor-logo-wrapper {
+  width: 180px;
+  height: 180px;
+  border-radius: 1rem;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;       /* Occupa tutta la larghezza */
-  padding: 1rem;
+  margin-bottom: 1.5rem;
+  z-index: 3;
+  transition: all 0.4s ease;
+}
+
+.sponsor-tile:hover .sponsor-logo-wrapper {
+  transform: scale(1.05);
+}
+
+.sponsor-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.sponsor-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fde68a;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  z-index: 2;
+}
+
+.sponsor-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
   background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
   border-radius: 0.5rem;
   color: white;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  gap: 0.5rem;
+  z-index: 2;
+  width: auto;
+}
+
+.sponsor-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
   gap: 0.5rem;
 }
 
-/* Effetto hover avanzato */
-.partner-link::before {
+.sponsor-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+.sponsor-highlight {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
+  color: #1e293b;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: 0 0 0 1rem;
+  z-index: 10;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Animazioni di brillantezza per i bordi */
+.sponsor-tile::after {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1rem;
+  border: 2px solid transparent;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0) 0%, rgba(59, 130, 246, 0.5) 50%, rgba(59, 130, 246, 0) 100%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sponsor-tile:hover::after {
+  opacity: 1;
+  animation: border-glow 2s infinite linear;
+}
+
+@keyframes border-glow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
+/* Visualizzazione estesa - mostra i partner in diverse categorie */
+.category-section {
+  margin-bottom: 4rem;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transition: all 0.6s ease;
 }
 
-.partner-link:hover::before {
-  left: 100%;
+.category-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+  color: #fde68a;
 }
-
-.partner-link:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-
-.partner-link-text {
-  position: relative;
-  z-index: 1;
-}
-
-.partner-link-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  position: relative;
-  z-index: 1;
-  transition: transform 0.3s ease;
-}
-
-.partner-link:hover .partner-link-icon {
-  transform: translateX(4px);
-}
-
-/* Modifica la card per usare flexbox e garantire il posizionamento corretto */
-.partner-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 400px; /* Altezza minima per uniformità */
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* Assicurati che il logo mantenga le proporzioni corrette */
-.partner-logo {
-  width: 100%;
-  height: 120px;
-  object-fit: contain;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
-}
-
-
-/* Manteniamo gli stili esistenti e aggiungiamo i nuovi */
 
 /* Benefits Section */
 .benefits-section {
@@ -370,6 +471,25 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .titolo {
+    font-size: 2.5rem;
+  }
+  
+  .category-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .sponsor-wall {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .sponsor-logo-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+  
   .benefits-grid {
     grid-template-columns: 1fr;
   }
@@ -380,5 +500,38 @@
 
   .section-title {
     font-size: 2rem;
+  }
+  
+  .partner-marquee {
+    height: 120px;
+  }
+  
+  .marquee-item {
+    height: 70px;
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sponsor-wall {
+    grid-template-columns: 1fr;
+  }
+
+  .partner-marquee {
+    height: 100px;
+  }
+  
+  .marquee-item {
+    height: 60px;
+    max-width: 120px;
+  }
+  
+  .sponsor-logo-wrapper {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .sponsor-name {
+    font-size: 1.25rem;
   }
 }

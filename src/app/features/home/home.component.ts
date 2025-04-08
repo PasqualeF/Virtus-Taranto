@@ -1,5 +1,5 @@
 // home.component.ts
-import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList, HostListener, AfterViewInit, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SquadService } from 'src/app/core/service/squad.service';
 import { TeamSmall } from 'src/app/core/models/squad.model';
@@ -55,6 +55,7 @@ interface Achievement {
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('typewriterText') typewriterText!: ElementRef;
+  @ViewChild('mobileTypewriterText') mobileTypewriterText!: ElementRef;
   
   // States
   currentSection = 'hero';
@@ -63,6 +64,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   showSponsors = false;
   loadingProgress = 0;
   logoLoadStates: boolean[] = [false, false, false];
+  isMobile = false;
 
   // Animation States
   logoAnimationStates = [false, false, false];
@@ -72,8 +74,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   error: string | null = null;
 
 
-  // Typewriter Configuration
-  private phrases = ['Who Else?'];
+  // Typewriter Configuration - Aggiornata
+  private phrases = ['Passione', 'Tradizione', 'Eccellenza', 'Dal 1948', 'Who Else?'];
   private currentPhrase = 0;
   private currentChar = 0;
   private isDeleting = false;
@@ -81,15 +83,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
   private squadService = inject(SquadService);
   // Assets
-  logos = ['assets/virtusLogo.png', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
+  logos = ['assets/logo-virtus-taranto.svg', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
 
   // Navigation Sections
   sections = [
     { id: 'hero', name: 'Home' },
     { id: 'sponsors', name: 'Sponsor' },
     { id: 'story', name: 'Storia' },
-    { id: 'achievements', name: 'Successi' }, // Aggiunto achievements
-    { id: 'social', name: 'Social' }, // Aggiunto achievements
+    { id: 'achievements', name: 'Successi' },
+    { id: 'social', name: 'Social' },
     { id: 'matches', name: 'Partite' },
     { id: 'teams', name: 'Squadre' },
     { id: 'shop', name: 'Shop' }
@@ -199,6 +201,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor() {
     this.initializeLoading();
+    this.checkIfMobile();
   }
   
   private initializeLoading() {
@@ -214,6 +217,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
         }, 500);
       }
     }, 50);
+  }
+
+  private checkIfMobile() {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkIfMobile();
   }
 
   ngOnInit() {
@@ -241,7 +253,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // Avvia l'effetto typewriter dopo il caricamento della vista
     setTimeout(() => {
       this.startTypewriter();
-    }, 2500);
+    }, 2000); // Ridotto da 2500 a 2000 per iniziare prima l'animazione
   }
 
   @HostListener('window:scroll', [])
@@ -274,7 +286,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private startTypewriter(): void {
     const typeNextChar = () => {
       const phrase = this.phrases[this.currentPhrase];
-      const elem = this.typewriterText.nativeElement;
+      // Select appropriate element based on device
+      const elem = this.isMobile && this.mobileTypewriterText ? 
+                  this.mobileTypewriterText.nativeElement : 
+                  this.typewriterText?.nativeElement;
+      
+      if (!elem) return;
+
       this.isTyping = true;
 
       if (!this.isDeleting) {
@@ -283,7 +301,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (this.currentChar === phrase.length) {
           this.isDeleting = true;
-          this.typewriterSpeed = 1000; // Pausa prima di cancellare
+          this.typewriterSpeed = 1200; // Pausa più lunga prima di cancellare
         }
       } else {
         elem.textContent = phrase.substring(0, this.currentChar - 1);

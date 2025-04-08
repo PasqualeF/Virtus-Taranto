@@ -85,7 +85,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SocialFeedComponent,
     NewsComponent,
     YouthTeamsComponent,
-    ShopComponent
+    ShopComponent,
     ],
   imports: [
     BrowserModule,

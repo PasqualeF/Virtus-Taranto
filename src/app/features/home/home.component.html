@@ -26,58 +26,131 @@
 
   <!-- Main Content -->
   <div role="main" [class.content-loaded]="!isLoading">
-    <!-- Hero Section -->
-    <section id="hero" class="section hero-section" [class.active]="currentSection === 'hero'">
-        <div class="content-wrapper">
-          <!-- Logos Container -->
-          <div class="logos-container">
-            <div class="logo-wrapper" *ngFor="let logo of logos; let i = index" [class.appear]="logoAnimationStates[i]">
-              <div class="logo-3d" [class.appear]="logoAnimationStates[i]">
-                <img [src]="logo" alt="Logo" class="floating-logo">
-                <div class="logo-glow"></div>
-              </div>
+   <!-- Home Section Mobile Version - Ridisegnata e Migliorata -->
+    <section *ngIf="isMobile" id="hero" class="section hero-section mobile-view" [class.active]="currentSection === 'hero'">
+      <div class="mobile-content">
+        <!-- Logo Top -->
+        <div class="top-logo-container">
+          <img [src]="logos[0]" alt="Virtus Taranto Logo" class="top-logo">
+        </div>
+        
+        <!-- Main Content -->
+        <div class="mobile-text-content">
+          <h1 class="mobile-title">
+            <span class="virtus-text">VIRTUS TARANTO</span>
+          </h1>
+          <p class="mobile-slogan">
+            dove i giovani diventano squadra, e la squadra diventa famiglia.
+          </p>
+          
+          <!-- Prossima Partita (Novità) -->
+          <div class="next-match-banner" *ngIf="upcomingMatches && upcomingMatches.length > 0">
+            <div class="next-match-title">Prossima Partita</div>
+            <div class="next-match-teams">
+              {{ upcomingMatches[0].homeTeam }} vs {{ upcomingMatches[0].awayTeam }}
+            </div>
+            <div class="next-match-info">
+              {{ upcomingMatches[0].date | date:'dd/MM' }} - {{ upcomingMatches[0].time }}
             </div>
           </div>
-      
-          <!-- Text Content -->
-          <div class="text-content">
-            <h1 class="main-title" [class.appear]="titleAnimationState">
-              <span class="title-line">Benvenuti nel</span>
-              <span class="title-highlight">Basket Tarantino</span>
-            </h1>
-      
-            <!-- Stats Counter -->
-            <div class="hero-stats" [class.appear]="titleAnimationState">
-              <div class="stat-item">
-                <div class="stat-value">75+</div>
-                <div class="stat-label">Anni di Storia</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">1500+</div>
-                <div class="stat-label">Giovani Atleti</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">25</div>
-                <div class="stat-label">Trofei Vinti</div>
-              </div>
+          
+          <!-- Stats Row -->
+          <div class="mobile-stats-row">
+            <div class="mobile-stat">
+              <div class="stat-number">75+</div>
+              <div class="stat-label">Anni di Storia</div>
             </div>
-      
-            <div class="typewriter-container">
-              <span class="typewriter-text" #typewriterText></span>
-              <span class="cursor" [class.typing]="isTyping"></span>
+            <div class="mobile-stat">
+              <div class="stat-number">1500+</div>
+              <div class="stat-label">Giovani Atleti</div>
             </div>
-      
-            <div class="cta-container" [class.appear]="buttonAnimationState">
-              <button class="cta-button" (mouseenter)="handleButtonHover($event)">
-                Scopri la Nostra Storia
-                <div class="particle-container">
-                  <div class="particles"></div>
-                </div>
-              </button>
+            <div class="mobile-stat">
+              <div class="stat-number">25</div>
+              <div class="stat-label">Trofei Vinti</div>
+            </div>
+          </div>
+          
+          <!-- Typewriter Text -->
+          <div class="mobile-typewriter">
+            <span class="typewriter-text"></span>  
+            <span class="typewriter-text" #mobileTypewriterText></span>
+            <span class="cursor" [class.typing]="isTyping"></span>
+          </div>
+          
+          <!-- CTA Button -->
+          <button class="mobile-cta-btn" (click)="scrollToSection('story')">LA NOSTRA STORIA</button>
+          
+          <!-- Newsletter Subscribe (Novità) -->
+          <div class="newsletter-area">
+            <div class="newsletter-title">Resta aggiornato sulle nostre attività</div>
+            <div class="newsletter-form">
+              <input type="email" placeholder="La tua email" class="newsletter-input">
+              <button class="newsletter-button">Iscriviti</button>
             </div>
           </div>
         </div>
+        
+        <!-- Bottom Logos -->
+        <div class="bottom-logos">
+          <img *ngFor="let logo of logos" [src]="logo" alt="Logo" class="bottom-logo">
+        </div>
+      </div>
     </section>
+
+    <!-- Desktop version remains unchanged -->
+    <section *ngIf="!isMobile" id="hero" class="section hero-section" [class.active]="currentSection === 'hero'">
+      <!-- Keep existing desktop code -->
+      <div class="content-wrapper">
+        <!-- Logos Container -->
+        <div class="logos-container">
+          <div class="logo-wrapper" *ngFor="let logo of logos; let i = index" [class.appear]="logoAnimationStates[i]">
+            <div class="logo-3d" [class.appear]="logoAnimationStates[i]">
+              <img [src]="logo" alt="Logo" class="floating-logo">
+              <div class="logo-glow"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Content -->
+        <div class="text-content">
+          <h1 class="main-title" [class.appear]="titleAnimationState">
+            <span class="title-line">Benvenuti nel</span>
+            <span class="title-highlight">Basket Tarantino</span>
+          </h1>
+
+          <!-- Stats Counter -->
+          <div class="hero-stats" [class.appear]="titleAnimationState">
+            <div class="stat-item">
+              <div class="stat-value">75+</div>
+              <div class="stat-label">Anni di Storia</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">1500+</div>
+              <div class="stat-label">Giovani Atleti</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">25</div>
+              <div class="stat-label">Trofei Vinti</div>
+            </div>
+          </div>
+
+          <div class="typewriter-container">
+            <span class="typewriter-text" #typewriterText></span>
+            <span class="cursor" [class.typing]="isTyping"></span>
+          </div>
+
+          <div class="cta-container" [class.appear]="buttonAnimationState">
+            <button class="cta-button" (mouseenter)="handleButtonHover($event)">
+              Scopri la Nostra Storia
+              <div class="particle-container">
+                <div class="particles"></div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
 
     <!-- Sponsors Section -->
     <section id="sponsors" class="sponsors-section" [class.active]="currentSection === 'sponsors'">
@@ -92,8 +165,6 @@
         </div>
       </div>
     </section>
-
-
 
     <!-- Component Sections -->
     <app-story id="story" class="section" [class.active]="currentSection === 'story'">
@@ -124,13 +195,11 @@
                         [upcomingMatches]="upcomingMatches">
     </app-matches-section>
 
-
     <app-teams-section id="teams" 
                       class="section" 
                       [class.active]="currentSection === 'teams'"
                       [teams]="teams">
     </app-teams-section>
-
 
     <app-shop-preview id="shop" 
                       class="section" 
@@ -138,8 +207,8 @@
     </app-shop-preview>
 </div>
 
-  <!-- Navigation Dots -->
-  <div class="navigation-dots">
+  <!-- Navigation Dots - Only visible on desktop -->
+  <div class="navigation-dots" *ngIf="!isMobile">
     <button *ngFor="let section of sections"
             class="nav-dot"
             [class.active]="currentSection === section.id"
