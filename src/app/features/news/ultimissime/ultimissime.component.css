@@ -19,16 +19,16 @@
 }
 
 .titolo {
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.2;
-  background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
+  margin-bottom: 7rem;
+  line-height: 1.8;
+  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Filtri di categoria */

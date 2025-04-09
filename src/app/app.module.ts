@@ -46,6 +46,7 @@ import { YouthTeamsComponent } from './features/squad/mini/youth-teams.component
 import { ShopComponent } from './features/shop/shop.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MediaComponent } from './features/media/media-gallery.component';
 
 // Factory function per il TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -86,6 +87,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NewsComponent,
     YouthTeamsComponent,
     ShopComponent,
+    MediaComponent
     ],
   imports: [
     BrowserModule,

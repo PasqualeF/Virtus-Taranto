@@ -18,11 +18,11 @@
 }
 
 .titolo {
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 1rem;
-  line-height: 1.2;
+  margin-bottom: 7rem;
+  line-height: 1.8;
   background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
   background-clip: text;
   -webkit-background-clip: text;
@@ -80,7 +80,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  height: 150px;
+  height: 6rem;
   margin: 3rem 0;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
@@ -96,6 +96,7 @@
   width: max-content;
   gap: 3rem;
   height: 100%;
+  padding-bottom: 3rem;
 }
 
 .marquee-content:hover {
@@ -503,7 +504,7 @@
   }
   
   .partner-marquee {
-    height: 120px;
+    height: 5rem;
   }
   
   .marquee-item {
@@ -518,7 +519,7 @@
   }
 
   .partner-marquee {
-    height: 100px;
+    height: 4rem;
   }
   
   .marquee-item {

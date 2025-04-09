@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Virtus Taranto', 
       awayTeam: 'Team A', 
-      date: new Date('2024-10-28'), 
+      date: new Date('2025-04-15'), 
       time: '18:00', 
       venue: 'PalaMazzola',
       isHome: true,
@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Team B', 
       awayTeam: 'Virtus Taranto', 
-      date: new Date('2024-11-27'), 
+      date: new Date('2025-04-16'), 
       time: '20:30', 
       venue: 'PalaSport B',
       isHome: false,
@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Team B', 
       awayTeam: 'Virtus Taranto', 
-      date: new Date('2024-11-27'), 
+      date: new Date('2025-04-17'), 
       time: '20:30', 
       venue: 'PalaSport B',
       isHome: false,
@@ -133,7 +133,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Team B', 
       awayTeam: 'Virtus Taranto', 
-      date: new Date('2024-12-27'), 
+      date: new Date('2025-05-15'),  
       time: '20:30', 
       venue: 'PalaSport B',
       isHome: false,
@@ -143,7 +143,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Virtus Taranto', 
       awayTeam: 'Team A', 
-      date: new Date('2024-12-20'), 
+      date: new Date('2025-06-15'), 
       time: '18:00', 
       venue: 'PalaMazzola',
       isHome: true,
@@ -153,7 +153,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { 
       homeTeam: 'Virtus Taranto', 
       awayTeam: 'Team A', 
-      date: new Date('2024-12-20'), 
+      date: new Date('2025-06-16'),  
       time: '18:00', 
       venue: 'PalaMazzola',
       isHome: true,

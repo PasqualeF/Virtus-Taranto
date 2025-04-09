@@ -38,6 +38,38 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Selettore Vista */
+.view-selector {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.view-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.view-button.active {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Vista Griglia di Palestre */
 .palestre-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -56,8 +88,8 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  min-height: 400px;  /* Ridotto da 450px */
-  gap: 1rem;  /* Aggiunge spazio uniforme tra gli elementi */
+  min-height: 400px;
+  gap: 1rem;
 }
 
 .palestra-card:hover {
@@ -82,23 +114,84 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: #fde68a;
-  margin-bottom: 0.5rem;  /* Ridotto da 1rem */
+  margin-bottom: 0.5rem;
 }
 
 .palestra-indirizzo {
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
-  margin-bottom: 0.5rem;  /* Ridotto da 1.5rem */
+  margin-bottom: 0.5rem;
 }
+
+/* Servizi Tags */
+.palestra-servizi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.servizio-tag {
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  color: white;
+}
+
+.servizio-tag.more {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+/* Bottoni */
+.buttons-container {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.mappa-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.mappa-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.button-text {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .button-text {
+    display: inline;
+  }
+  
+  .mappa-button {
+    padding: 0.75rem 1rem;
+  }
+}
+
 .dettagli-button {
-  margin-top: auto;  /* Mantiene il bottone in basso */
+  margin-top: auto;
   width: 100%;
-  padding: 0.75rem;  /* Ridotto da 1rem */
+  padding: 0.75rem;
   background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
   border: none;
   border-radius: 0.5rem;
   color: white;
-  font-size: 0.875rem;  /* Ridotto la dimensione del font */
+  font-size: 0.875rem;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -108,12 +201,13 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  height: 40px;  /* Altezza fissa più contenuta */
-  line-height: 1;  /* Riduce l'altezza della linea di testo */
+  height: 40px;
+  line-height: 1;
+  flex: 1;
 }
 
 .dettagli-button svg {
-  width: 16px;  /* Dimensione fissa più piccola */
+  width: 16px;
   height: 16px;
 }
 
@@ -143,6 +237,87 @@
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
+/* Vista Mappa */
+.map-container {
+  display: flex;
+  gap: 1rem;
+  height: 600px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.google-map {
+  flex: 1;
+  min-height: 500px;
+  height: 100%; 
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Assicuriamoci che l'ID specifico abbia le dimensioni corrette */
+#google-map-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.map-list {
+  width: 300px;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.map-list-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fde68a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.map-list-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-list-item:last-child {
+  border-bottom: none;
+}
+
+.map-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.map-list-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.map-list-content {
+  flex: 1;
+}
+
+.map-list-content h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: #fde68a;
+}
+
+.map-list-content p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -161,30 +336,220 @@
 .modal-content {
   background-color: #131e33;
   border-radius: 1rem;
-  padding: 2rem;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .close-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: none;
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   color: white;
   font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .close-button:hover {
   transform: rotate(90deg);
+  background: rgba(0, 0, 0, 0.8);
 }
 
+.modal-header {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+}
+
+.modal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.modal-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* Tab Navigation */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.modal-tabs::-webkit-scrollbar {
+  height: 3px;
+}
+
+.modal-tabs::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-tabs::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.modal-tab {
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.modal-tab:hover {
+  color: white;
+}
+
+.modal-tab.active {
+  color: #3b82f6;
+  box-shadow: inset 0 -2px 0 #3b82f6;
+}
+
+/* Tab Content */
+.modal-tab-content {
+  padding: 2rem;
+}
+
+.modal-description {
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #fde68a;
+}
+
+/* Servizi Tags in Modal */
+.servizi-section {
+  margin-bottom: 2rem;
+}
+
+.servizi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Orari */
+.orari-list {
+  margin-bottom: 1.5rem;
+}
+
+.orario-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.orario-item:last-child {
+  border-bottom: none;
+}
+
+.orario-giorno {
+  font-weight: 500;
+}
+
+.orario-ore {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.info-box {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.info-box p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+/* Mappa */
+.location-info {
+  margin-bottom: 1rem;
+}
+
+.location-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.static-map {
+  width: 100%;
+  height: 300px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.static-map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.directions-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.directions-button:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .titolo {
     font-size: 2.5rem;
@@ -194,7 +559,38 @@
     grid-template-columns: 1fr;
   }
   
+  .map-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .google-map {
+    height: 300px;
+  }
+  
   .modal-content {
-    padding: 1rem;
+    padding: 0;
+    width: 95%;
+    max-height: 85vh;
+  }
+  
+  .modal-header {
+    height: 180px;
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  
+  .modal-tab {
+    padding: 0.75rem 1rem;
+  }
+  
+  .modal-tab-content {
+    padding: 1.5rem;
+  }
+  
+  .static-map {
+    height: 200px;
   }
 }

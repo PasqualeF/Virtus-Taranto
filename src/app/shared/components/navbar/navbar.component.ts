@@ -68,7 +68,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
           items: [
             { name: 'Orari Allenamenti', route: '/news/orari-allenamenti' },
             { name: 'Ultimissime', route: '/news/ultimissime' },
-            { name: 'Social news', route: '/news/social' },
             { name: 'Comunicazioni', route: '/news/comunicazioni' }
           ]
         },

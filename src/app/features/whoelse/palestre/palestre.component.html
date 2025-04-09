@@ -7,7 +7,34 @@
     Scopri le nostre strutture all'avanguardia dove i nostri atleti si allenano e competono ogni giorno.
   </p>
 
-  <div class="palestre-grid">
+  <!-- Selettore Vista -->
+  <div class="view-selector">
+    <button 
+      [class.active]="activeTab === 0" 
+      (click)="changeTab(0)" 
+      class="view-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+      Vista Palestre
+    </button>
+    <button 
+      [class.active]="activeTab === 1" 
+      (click)="changeTab(1)" 
+      class="view-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      Vista Mappa
+    </button>
+  </div>
+
+  <!-- Vista Palestre (Griglia) -->
+  <div *ngIf="activeTab === 0" class="palestre-grid">
     <div *ngFor="let palestra of palestre; let i = index" 
          class="palestra-card"
          [@flipIn]
@@ -17,36 +44,142 @@
            class="palestra-image">
       <h2 class="palestra-nome">{{ palestra.nome }}</h2>
       <p class="palestra-indirizzo">{{ palestra.indirizzo }}</p>
-      <button class="dettagli-button" (click)="showDetails(palestra)">
-        <span>Scopri di più</span>
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             class="w-5 h-5" 
-             fill="none" 
-             viewBox="0 0 24 24" 
-             stroke="currentColor">
-          <path stroke-linecap="round" 
-                stroke-linejoin="round" 
-                stroke-width="2" 
-                d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      </button>
+      
+      <!-- Tag Servizi -->
+      <div class="palestra-servizi">
+        <span *ngFor="let servizio of palestra.servizi?.slice(0, 2)" class="servizio-tag">
+          {{ servizio }}
+        </span>
+        <span *ngIf="palestra.servizi && palestra.servizi.length > 2" class="servizio-tag more">
+          +{{ palestra.servizi.length - 2 }}
+        </span>
+      </div>
+      
+      <div class="buttons-container">
+        <button class="mappa-button" (click)="getDirections(palestra); $event.stopPropagation()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4"></path>
+          </svg>
+          <span class="button-text">Mappa</span>
+        </button>
+        <button class="dettagli-button" (click)="showDetails(palestra)">
+          <span>Scopri di più</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Vista Mappa -->
+  <div *ngIf="activeTab === 1" class="map-container">
+    <div #mapElement class="google-map"></div>
+    
+    <!-- Lista palestre vicino alla mappa (solo su desktop) -->
+    <div *ngIf="!isMobile" class="map-list">
+      <div *ngFor="let palestra of palestre" 
+           class="map-list-item"
+           (click)="showDetails(palestra)">
+        <img [src]="palestra.immagine" [alt]="palestra.nome" class="map-list-image">
+        <div class="map-list-content">
+          <h3>{{ palestra.nome }}</h3>
+          <p>{{ palestra.indirizzo }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Dettagli -->
 <div *ngIf="selectedPalestra" 
      class="modal-overlay" 
      [@detailExpand]="detailState"
      (click)="closeDetails()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <button class="close-button" (click)="closeDetails()">×</button>
-    <img [src]="selectedPalestra.immagine" 
-         [alt]="selectedPalestra.nome"
-         class="palestra-image">
-    <h2 class="palestra-nome">{{ selectedPalestra.nome }}</h2>
-    <p class="palestra-indirizzo">{{ selectedPalestra.indirizzo }}</p>
-    <p class="mt-4">{{ selectedPalestra.descrizione }}</p>
-    <!-- Qui puoi aggiungere altre informazioni come orari, attrezzature, etc. -->
+    
+    <!-- Header con immagine -->
+    <div class="modal-header">
+      <img [src]="selectedPalestra.immagine" 
+           [alt]="selectedPalestra.nome"
+           class="modal-image">
+      <div class="modal-image-overlay">
+        <h2 class="modal-title">{{ selectedPalestra.nome }}</h2>
+      </div>
+    </div>
+    
+    <!-- Tab navigation -->
+    <div class="modal-tabs">
+      <button 
+        [class.active]="activeTab === 0" 
+        (click)="changeTab(0)" 
+        class="modal-tab">
+        Info
+      </button>
+      <button 
+        [class.active]="activeTab === 1" 
+        (click)="changeTab(1)" 
+        class="modal-tab">
+        Orari
+      </button>
+      <button 
+        [class.active]="activeTab === 2" 
+        (click)="changeTab(2)" 
+        class="modal-tab">
+        Mappa
+      </button>
+    </div>
+    
+    <!-- Tab Info -->
+    <div *ngIf="activeTab === 0" class="modal-tab-content">
+      <p class="palestra-indirizzo">{{ selectedPalestra.indirizzo }}</p>
+      <p class="modal-description">{{ selectedPalestra.descrizione }}</p>
+      
+      <div class="servizi-section" *ngIf="selectedPalestra.servizi && selectedPalestra.servizi.length > 0">
+        <h3 class="section-title">Servizi disponibili</h3>
+        <div class="servizi-tags">
+          <span *ngFor="let servizio of selectedPalestra.servizi" class="servizio-tag">{{ servizio }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tab Orari -->
+    <div *ngIf="activeTab === 1" class="modal-tab-content">
+      <h3 class="section-title">Orari di apertura</h3>
+      <div class="orari-list">
+        <div *ngFor="let orario of selectedPalestra.orari" class="orario-item">
+          <span class="orario-giorno">{{ orario.giorno }}</span>
+          <span class="orario-ore">{{ orario.orario }}</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <p>Gli orari potrebbero variare durante festività o eventi speciali. Contattare la segreteria per informazioni aggiornate.</p>
+      </div>
+    </div>
+    
+    <!-- Tab Mappa -->
+    <div *ngIf="activeTab === 2" class="modal-tab-content">
+      <div class="location-info">
+        <p class="location-address">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {{ selectedPalestra.indirizzo }}
+        </p>
+      </div>
+      
+      <div class="static-map">
+        <img [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&zoom=15&size=600x300&markers=color:red%7C' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&key=YOUR_API_KEY'" alt="Mappa della posizione">
+      </div>
+      
+      <button class="directions-button" (click)="getDirections(selectedPalestra)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4"></path>
+        </svg>
+        Indicazioni stradali
+      </button>
+    </div>
   </div>
 </div>

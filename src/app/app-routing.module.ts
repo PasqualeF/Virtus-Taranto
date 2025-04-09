@@ -21,6 +21,7 @@ import { EventiSpecialiComponent } from './features/eventi/eventi-speciali/event
 import { SocialFeedComponent } from './features/news/social-feed/social-feed.component';
 import { YouthTeamsComponent } from './features/squad/mini/youth-teams.component';
 import { ShopComponent } from './features/shop/shop.component';
+import { MediaComponent } from './features/media/media-gallery.component';
 
 
 export const routes: Routes = [
@@ -34,9 +35,7 @@ export const routes: Routes = [
   { path: 'news/comunicazioni', component: ComunicazioniComponent },
   { path: 'news/social', component: SocialFeedComponent },
 
-
-
- 
+  { path: 'media/foto', component: MediaComponent },
     /*fine news*/
    /*who-else*/
   { path: 'who-else/storia', component: StoriaComponent },

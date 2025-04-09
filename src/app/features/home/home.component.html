@@ -29,10 +29,6 @@
    <!-- Home Section Mobile Version - Ridisegnata e Migliorata -->
     <section *ngIf="isMobile" id="hero" class="section hero-section mobile-view" [class.active]="currentSection === 'hero'">
       <div class="mobile-content">
-        <!-- Logo Top -->
-        <div class="top-logo-container">
-          <img [src]="logos[0]" alt="Virtus Taranto Logo" class="top-logo">
-        </div>
         
         <!-- Main Content -->
         <div class="mobile-text-content">
@@ -170,6 +166,9 @@
     <app-story id="story" class="section" [class.active]="currentSection === 'story'">
     </app-story>
 
+    
+    <app-news  id="social"  class="section"  [class.active]="currentSection === 'social'"></app-news>
+
     <!-- Achievement Section -->
     <section id="achievements" class="section achievements-section" [class.active]="currentSection === 'achievements'">
       <div class="achievements-content">
@@ -187,7 +186,6 @@
       </div>
     </section>
 
-    <app-news  id="social"  class="section"  [class.active]="currentSection === 'social'"></app-news>
 
     <app-matches-section id="matches" 
                         class="section" 

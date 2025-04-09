@@ -1,45 +1,68 @@
-<section class="matches-section">
+<section class="news-section">
   <div class="container-fluid">
-    <h2 class="section-title">Social Feed</h2>
+    <h2 class="section-title">Ultime Notizie</h2>
 
-<div class="feed-grid" >
-  <div class="post-card" *ngFor="let post of getFilteredPosts()">
-    <div class="post-header">
-      <img [src]="post.author.avatar" [alt]="post.author.name" class="author-avatar">
-      <div class="post-meta">
-        <span class="author-name">{{post.author.name}}</span>
-        <span class="post-timestamp">{{formatTimestamp(post.timestamp)}}</span>
+    <!-- Controlli di navigazione -->
+    <div class="news-controls">
+      <button class="nav-btn prev-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="page-indicator">
+        <span>{{ currentPage }} / {{ getTotalPages() }}</span>
       </div>
-      <div class="platform-icon">
-        <i [class]="post.platform === 'facebook' ? 'fab fa-facebook' : 'fab fa-instagram'"></i>
+      <button class="nav-btn next-btn" (click)="nextPage()" [disabled]="currentPage === getTotalPages()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Griglia Notizie Desktop -->
+    <div class="news-grid" *ngIf="!isMobile">
+      <div class="news-card" *ngFor="let news of getCurrentPageNews(); let i = index" 
+           [class.featured]="i === 0 && currentPage === 1" 
+           (click)="openNewsDetail(news)">
+        <div class="news-image">
+          <img [src]="news.immagine" [alt]="news.titolo">
+          <div class="news-date">{{ formatDate(news.data) }}</div>
+        </div>
+        <div class="news-content">
+          <h3 class="news-title">{{ news.titolo }}</h3>
+          <p class="news-excerpt" *ngIf="news.excerpt">{{ news.excerpt }}</p>
+          <a class="read-more">Leggi tutto <i class="fas fa-arrow-right"></i></a>
+        </div>
       </div>
     </div>
 
-    <div class="post-content" [ngClass]="{'has-media': post.mediaUrl}">
-      <p class="post-text" *ngIf="post.content">{{post.content}}</p>
-      <div class="media-container" *ngIf="post.mediaUrl">
-        <img *ngIf="post.type === 'image'" [src]="post.mediaUrl" [alt]="post.content">
-        <video *ngIf="post.type === 'video'" [src]="post.mediaUrl" controls></video>
+    <!-- Carousel Notizie Mobile -->
+    <div class="news-carousel" *ngIf="isMobile">
+      <div class="carousel-container" #carouselContainer (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+        <div class="carousel-slide" *ngFor="let news of newsItems" (click)="openNewsDetail(news)">
+          <div class="mobile-news-card">
+            <div class="mobile-news-image">
+              <img [src]="news.immagine" [alt]="news.titolo">
+              <div class="mobile-news-date">{{ formatDate(news.data) }}</div>
+            </div>
+            <div class="mobile-news-content">
+              <h3 class="mobile-news-title">{{ news.titolo }}</h3>
+              <a class="mobile-read-more">Leggi <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Indicatori di posizione -->
+      <div class="carousel-indicators">
+        <div class="indicator" *ngFor="let news of newsItems; let i = index" 
+             [class.active]="currentMobileSlide === i"
+             (click)="goToSlide(i)"></div>
       </div>
     </div>
 
-    <div class="post-footer">
-      <div class="engagement-stats">
-        <span class="stat">
-          <i class="far fa-heart"></i> {{post.likes}}
-        </span>
-        <span class="stat">
-          <i class="far fa-comment"></i> {{post.comments}}
-        </span>
-        <span class="stat" *ngIf="post.shares">
-          <i class="far fa-share-square"></i> {{post.shares}}
-        </span>
-      </div>
-      <a [href]="post.link" target="_blank" class="view-post">
-        Visualizza Post <i class="fas fa-external-link-alt"></i>
-      </a>
-    </div>
+    <!-- View All Button -->
+  <div class="view-all-news">
+    <a [routerLink]="['/notizie']" class="view-all-btn">
+      <span *ngIf="!isMobile">Vedi tutte le notizie <i class="fas fa-external-link-alt"></i></span>
+      <span *ngIf="isMobile">Tutte le notizie <i class="fas fa-arrow-right"></i></span>
+    </a>
   </div>
-</div>
   </div>
 </section>

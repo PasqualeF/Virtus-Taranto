@@ -1,59 +1,102 @@
-<div class="orari-allenamenti-container">
-  <h1 class="section-title animate-in">Orari Allenamenti</h1>
+<div class="titolo-1">Orari Allenamenti</div>
 
-  <div class="filters-container animate-in">
-    <select class="filter-select" [(ngModel)]="filtroGruppo" (ngModelChange)="filtraOrari()">
-      <option value="">Tutti i gruppi</option>
-      <option *ngFor="let gruppo of gruppiUnici" [value]="gruppo">
-        {{gruppo}}
-      </option>
-    </select>
-
-    <select class="filter-select" [(ngModel)]="filtroOrario" (ngModelChange)="filtraOrari()">
-      <option value="">Tutti gli orari</option>
-      <option *ngFor="let orario of orariUnici" [value]="orario">
-        {{orario}}
-      </option>
-    </select>
-
-    <select class="filter-select" [(ngModel)]="filtroPalestra" (ngModelChange)="filtraOrari()">
-      <option value="">Tutte le palestre</option>
-      <option *ngFor="let palestra of palestreUniche" [value]="palestra">
-        {{palestra}}
-      </option>
-    </select>
+<div class="orari-container" [@fadeIn]>
+  <div class="orari-header">
+    <div class="filtri-container">
+      <mat-form-field appearance="outline" class="filtro">
+        <mat-label>Squadra</mat-label>
+        <mat-select [(ngModel)]="filtroGruppo" (selectionChange)="filtraOrari()">
+          <mat-option value="">Tutte</mat-option>
+          <mat-option *ngFor="let gruppo of gruppiUnici" [value]="gruppo">{{ gruppo }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="filtro">
+        <mat-label>Fascia oraria</mat-label>
+        <mat-select [(ngModel)]="filtroOrario" (selectionChange)="filtraOrari()">
+          <mat-option value="">Tutte</mat-option>
+          <mat-option *ngFor="let orario of orariUnici" [value]="orario">{{ orario }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="filtro">
+        <mat-label>Palestra</mat-label>
+        <mat-select [(ngModel)]="filtroPalestra" (selectionChange)="filtraOrari()">
+          <mat-option value="">Tutte</mat-option>
+          <mat-option *ngFor="let palestra of palestreUniche" [value]="palestra">{{ palestra }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
-
-  <div class="table-container animate-in">
-    <table mat-table [dataSource]="dataSource">
-      <!-- Gruppo Column -->
+  
+  <!-- Vista desktop - Tabella orari allenamenti -->
+  <div class="desktop-view" *ngIf="!isMobile">
+    <table mat-table [dataSource]="dataSource" class="orari-table">
+      <!-- Colonna Gruppi -->
       <ng-container matColumnDef="gruppo">
-        <th mat-header-cell *matHeaderCellDef>Gruppo</th>
-        <td mat-cell *matCellDef="let element" [attr.data-label]="'Gruppo'">
-          {{element.gruppo}}
+        <th mat-header-cell *matHeaderCellDef>Squadra</th>
+        <td mat-cell *matCellDef="let row" class="gruppo-cell">
+          <div class="gruppo-label">{{ row.gruppo }}</div>
         </td>
       </ng-container>
-
-      <!-- Dynamic Day Columns -->
+      
+      <!-- Colonne Giorni -->
       <ng-container *ngFor="let giorno of giorni" [matColumnDef]="giorno">
-        <th mat-header-cell *matHeaderCellDef>{{giorno}}</th>
-        <td mat-cell *matCellDef="let element" [attr.data-label]="giorno">
-          <div class="orario-cell" *ngFor="let orario of element[giorno]">
-            <span class="orario">{{orario.orario}}</span>
-            <span class="palestra">
-              <i class="fas fa-map-marker-alt"></i>
-              {{orario.palestra}}
-            </span>
+        <th mat-header-cell *matHeaderCellDef>{{ giorno }}</th>
+        <td mat-cell *matCellDef="let row">
+          <div class="allenamento-slot" *ngFor="let allenamento of row[giorno]">
+            <div class="allenamento-card">
+              <div class="allenamento-orario">{{ allenamento.orario }}</div>
+              <div class="allenamento-palestra">{{ allenamento.palestra }}</div>
+            </div>
           </div>
+          <div class="no-allenamento" *ngIf="row[giorno].length === 0">-</div>
         </td>
       </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      
+      <!-- Costruzione tabella -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-
-  <div class="info-text animate-in">
-    * Il seguente calendario è da considerarsi ufficioso. Eventuali variazioni o cancellazioni verranno comunicate attraverso i canali ufficiali o tramite i gruppi dedicati.
+  
+  <!-- Vista mobile -->
+  <div class="mobile-view" *ngIf="isMobile">
+    <div class="days-selector-container">
+      <div class="days-selector">
+        <div class="day-button" *ngFor="let giorno of giorni; let i = index" 
+            [class.active]="selectedDayIndex === i"
+            (click)="selectDay(i)">
+          {{ giorno.substring(0, 3) }}
+        </div>
+      </div>
+    </div>
+    
+    <div class="day-content">
+      <h3>{{ giorni[selectedDayIndex] }}</h3>
+      
+      <div class="mobile-squadre-list">
+        <div class="mobile-squadra-card" *ngFor="let squadra of getSquadreForDay(giorni[selectedDayIndex])">
+          <div class="mobile-squadra-header">
+            <div class="mobile-squadra-name">{{ squadra.gruppo }}</div>
+          </div>
+          <div class="mobile-allenamenti-container">
+            <div class="mobile-allenamento-card" *ngFor="let allenamento of squadra.allenamenti">
+              <div class="mobile-allenamento-time">
+                <i class="fas fa-clock"></i> {{ allenamento.orario }}
+              </div>
+              <div class="mobile-allenamento-place">
+                <i class="fas fa-map-marker-alt"></i> {{ allenamento.palestra }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="no-allenamenti-message" *ngIf="getSquadreForDay(giorni[selectedDayIndex]).length === 0">
+          <i class="fas fa-calendar-xmark"></i>
+          <p>Nessun allenamento programmato per questo giorno</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
