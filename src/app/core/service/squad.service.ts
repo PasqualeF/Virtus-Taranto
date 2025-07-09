@@ -1,101 +1,110 @@
-import { Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
-import { Squad, TeamSmall } from '../models/squad.model';
-import { environment } from 'src/environments/environments';
-import { HttpClient } from '@angular/common/http';
+// src/app/core/service/squad.service.ts
 
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Squad, TeamSmall } from '../models/squad.model';
+import { SquadStrapiService } from './squad-strapi.service';
+import { SquadTransformerService } from './squad-transformer.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SquadService {
-  private apiUrl = `${environment.apiUrl}/api/v1/squads`;
-  private squads: Squad[] = [
-    new Squad(
-      19,
-      'Under 19',
-      'assets/under19-team-photo.jpg',
-      [
-        { giornata: 1, partita: 'Under 19 vs Team A', data: '2024-03-01', risultato: '78-65' },
-        { giornata: 2, partita: 'Team B vs Under 19', data: '2024-03-08', risultato: '75-70' },
-        { giornata: 3, partita: 'Under 19 vs Team C', data: '2024-03-15', risultato: '82-79' },
-      ],
-      [
-        { squadra: 'Team X', punti: 20 },
-        { squadra: 'Under 19', punti: 18 },
-        { squadra: 'Team Y', punti: 16 },
-      ],
-      [
-        { nome: 'Mario Rossi', ruolo: 'Guardia' },
-        { nome: 'Luca Bianchi', ruolo: 'Ala' },
-        { nome: 'Giovanni Verdi', ruolo: 'Centro' },
-      ]
-    ),
-    new Squad(
-      17,
-      'Under 17',
-      'assets/under17-team-photo.jpg',
-      [
-        { giornata: 1, partita: 'Under 17 vs Team C', data: '2024-03-02', risultato: '85-80' },
-        { giornata: 2, partita: 'Team D vs Under 17', data: '2024-03-09', risultato: '88-92' },
-      ],
-      [
-        { squadra: 'Under 17', punti: 22 },
-        { squadra: 'Team Y', punti: 20 },
-        { squadra: 'Team Z', punti: 18 },
-      ],
-      [
-        { nome: 'Paolo Neri', ruolo: 'Playmaker' },
-        { nome: 'Andrea Blu', ruolo: 'Ala' },
-        { nome: 'Marco Gialli', ruolo: 'Centro' },
-      ]
-    )
-  ];
+  
+  constructor(
+    private squadStrapiService: SquadStrapiService,
+    private squadTransformer: SquadTransformerService
+  ) {}
 
-  constructor(private http: HttpClient) {}
-
+  /**
+   * Ottiene tutte le squadre
+   */
   getAllSquads(): Observable<Squad[]> {
-    return this.http.get<Squad[]>(`${this.apiUrl}`);
-  }
-
-  getAllSquadsSmall(): Observable<TeamSmall[]> {
-    return this.http.get<Squad[]>(`${this.apiUrl}/getAllSquadSmall`)
-    .pipe(
-      map(squads => squads.map(squad => this.mapToTeamSmall(squad)))
+    return this.squadStrapiService.getAllSquads().pipe(
+      map(strapiSquads => this.squadTransformer.transformSquads(strapiSquads))
     );
   }
 
-
-
-  getSquadById(id: number): Observable<Squad | undefined> {
-    return of(this.squads.find(squad => squad.id === id));
-  }
-
-  getSquadByName(name: string): Observable<Squad | undefined> {
-    return this.getAllSquads().pipe(
-      map(squads => squads.find(squad => 
-        squad.name.toLowerCase() === name.toLowerCase() ||
-        this.normalizeSquadName(squad.name) === this.normalizeSquadName(name)
+  /**
+   * Ottiene tutte le squadre in formato ridotto
+   */
+  getAllSquadsSmall(): Observable<TeamSmall[]> {
+    return this.squadStrapiService.getAllSquadsSmall().pipe(
+      map(strapiSquads => strapiSquads.map(squad => 
+        this.squadTransformer.transformToTeamSmall(squad)
       ))
     );
   }
 
-  private normalizeSquadName(name: string): string {
-    // Rimuove spazi e converte in minuscolo
-    // Esempio: "Under 17 Gold" -> "under17gold"
-    return name.toLowerCase().replace(/\s+/g, '');
-  }
-
-  private mapToTeamSmall(squad: Squad): TeamSmall {
-    return new TeamSmall(
-      squad.name,
-      squad.foto || squad.photoUrl, // Usa foto se disponibile, altrimenti usa photoUrl
-      '/squadra/basket/' + squad.name,
-      this.generateDescription(squad)
+  /**
+   * Ottiene una squadra per ID
+   */
+  getSquadById(id: number): Observable<Squad | undefined> {
+    return this.squadStrapiService.getSquadById(id).pipe(
+      map(strapiSquad => strapiSquad 
+        ? this.squadTransformer.transformSingleSquad(strapiSquad) 
+        : undefined
+      )
     );
   }
 
-  private generateDescription(squad: Squad): string {
-    return `Squadra composta da giocatori.`;
+  /**
+   * Ottiene una squadra per nome
+   */
+  getSquadByName(name: string): Observable<Squad | undefined> {
+    // Decodifica il nome dall'URL (gestisce spazi e caratteri speciali)
+    const decodedName = decodeURIComponent(name);
+    
+    // Prima prova con il nome esatto
+    return this.squadStrapiService.getSquadByName(decodedName).pipe(
+      switchMap(strapiSquad => {
+        if (strapiSquad) {
+          return of(this.squadTransformer.transformSingleSquad(strapiSquad));
+        }
+        
+        // Se non trova, prova con il nome normalizzato
+        const normalizedName = this.normalizeSquadName(decodedName);
+        return this.getAllSquads().pipe(
+          map(squads => squads.find(squad => 
+            this.normalizeSquadName(squad.name) === normalizedName
+          ))
+        );
+      })
+    );
+  }
+
+  /**
+   * Normalizza il nome della squadra per la ricerca
+   */
+  private normalizeSquadName(name: string): string {
+    return name.toLowerCase().replace(/\s+/g, '');
+  }
+
+  /**
+   * Ottiene solo il roster di una squadra
+   */
+  getSquadRoster(squadId: number): Observable<any[]> {
+    return this.squadStrapiService.getSquadRoster(squadId).pipe(
+      map(players => this.squadTransformer['transformRoster'](players))
+    );
+  }
+
+  /**
+   * Ottiene solo i risultati di una squadra
+   */
+  getSquadResults(squadId: number): Observable<any[]> {
+    return this.squadStrapiService.getSquadResults(squadId).pipe(
+      map(results => this.squadTransformer['transformResults'](results))
+    );
+  }
+
+  /**
+   * Ottiene solo la classifica di una squadra
+   */
+  getSquadStandings(squadId: number): Observable<any[]> {
+    return this.squadStrapiService.getSquadStandings(squadId).pipe(
+      map(standings => this.squadTransformer['transformStandings'](standings))
+    );
   }
 }

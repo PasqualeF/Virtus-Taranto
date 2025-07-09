@@ -5,16 +5,14 @@
     <span class="sottotitolo">Le persone dietro il nostro successo</span>
   </h1>
 
-  <!-- Società Selector -->
-  <div class="societa-selector" [@societaSelect]>
-    <div *ngFor="let s of societa"
-         class="societa-card"
+  <!-- Società Selector - Improved for mobile -->
+  <div class="societa-selector">
+    <div *ngFor="let s of societa" 
+         class="societa-tab"
          [class.active]="selectedSocieta === s.nome"
          (click)="loadStaff(s.nome)">
-      <div class="societa-icon">
-        <img [src]="s.logo" [alt]="s.nome">
-      </div>
-      <span class="societa-name">{{ s.nome }}</span>
+      <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
+      <span>{{ s.nome }}</span>
     </div>
   </div>
 
@@ -47,10 +45,10 @@
     <span>Caricamento staff...</span>
   </div>
 
-  <!-- Cards View -->
+  <!-- Cards View - Fixed presidency centering for 2 cards -->
   <div *ngIf="!loading && view === 'cards'" class="staff-grid" [@staffCards]>
-    <!-- Presidente Level -->
-    <div class="level-section presidente-section">
+    <!-- Presidente Level - Using presidentCountClass for correct centering -->
+    <div class="level-section presidente-section" [class]="presidentCountClass">
       <div class="level-title">{{ getLevelTitle(1) }}</div>
       <div class="staff-cards">
         <div *ngFor="let member of getStaffByLevel(1)"
@@ -106,16 +104,6 @@
                  [alt]="member.nome"
                  class="member-photo">
             <div class="member-overlay">
-             <!--   <div class="social-links" *ngIf="member.social">
-                <a *ngIf="member.social.linkedin" 
-                   [href]="member.social.linkedin" 
-                   target="_blank" 
-                   class="social-link">
-                  <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                  </svg>
-                </a> 
-              </div> -->
             </div>
           </div>
           <div class="member-info">
@@ -136,55 +124,55 @@
     </div>
   </div>
 
- <!-- Aggiungi questo nella sezione tree view del template -->
-<div *ngIf="!loading && view === 'tree'" class="org-tree">
-  <div class="tree-container">
-    <!-- Livello Presidente -->
-    <div class="tree-level">
-      <div *ngFor="let member of getStaffByLevel(1)" class="tree-card presidente tree-appear"
-           style="animation-delay: 0.2s">
-           <img *ngIf="member.imageBase64" 
-           [src]="member.imageBase64" 
-           [alt]="member.nome"
-           class="tree-photo">
-        <div class="tree-name">{{ member.nome }}</div>
-        <div class="tree-role">{{ member.ruolo }}</div>
+  <!-- Improved Tree View for mobile -->
+  <div *ngIf="!loading && view === 'tree'" class="org-tree">
+    <div class="tree-container">
+      <!-- Livello Presidente -->
+      <div class="tree-level">
+        <div *ngFor="let member of getStaffByLevel(1)" class="tree-card presidente tree-appear"
+             style="animation-delay: 0.2s">
+             <img *ngIf="member.imageBase64" 
+             [src]="member.imageBase64" 
+             [alt]="member.nome"
+             class="tree-photo">
+          <div class="tree-name">{{ member.nome }}</div>
+          <div class="tree-role">{{ member.ruolo }}</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Connettore -->
-    <div class="tree-connector" style="height: 50px; top: 180px; left: 50%"></div>
+      <!-- Connettore -->
+      <div class="tree-connector" style="height: 50px; top: 180px; left: 50%"></div>
 
-    <!-- Livello Dirigenza -->
-    <div class="tree-level">
-      <div *ngFor="let member of getStaffByLevel(2); let i = index" 
-           class="tree-card tree-appear"
-           [style.animation-delay]="(i * 0.1 + 0.4) + 's'">
-        <img *ngIf="member.imageBase64" 
-                 [src]="member.imageBase64" 
-                 [alt]="member.nome"
-                 class="tree-photo">
-        <div class="tree-name">{{ member.nome }}</div>
-        <div class="tree-role">{{ member.ruolo }}</div>
+      <!-- Livello Dirigenza -->
+      <div class="tree-level">
+        <div *ngFor="let member of getStaffByLevel(2); let i = index" 
+             class="tree-card tree-appear"
+             [style.animation-delay]="(i * 0.1 + 0.4) + 's'">
+          <img *ngIf="member.imageBase64" 
+                   [src]="member.imageBase64" 
+                   [alt]="member.nome"
+                   class="tree-photo">
+          <div class="tree-name">{{ member.nome }}</div>
+          <div class="tree-role">{{ member.ruolo }}</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Connettori per altri livelli -->
-    <div class="tree-connector" style="height: 50px; top: 380px; left: 50%"></div>
+      <!-- Connettori per altri livelli -->
+      <div class="tree-connector" style="height: 50px; top: 380px; left: 50%"></div>
 
-    <!-- Staff Tecnico e Medico -->
-    <div class="tree-level">
-      <div *ngFor="let member of getStaffByLevel(3).concat(getStaffByLevel(4)); let i = index"
-           class="tree-card tree-appear"
-           [style.animation-delay]="(i * 0.1 + 0.6) + 's'">
-           <img *ngIf="member.imageBase64" 
-           [src]="member.imageBase64" 
-           [alt]="member.nome"
-           class="tree-photo">
-        <div class="tree-name">{{ member.nome }}</div>
-        <div class="tree-role">{{ member.ruolo }}</div>
+      <!-- Staff Tecnico e Medico -->
+      <div class="tree-level">
+        <div *ngFor="let member of getStaffByLevel(3).concat(getStaffByLevel(4)); let i = index"
+             class="tree-card tree-appear"
+             [style.animation-delay]="(i * 0.1 + 0.6) + 's'">
+             <img *ngIf="member.imageBase64" 
+             [src]="member.imageBase64" 
+             [alt]="member.nome"
+             class="tree-photo">
+          <div class="tree-name">{{ member.nome }}</div>
+          <div class="tree-role">{{ member.ruolo }}</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

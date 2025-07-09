@@ -5,87 +5,168 @@
     {{ 'PARTNER_BENEFIT.sottotitolo' | translate }}
   </p>
 
-  <!-- NUOVA SEZIONE PARTNER - Banner con Marquee e Showcase Wall -->
-  <div class="partner-showcase" [@fadeIn]>
-    <!-- Marquee continuo di loghi (sempre visibili) -->
-    <div class="partner-marquee">
-      <div class="marquee-content">
-        <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
-          <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo">
-        </div>
-        <!-- Duplicati per looping continuo -->
-        <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
-          <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo">
-        </div>
-      </div>
+  <!-- Error State Generale -->
+  <div class="error-container" *ngIf="hasErrors && !isLoading" [@fadeIn]>
+    <i class="material-icons error-icon">error_outline</i>
+    <h3 class="error-title">Errore nel caricamento dei dati</h3>
+    <p class="error-message">
+      Si è verificato un errore durante il caricamento dei contenuti. 
+      Verifica la tua connessione internet e riprova.
+    </p>
+    <button class="retry-button" (click)="refreshData()">
+      <i class="material-icons">refresh</i>
+      Riprova
+    </button>
+  </div>
+
+  <!-- Partner Showcase Section -->
+  <div class="partner-showcase" [@fadeIn] *ngIf="!hasErrors">
+    
+    <!-- Loading State per Partner -->
+    <div class="loading-container" *ngIf="isLoadingPartners">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Caricamento partner...</p>
     </div>
 
-    <!-- Categorie di partner (opzionale, se hai diverse categorie di sponsor) -->
-    <div class="partner-category-tabs" *ngIf="categories.length > 1">
-      <div class="category-tab" 
-           *ngFor="let category of categories" 
-           [class.active]="selectedCategory === category"
-           (click)="selectCategory(category)">
-        {{ category }}
-      </div>
-    </div>
-
-    <!-- Visualizzazione degli sponsor per categoria -->
-    <div *ngIf="categories.length > 1">
-      <div class="category-section" *ngFor="let category of categories">
-        <h2 class="category-heading" *ngIf="getPartnersByCategory(category).length > 0 && (selectedCategory === 'Tutti' || selectedCategory === category)" [id]="category">
-          {{ category }}
-        </h2>
-        <div class="sponsor-wall" 
-             *ngIf="selectedCategory === 'Tutti' || selectedCategory === category"
-             [class.one-item]="getPartnersByCategory(category).length === 1"
-             [class.two-items]="getPartnersByCategory(category).length === 2">
-          <div class="sponsor-tile" *ngFor="let partner of getPartnersByCategory(category); let i = index" 
-               [@staggerIn]="i" [id]="partner.name">
-            <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
-            <div class="sponsor-logo-wrapper">
-              <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo">
-            </div>
-            <h3 class="sponsor-name">{{ partner.name }}</h3>
-            <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" target="_blank" rel="noopener noreferrer">
-              {{ 'PARTNER_BENEFIT.sito' | translate }}
-              <i class="material-icons">open_in_new</i>
-            </a>
+    <!-- Partner Content - quando caricati -->
+    <ng-container *ngIf="!isLoadingPartners && partners.length > 0">
+      <!-- Marquee continuo di loghi -->
+      <div class="partner-marquee">
+        <div class="marquee-content">
+          <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
+            <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo" 
+                 loading="lazy" (error)="onImageError($event)">
+          </div>
+          <!-- Duplicati per looping continuo -->
+          <div class="marquee-item" *ngFor="let partner of partners" (click)="scrollToPartner(partner.name)">
+            <img [src]="partner.logo" [alt]="partner.name" class="marquee-logo" 
+                 loading="lazy" (error)="onImageError($event)">
           </div>
         </div>
       </div>
+
+      <!-- Categorie di partner -->
+      <div class="partner-category-tabs" *ngIf="categories.length > 1 && !isLoadingCategories">
+        <div class="category-tab" 
+             *ngFor="let category of categories" 
+             [class.active]="selectedCategory === category"
+             (click)="selectCategory(category)">
+          {{ category }}
+        </div>
+      </div>
+
+      <!-- Loading skeleton per categorie -->
+      <div class="loading-container" *ngIf="isLoadingCategories" style="padding: 1rem;">
+        <div class="loading-spinner" style="width: 20px; height: 20px;"></div>
+      </div>
+
+      <!-- Visualizzazione degli sponsor per categoria -->
+      <div *ngIf="categories.length > 1">
+        <div class="category-section" *ngFor="let category of categories">
+          <h2 class="category-heading" 
+              *ngIf="getPartnersByCategory(category).length > 0 && (selectedCategory === 'Tutti' || selectedCategory === category)" 
+              [id]="category">
+            {{ category }}
+          </h2>
+          <div class="sponsor-wall" 
+               *ngIf="selectedCategory === 'Tutti' || selectedCategory === category"
+               [class.one-item]="getPartnersByCategory(category).length === 1"
+               [class.two-items]="getPartnersByCategory(category).length === 2">
+            <div class="sponsor-tile" *ngFor="let partner of getPartnersByCategory(category); let i = index" 
+                 [@staggerIn]="i" [id]="partner.name">
+              <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
+              <div class="sponsor-logo-wrapper">
+                <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo"
+                     loading="lazy" (error)="onImageError($event)">
+              </div>
+              <h3 class="sponsor-name">{{ partner.name }}</h3>
+              <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" 
+                 target="_blank" rel="noopener noreferrer">
+                {{ 'PARTNER_BENEFIT.sito' | translate }}
+                <i class="material-icons">open_in_new</i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visualizzazione senza categorie -->
+      <div class="sponsor-wall" 
+           *ngIf="categories.length <= 1"
+           [class.one-item]="partners.length === 1"
+           [class.two-items]="partners.length === 2">
+        <div class="sponsor-tile" *ngFor="let partner of partners; let i = index" 
+             [@staggerIn]="i" [id]="partner.name">
+          <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
+          <div class="sponsor-logo-wrapper">
+            <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo"
+                 loading="lazy" (error)="onImageError($event)">
+          </div>
+          <h3 class="sponsor-name">{{ partner.name }}</h3>
+          <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" 
+             target="_blank" rel="noopener noreferrer">
+            {{ 'PARTNER_BENEFIT.sito' | translate }}
+            <i class="material-icons">open_in_new</i>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty State per Partner -->
+    <div class="empty-state" *ngIf="!isLoadingPartners && partners.length === 0 && !partnersError">
+      <i class="material-icons empty-icon">business</i>
+      <h3 class="empty-title">Nessun partner disponibile</h3>
+      <p class="empty-message">
+        Al momento non ci sono partner da visualizzare. Controlla più tardi per vedere le nuove collaborazioni.
+      </p>
     </div>
 
-    <!-- Visualizzazione senza categorie -->
-    <div class="sponsor-wall" 
-         *ngIf="categories.length <= 1"
-         [class.one-item]="partners.length === 1"
-         [class.two-items]="partners.length === 2">
-      <div class="sponsor-tile" *ngFor="let partner of partners; let i = index" 
-           [@staggerIn]="i" [id]="partner.name">
-        <div class="sponsor-highlight" *ngIf="partner.highlight">{{ partner.highlight }}</div>
-        <div class="sponsor-logo-wrapper">
-          <img [src]="partner.logo" [alt]="partner.name" class="sponsor-logo">
-        </div>
-        <h3 class="sponsor-name">{{ partner.name }}</h3>
-        <a *ngIf="partner.website" [href]="partner.website" class="sponsor-link" target="_blank" rel="noopener noreferrer">
-          {{ 'PARTNER_BENEFIT.sito' | translate }}
-          <i class="material-icons">open_in_new</i>
-        </a>
+    <!-- Skeleton Loading per Partner -->
+    <div class="skeleton-partner-wall" *ngIf="isLoadingPartners">
+      <div class="skeleton-partner-card" *ngFor="let item of [1,2,3,4,5,6]">
+        <div class="skeleton-logo"></div>
+        <div class="skeleton-name"></div>
+        <div class="skeleton-button"></div>
       </div>
     </div>
   </div>
 
   <!-- Benefits Section -->
-  <section class="benefits-section" [@fadeIn]>
+  <section class="benefits-section" [@fadeIn] *ngIf="!benefitsError">
     <h2 class="section-title">{{ 'PARTNER_BENEFIT.diventaPartner' | translate }}</h2>
-    <div class="benefits-grid">
+    
+    <!-- Loading State per Benefits -->
+    <div class="loading-container" *ngIf="isLoadingBenefits">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Caricamento vantaggi...</p>
+    </div>
+
+    <!-- Benefits Content -->
+    <div class="benefits-grid" *ngIf="!isLoadingBenefits && benefits.length > 0">
       <div class="benefit-card" *ngFor="let benefit of benefits; let i = index" 
            [@slideIn] [style.animation-delay]="i * 150 + 'ms'">
         <i class="material-icons benefit-icon">{{benefit.icon}}</i>
         <h3 class="benefit-title">{{benefit.title}}</h3>
         <p class="benefit-description">{{benefit.description}}</p>
       </div>
+    </div>
+
+    <!-- Skeleton Loading per Benefits -->
+    <div class="skeleton-benefits-grid" *ngIf="isLoadingBenefits">
+      <div class="skeleton-benefit-card" *ngFor="let item of [1,2,3,4]">
+        <div class="skeleton-benefit-icon"></div>
+        <div class="skeleton-benefit-title"></div>
+        <div class="skeleton-benefit-description"></div>
+      </div>
+    </div>
+
+    <!-- Empty State per Benefits -->
+    <div class="empty-state" *ngIf="!isLoadingBenefits && benefits.length === 0 && !benefitsError">
+      <i class="material-icons empty-icon">star</i>
+      <h3 class="empty-title">Nessun vantaggio disponibile</h3>
+      <p class="empty-message">
+        I vantaggi della partnership verranno pubblicati a breve.
+      </p>
     </div>
   </section>
 
@@ -99,34 +180,97 @@
       
       <form [formGroup]="collaborationForm" (ngSubmit)="onSubmit()" class="collaboration-form"
             *ngIf="!isFormSubmitted">
+        
         <div class="form-group">
-          <input type="text" formControlName="companyName" placeholder="Nome Azienda" 
+          <input type="text" formControlName="companyName" placeholder="Nome Azienda *" 
                  [class.invalid]="collaborationForm.get('companyName')?.touched && 
                                  collaborationForm.get('companyName')?.invalid">
+          <div class="form-error" *ngIf="collaborationForm.get('companyName')?.touched && 
+                                        collaborationForm.get('companyName')?.invalid">
+            <i class="material-icons">error</i>
+            <span *ngIf="collaborationForm.get('companyName')?.errors?.['required']">
+              Il nome dell'azienda è obbligatorio
+            </span>
+            <span *ngIf="collaborationForm.get('companyName')?.errors?.['minlength']">
+              Il nome deve essere di almeno 2 caratteri
+            </span>
+          </div>
         </div>
+
         <div class="form-group">
-          <input type="text" formControlName="contactPerson" placeholder="Persona di Riferimento"
+          <input type="text" formControlName="contactPerson" placeholder="Persona di Riferimento *"
                  [class.invalid]="collaborationForm.get('contactPerson')?.touched && 
                                  collaborationForm.get('contactPerson')?.invalid">
+          <div class="form-error" *ngIf="collaborationForm.get('contactPerson')?.touched && 
+                                        collaborationForm.get('contactPerson')?.invalid">
+            <i class="material-icons">error</i>
+            <span *ngIf="collaborationForm.get('contactPerson')?.errors?.['required']">
+              La persona di riferimento è obbligatoria
+            </span>
+            <span *ngIf="collaborationForm.get('contactPerson')?.errors?.['minlength']">
+              Il nome deve essere di almeno 2 caratteri
+            </span>
+          </div>
         </div>
+
         <div class="form-group">
-          <input type="email" formControlName="email" placeholder="Email"
+          <input type="email" formControlName="email" placeholder="Email *"
                  [class.invalid]="collaborationForm.get('email')?.touched && 
                                  collaborationForm.get('email')?.invalid">
+          <div class="form-error" *ngIf="collaborationForm.get('email')?.touched && 
+                                        collaborationForm.get('email')?.invalid">
+            <i class="material-icons">error</i>
+            <span *ngIf="collaborationForm.get('email')?.errors?.['required']">
+              L'email è obbligatoria
+            </span>
+            <span *ngIf="collaborationForm.get('email')?.errors?.['email']">
+              Inserisci un'email valida
+            </span>
+          </div>
         </div>
+
         <div class="form-group">
-          <input type="tel" formControlName="phone" placeholder="Telefono"
+          <input type="tel" formControlName="phone" placeholder="Telefono *"
                  [class.invalid]="collaborationForm.get('phone')?.touched && 
                                  collaborationForm.get('phone')?.invalid">
+          <div class="form-error" *ngIf="collaborationForm.get('phone')?.touched && 
+                                        collaborationForm.get('phone')?.invalid">
+            <i class="material-icons">error</i>
+            <span *ngIf="collaborationForm.get('phone')?.errors?.['required']">
+              Il telefono è obbligatorio
+            </span>
+            <span *ngIf="collaborationForm.get('phone')?.errors?.['pattern']">
+              Inserisci un numero di telefono valido
+            </span>
+          </div>
         </div>
+
         <div class="form-group">
-          <textarea formControlName="message" placeholder="Il tuo messaggio"
+          <textarea formControlName="message" placeholder="Il tuo messaggio *"
                     [class.invalid]="collaborationForm.get('message')?.touched && 
                                     collaborationForm.get('message')?.invalid"></textarea>
+          <div class="form-error" *ngIf="collaborationForm.get('message')?.touched && 
+                                        collaborationForm.get('message')?.invalid">
+            <i class="material-icons">error</i>
+            <span *ngIf="collaborationForm.get('message')?.errors?.['required']">
+              Il messaggio è obbligatorio
+            </span>
+            <span *ngIf="collaborationForm.get('message')?.errors?.['minlength']">
+              Il messaggio deve essere di almeno 10 caratteri
+            </span>
+            <span *ngIf="collaborationForm.get('message')?.errors?.['maxlength']">
+              Il messaggio non può superare i 1000 caratteri
+            </span>
+          </div>
         </div>
-        <button type="submit" class="submit-button" [disabled]="!collaborationForm.valid">
-          Invia Richiesta
-          <i class="material-icons">send</i>
+
+        <button type="submit" class="submit-button" 
+                [disabled]="!collaborationForm.valid || isSubmittingForm"
+                [class.loading]="isSubmittingForm">
+          <span *ngIf="!isSubmittingForm">
+            Invia Richiesta
+            <i class="material-icons">send</i>
+          </span>
         </button>
       </form>
 
@@ -137,4 +281,12 @@
       </div>
     </div>
   </section>
+
+  <!-- Refresh Button (per debug/amministrazione) -->
+  <button class="refresh-button" (click)="refreshData()" 
+          [class.spinning]="isLoading"
+          *ngIf="!isLoading"
+          title="Aggiorna dati">
+    <i class="material-icons">refresh</i>
+  </button>
 </div>

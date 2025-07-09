@@ -1,5 +1,5 @@
 // organigramma.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
 import { OrganigrammaService, Societa } from 'src/app/core/service/organigramma.service';
 import { environment } from 'src/environments/environments';
@@ -54,19 +54,28 @@ import { OrganigrammaData, StaffMember } from 'src/app/core/models/person.model'
 })
 export class OrganigrammaComponent implements OnInit {
   societa: Societa[] = [];
-  organigramm: OrganigrammaData [] = [];
+  organigramm: OrganigrammaData[] = [];
   selectedSocieta: string = 'Virtus Taranto';
   staffMembers: StaffMember[] = [];
   loading = false;
   hoverStates: { [key: number]: boolean } = {};
   view: 'cards' | 'tree' = 'cards';
+  isMobile: boolean = false;
+  presidentCountClass: string = '';
 
   constructor(private organigrammaService: OrganigrammaService) {}
 
   ngOnInit() {
+    this.checkScreenSize();
     this.initializeSocieta();
     this.loadStaff(this.selectedSocieta);
   }
+
+  @HostListener('window:resize')
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
   private initializeSocieta() {
     this.societa = this.organigrammaService.getSocieta();
   }
@@ -75,8 +84,7 @@ export class OrganigrammaComponent implements OnInit {
     this.loading = true;
     this.organigrammaService.getAllSocieta().subscribe({
       next: (organigramm) => {
-       console.log(organigramm);
-      
+        console.log(organigramm);
         this.loading = false;
         if (organigramm.length > 0) {
           this.selectedSocieta = organigramm[0];
@@ -100,6 +108,10 @@ export class OrganigrammaComponent implements OnInit {
         this.staffMembers.forEach(member => {
           this.hoverStates[member.id] = false;
         });
+        
+        // Check president count for CSS class
+        const presidentCount = this.getStaffByLevel(1).length;
+        this.presidentCountClass = presidentCount === 2 ? 'two-cards' : '';
       },
       error: (error) => {
         console.error('Errore nel caricamento dello staff:', error);
@@ -107,6 +119,7 @@ export class OrganigrammaComponent implements OnInit {
       }
     });
   }
+  
   getStaffByLevel(level: number): StaffMember[] {
     return this.staffMembers.filter(member => member.livello === level);
   }
@@ -119,6 +132,8 @@ export class OrganigrammaComponent implements OnInit {
         return 'Staff Tecnico';
       case 3:
         return 'Dirigenza';
+      case 4:
+        return 'Staff Medico';
       default:
         return '';
     }

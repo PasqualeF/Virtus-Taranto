@@ -1,11 +1,11 @@
 // src/app/components/media/media.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Societa } from '../../core/models/societa.model';
 import { Foto, Video, Articolo, MediaData, SocietaMediaMap } from '../../core/models/media.model';
+import { OrganigrammaService,Societa } from 'src/app/core/service/organigramma.service';
 
 @Component({
   selector: 'app-media',
@@ -28,8 +28,10 @@ import { Foto, Video, Articolo, MediaData, SocietaMediaMap } from '../../core/mo
 })
 export class MediaComponent implements OnInit {
   societa: Societa[] = [];
-  selectedSocieta: Societa | null = null;
   activeTab: 'foto' | 'video' | 'rassegna' = 'foto';
+  selectedSocieta: string = 'Virtus Taranto';
+  isMobile: boolean = false;
+  loading: boolean = false;
   
   // Dati media per società
   mediaData: SocietaMediaMap = {};
@@ -65,65 +67,35 @@ export class MediaComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private organigrammaService: OrganigrammaService // Usiamo il service di organigramma per le società
   ) {}
 
   ngOnInit(): void {
-    this.loadData();
+    this.checkScreenSize();
+    this.initializeSocieta();
+    
+    // Precarica i dati mockati
+    this.mediaData = this.getMockMediaData();
+    
+    // Carica i dati per la società iniziale
+    this.loadMediaData();
   }
 
-  private loadData(): void {
-    // Mock dei dati delle società
-    this.societa = [
-      {
-        nome: 'Basket Club Junior',
-        logo: 'assets/images/logo-bcj.png',
-        valori: ['Integrità', 'Rispetto', 'Lavoro di squadra', 'Eccellenza'],
-        palmares: [
-          { anno: '2023', titolo: 'Campionato Under 16', descrizione: 'Vincitori del campionato regionale Under 16' },
-          { anno: '2022', titolo: 'Coppa Regionale', descrizione: 'Finalisti della coppa regionale Under 14' }
-        ],
-        storia: '',
-        descrizione: '',
-        indirizzo: '',
-        telefono: '',
-        email: '',
-        sito: '',
-        documentoUrl: ''
-      },
-      {
-        nome: 'Pallacanestro Giovani',
-        logo: 'assets/images/logo-pg.png',
-        valori: ['Passione', 'Disciplina', 'Crescita', 'Divertimento'],
-        palmares: [
-          { anno: '2023', titolo: 'Torneo Estivo', descrizione: 'Vincitori del torneo estivo Under 18' },
-          { anno: '2021', titolo: 'Campionato Under 13', descrizione: 'Campioni regionali Under 13' }
-        ],
-        storia: '',
-        descrizione: '',
-        indirizzo: '',
-        telefono: '',
-        email: '',
-        sito: '',
-        documentoUrl: ''
-      }
-    ];
-    
-    if (this.societa.length > 0) {
-      this.selectedSocieta = this.societa[0];
-      
-      // Mock dei dati media
-      this.mediaData = this.getMockMediaData();
-      
-      // Carica i dati per la società selezionata
-      this.loadMediaData();
-    }
+  @HostListener('window:resize')
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  private initializeSocieta() {
+    // Usa il service di organigramma per ottenere le società
+    this.societa = this.organigrammaService.getSocieta();
   }
   
   private getMockMediaData(): SocietaMediaMap {
     // Dati di esempio per simulare il ritorno da un'API
     return {
-      'Basket Club Junior': {
+      'Virtus Taranto': {
         foto: [
           {
             id: 1,
@@ -263,6 +235,53 @@ export class MediaComponent implements OnInit {
             anno: '2023'
           }
         ]
+      },
+      'Support_o': {
+        foto: [
+          {
+            id: 6,
+            url: 'assets/test.jpg',
+            thumbnail: 'assets/test.jpg',
+            titolo: 'Campionato Regionale 2023',
+            descrizione: 'La Virtus Taranto durante il campionato regionale',
+            data: new Date('2023-03-20'),
+            categoria: 'Under 18',
+            stagione: '2022/2023'
+          },
+          {
+            id: 7,
+            url: 'assets/test.jpg',
+            thumbnail: 'assets/test.jpg',
+            titolo: 'Allenamento Preparazione',
+            descrizione: 'Sessione di allenamento pre-stagione',
+            data: new Date('2023-08-15'),
+            categoria: 'Senior',
+            stagione: '2023/2024'
+          }
+        ],
+        video: [
+          {
+            id: 8,
+            url: 'https://www.youtube.com/embed/example123',
+            thumbnail: 'assets/test.jpg',
+            titolo: 'Highlights Stagione 2022/2023',
+            descrizione: 'I momenti migliori della stagione passata',
+            data: new Date('2023-06-10'),
+            categoria: 'Highlights',
+            stagione: '2022/2023'
+          }
+        ],
+        articoli: [
+          {
+            id: 9,
+            titolo: 'Virtus Taranto pronta per la nuova stagione',
+            excerpt: 'La società ha presentato il nuovo roster e lo staff tecnico...',
+            contenuto: 'Articolo completo sulla presentazione della squadra...',
+            data: new Date('2023-09-01'),
+            fonte: 'Gazzetta dello Sport',
+            anno: '2023'
+          }
+        ]
       }
     };
   }
@@ -270,19 +289,26 @@ export class MediaComponent implements OnInit {
   private loadMediaData(): void {
     if (!this.selectedSocieta) return;
     
-    if (this.mediaData[this.selectedSocieta.nome]) {
-      // Recupera i dati della società selezionata
-      const societaMedia = this.mediaData[this.selectedSocieta.nome];
+    this.loading = true;
+    
+    // Simulazione di caricamento asincrono per un effetto più realistico
+    setTimeout(() => {
+      if (this.mediaData[this.selectedSocieta]) {
+        // Recupera i dati della società selezionata
+        const societaMedia = this.mediaData[this.selectedSocieta];
+        
+        // Popola le liste per i filtri
+        this.populateFilterLists(societaMedia);
+        
+        // Filtra i media in base ai filtri attuali
+        this.filtraMedia();
+      } else {
+        // Reset dei dati filtrati se non ci sono dati
+        this.resetFilteredData();
+      }
       
-      // Popola le liste per i filtri
-      this.populateFilterLists(societaMedia);
-      
-      // Filtra i media in base ai filtri attuali
-      this.filtraMedia();
-    } else {
-      // Reset dei dati filtrati se non ci sono dati
-      this.resetFilteredData();
-    }
+      this.loading = false;
+    }, 500); // Breve ritardo per mostrare il loader
   }
   
   populateFilterLists(mediaData: MediaData): void {
@@ -332,8 +358,10 @@ export class MediaComponent implements OnInit {
     this.totalPages = 1;
   }
   
-  selectSocieta(societa: Societa): void {
-    this.selectedSocieta = societa;
+  // Metodo aggiornato per allinearlo con organigramma.component.ts
+  selectSocieta(societaName: string): void {
+    this.loading = true;
+    this.selectedSocieta = societaName;
     this.currentPage = 1;
     this.filtroStagione = 'all';
     this.filtroCategoria = 'all';
@@ -374,12 +402,12 @@ export class MediaComponent implements OnInit {
   }
   
   filtraMedia(): void {
-    if (!this.selectedSocieta || !this.mediaData[this.selectedSocieta.nome]) {
+    if (!this.selectedSocieta || !this.mediaData[this.selectedSocieta]) {
       this.resetFilteredData();
       return;
     }
     
-    const mediaData = this.mediaData[this.selectedSocieta.nome];
+    const mediaData = this.mediaData[this.selectedSocieta];
     
     // Filtra foto
     if (this.activeTab === 'foto') {
@@ -475,7 +503,6 @@ export class MediaComponent implements OnInit {
       window.open(articolo.url, '_blank');
     } else {
       // Altrimenti, implementa la visualizzazione interna dell'articolo
-      // Per ora, potremmo usare un approccio semplice con localStorage e navigazione
       localStorage.setItem('articoloCorrente', JSON.stringify(articolo));
       this.router.navigate(['/who-else/media/articolo', articolo.id]);
     }

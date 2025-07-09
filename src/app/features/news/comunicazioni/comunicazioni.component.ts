@@ -1,9 +1,10 @@
-// comunicazioni.component.ts
+// comunicazioni.component.ts (aggiornato)
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { trigger, state, style, transition, animate, query, stagger, keyframes } from '@angular/animations';
-import { Comunicazione, ComunicazioniService } from 'src/app/core/service/comunicazioni.service';
+import { Comunicazione, ComunicazioniStrapiService } from 'src/app/core/service/comunicazione-strapi.service';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-comunicazioni',
@@ -54,13 +55,12 @@ export class ComunicazioniComponent implements OnInit {
   loading = true;
   searchControl = new FormControl('');
   filterType: 'tutti' | 'urgente' | 'importante' | 'standard' = 'tutti';
-  filterStatus: 'tutti' | 'nuovo' | 'letto' | 'archiviato' = 'tutti';
   expandedId: number | null = null;
   pulseStates: { [key: number]: string } = {};
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
-  constructor(private comunicazioniService: ComunicazioniService) {}
+  constructor(private comunicazioniService: ComunicazioniStrapiService) {}
 
   ngOnInit(): void {
     this.loadComunicazioni();
@@ -70,35 +70,82 @@ export class ComunicazioniComponent implements OnInit {
   private setupSearch(): void {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(term => {
-      this.filterComunicazioni(term || '');
+      distinctUntilChanged(),
+      switchMap(term => {
+        if (!term || term.trim() === '') {
+          // Se non c'è termine di ricerca, usa il filtro locale
+          this.filterComunicazioniLocally(term || '');
+          return of([]);
+        } else {
+          // Se c'è un termine di ricerca, cerca su Strapi
+          this.loading = true;
+          return this.comunicazioniService.searchComunicazioni(term);
+        }
+      })
+    ).subscribe(results => {
+      if (results.length > 0) {
+        // Risultati dalla ricerca Strapi
+        this.filteredComunicazioni = this.applyStatusFilter(results);
+        this.loading = false;
+      }
+      // Se results è vuoto, significa che stiamo usando il filtro locale
     });
   }
 
   loadComunicazioni(): void {
-    this.comunicazioniService.getComunicazioni().subscribe(data => {
-      this.comunicazioni = data;
-      this.filteredComunicazioni = data;
-      this.loading = false;
-      // Inizializza gli stati delle animazioni
-      this.comunicazioni.forEach(com => {
-        this.pulseStates[com.id] = 'inactive';
-      });
+    this.loading = true;
+    this.comunicazioniService.getComunicazioni().subscribe({
+      next: (data) => {
+        this.comunicazioni = data;
+        this.filteredComunicazioni = data;
+        this.loading = false;
+        // Inizializza gli stati delle animazioni
+        this.comunicazioni.forEach(com => {
+          this.pulseStates[com.id] = 'inactive';
+        });
+      },
+      error: (error) => {
+        console.error('Errore nel caricamento delle comunicazioni:', error);
+        this.loading = false;
+      }
     });
   }
 
   filterComunicazioni(searchTerm: string): void {
+    // Questo metodo ora viene chiamato solo per i filtri di tipo
+    if (this.filterType !== 'tutti') {
+      this.loading = true;
+      this.comunicazioniService.getComunicazioniByTipo(this.filterType).subscribe({
+        next: (data) => {
+          this.comunicazioni = data;
+          this.filteredComunicazioni = this.applyStatusFilter(data);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Errore nel filtro per tipo:', error);
+          this.loading = false;
+        }
+      });
+    } else {
+      // Se "tutti" è selezionato, ricarica tutte le comunicazioni
+      this.loadComunicazioni();
+    }
+  }
+
+  private filterComunicazioniLocally(searchTerm: string): void {
     this.filteredComunicazioni = this.comunicazioni.filter(com => {
       const matchesSearch = !searchTerm || 
         com.titolo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         com.contenuto.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesType = this.filterType === 'tutti' || com.tipo === this.filterType;
-      const matchesStatus = this.filterStatus === 'tutti' || com.stato === this.filterStatus;
       
-      return matchesSearch && matchesType && matchesStatus;
+      return matchesSearch && matchesType;
     });
+  }
+
+  private applyStatusFilter(comunicazioni: Comunicazione[]): Comunicazione[] {
+    return comunicazioni;
   }
 
   toggleExpand(id: number): void {
@@ -120,7 +167,6 @@ export class ComunicazioniComponent implements OnInit {
       default: return 'from-blue-500 to-blue-700';
     }
   }
-  
 
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('it-IT', {
@@ -132,20 +178,10 @@ export class ComunicazioniComponent implements OnInit {
     });
   }
 
-  markAsRead(comunicazione: Comunicazione): void {
-    if (comunicazione.stato === 'nuovo') {
-      comunicazione.stato = 'letto';
-      // Qui potresti aggiungere una chiamata al backend per aggiornare lo stato
-    }
-  }
 
-  archiveCommunication(comunicazione: Comunicazione): void {
-    comunicazione.stato = 'archiviato';
-    // Qui potresti aggiungere una chiamata al backend per archiviare
-  }
 
   downloadAttachment(url: string): void {
-    // Implementa la logica di download
-    console.log('Downloading:', url);
+    // Apre il file in una nuova finestra per il download
+    window.open(url, '_blank');
   }
 }

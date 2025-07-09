@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, Renderer2, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SquadNavigationService } from 'src/app/core/service/squad-navigation.service';
 
 interface SubMenuItem {
   name: string;
@@ -44,11 +45,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   activeNestedMenuItems: SubMenuItem[] | null = null;
   
   private routerSubscription: Subscription;
+  private squadsSubscription: Subscription | null = null;
+
+  // Array di elementi di navigazione
+  navItems: NavItem[] = [];
 
   constructor(
     private renderer: Renderer2, 
     private el: ElementRef,
-    private router: Router
+    private router: Router,
+    private squadNavigationService: SquadNavigationService
   ) {
     // Ascolta i cambi di route per chiudere la sidebar
     this.routerSubscription = this.router.events.subscribe((event) => {
@@ -58,129 +64,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Array di elementi di navigazione - uguale all'originale
-  navItems: NavItem[] = [
-    { 
-      label: 'News', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Orari Allenamenti', route: '/news/orari-allenamenti' },
-            { name: 'Ultimissime', route: '/news/ultimissime' },
-            { name: 'Comunicazioni', route: '/news/comunicazioni' }
-          ]
-        },
-      ] 
-    },
-    { 
-      label: 'Media', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Foto', route: '/media/foto' },
-            { name: 'Video', route: '/news/ultimissime' }
-          ]
-        },
-      ] 
-    },
-    {      
-      label: 'Squadre', 
-      submenuItems: [
-        {
-          label: 'Basket',
-          items: [
-            { name: 'Under 19  gold', route: '/squadra/basket/Under 19  gold' },
-            { name: 'Under 19  silver', route: '/squadra/basket/Under 19  silver' },
-            { name: 'Under 17  ecc', route: '/squadra/basket/Under 17  ecc' },
-            { name: 'Under 17  gold', route: '/squadra/basket/Under 17  gold' },
-            { name: 'Under 15  ecc', route: '/squadra/basket/Under 15  ecc' },
-            { name: 'Under 15  silver', route: '/squadra/basket/Under 15  silver' },
-            { name: 'Under 14  gold', route: '/squadra/basket/Under 14  gold' },
-            { name: 'Under 13  gold', route: '/squadra/basket/Under 13  gold' }
-          ]
-        },
-        {
-          label: 'Volley',
-          items: [
-            { name: 'Under 18', route: '/squadra/volley/under-18' },
-            { name: 'Under 16', route: '/squadra/volley/under-16' }
-          ]
-        },
-        {
-          label: 'Mini',
-          items: [
-            { name: 'Minibasket', route: '/squadra/mini/minibasket' },
-            { name: 'Minivolley', route: '/squadra/mini/minivolley' }
-          ]
-        }
-      ]
-    },
-    { 
-      label: 'Who Else?', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Storia', route: '/who-else/storia' },
-            { name: 'Partner', route: '/who-else/partner' },
-            { name: 'Palestre', route: '/who-else/palestre' },
-            { name: 'Organigramma', route: '/who-else/organigramma' },
-            { name: 'Contatti', route: '/who-else/contatti'},
-          ]
-        },
-      ] 
-    },
-    { 
-      label: 'Store', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Next-Gen Style', route: '/shop' },
-            { name: 'Game Day Essentials', route: '/servizi/visitaMedica' },
-            { name: 'Urban lifeStyle', route: '/servizi/iscrizioni' }
-          ]
-        },
-      ] 
-    },
-    { 
-      label: 'Eventi', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Tornei', route: '/eventi/tornei' },
-            { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
-            { name: 'Calendario', route: '/eventi/calendario' }
-          ]
-        },
-      ] 
-    },
-    { 
-      label: 'Servizi', 
-      submenuItems: [
-        {
-          label: '',
-          items: [
-            { name: 'Consulenza Legale e Assicurativa', route: '/servizi/assicurazione' },
-            { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
-            { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
-            { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' }
-          ]
-        },
-      ] 
-    }
-  ];
-
   ngOnInit() {
-    // Inizializza lo stato dei menu
-    this.navItems = this.navItems.map(item => ({
-      ...item,
-      isOpen: false
-    }));
-
+    // Inizializza il menu con i dati statici
+    this.initializeStaticMenu();
+    
+    // Carica le squadre da Strapi
+    this.loadSquadsFromStrapi();
+    
     // Aggiunge listener per tasti
     this.setupKeyboardNavigation();
   }
@@ -190,7 +80,155 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.squadsSubscription) {
+      this.squadsSubscription.unsubscribe();
+    }
     this.renderer.removeClass(document.body, 'mobile-menu-open');
+  }
+
+  private initializeStaticMenu() {
+    this.navItems = [
+      { 
+        label: 'News', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Orari Allenamenti', route: '/news/orari-allenamenti' },
+              { name: 'Ultimissime', route: '/news/ultimissime' },
+              { name: 'Comunicazioni', route: '/news/comunicazioni' }
+            ]
+          },
+        ] 
+      },
+      { 
+        label: 'Media', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Foto', route: '/media/foto' },
+              { name: 'Video', route: '/news/ultimissime' }
+            ]
+          },
+        ] 
+      },
+      {      
+        label: 'Squadre', 
+        submenuItems: [] // Sarà popolato dinamicamente
+      },
+      { 
+        label: 'Who Else?', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Storia', route: '/who-else/storia' },
+              { name: 'Achivements', route: '/who-else/achivements'},
+              { name: 'Partner', route: '/who-else/partner' },
+              { name: 'Palestre', route: '/who-else/palestre' },
+              { name: 'Organigramma', route: '/who-else/organigramma' },
+              { name: 'Contatti', route: '/who-else/contatti'}
+              
+            ]
+          },
+        ] 
+      },
+      { 
+        label: 'Store', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Next-Gen Style', route: '/shop' },
+              { name: 'Game Day Essentials', route: '/servizi/visitaMedica' },
+              { name: 'Urban lifeStyle', route: '/servizi/iscrizioni' }
+            ]
+          },
+        ] 
+      },
+      { 
+        label: 'Eventi', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Tornei', route: '/eventi/tornei' },
+              { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
+              { name: 'Calendario', route: '/eventi/calendario' }
+            ]
+          },
+        ] 
+      },
+      { 
+        label: 'Servizi', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Consulenza Legale e Assicurativa', route: '/servizi/assicurazione' },
+              { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
+              { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
+              { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' }
+            ]
+          },
+        ] 
+      }
+    ];
+
+    // Inizializza lo stato dei menu
+    this.navItems = this.navItems.map(item => ({
+      ...item,
+      isOpen: false
+    }));
+  }
+
+  private loadSquadsFromStrapi() {
+    this.squadsSubscription = this.squadNavigationService.getSquadsForNavigation()
+      .subscribe({
+        next: (sportCategories) => {
+          // Trova l'indice del menu Squadre
+          const squadreIndex = this.navItems.findIndex(item => item.label === 'Squadre');
+          
+          if (squadreIndex !== -1) {
+            // Aggiorna il submenu con i dati da Strapi
+            this.navItems[squadreIndex].submenuItems = sportCategories;
+          }
+        },
+        error: (error) => {
+          console.error('Errore nel caricamento delle squadre:', error);
+          // In caso di errore, usa i dati di fallback
+          this.setFallbackSquads();
+        }
+      });
+  }
+
+  private setFallbackSquads() {
+    const squadreIndex = this.navItems.findIndex(item => item.label === 'Squadre');
+    
+    if (squadreIndex !== -1) {
+      this.navItems[squadreIndex].submenuItems = [
+        {
+          label: 'Basket',
+          items: [
+            { name: 'Under 19', route: '/squadra/basket/Under%2019' },
+            { name: 'Under 17', route: '/squadra/basket/Under%2017' }
+          ]
+        },
+        {
+          label: 'Volley',
+          items: [
+            { name: 'Under 18', route: '/squadra/volley/Under%2018' }
+          ]
+        },
+        {
+          label: 'Mini',
+          items: [
+            { name: 'Minibasket', route: '/squadra/mini/minibasket' }
+          ]
+        }
+      ];
+    }
   }
 
   // Aggiunge listener per tasti

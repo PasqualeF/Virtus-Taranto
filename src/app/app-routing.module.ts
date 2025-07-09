@@ -22,6 +22,7 @@ import { SocialFeedComponent } from './features/news/social-feed/social-feed.com
 import { YouthTeamsComponent } from './features/squad/mini/youth-teams.component';
 import { ShopComponent } from './features/shop/shop.component';
 import { MediaComponent } from './features/media/media-gallery.component';
+import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
 
 
 export const routes: Routes = [
@@ -43,6 +44,7 @@ export const routes: Routes = [
   { path: 'who-else/palestre', component: PalestreComponent },
   { path: 'who-else/partner', component: PartnerComponent },
   { path: 'who-else/contatti', component: ContattiComponent },
+   { path: 'who-else/achivements', component: AchievementsComponent },
   /*fine who-else*/
   /*eventi*/
   { path: 'eventi/calendario', component: CalendarioComponent },

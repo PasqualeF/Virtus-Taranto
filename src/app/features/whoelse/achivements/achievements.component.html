@@ -1,0 +1,103 @@
+<!-- achievements.component.html -->
+<div class="achievements-container">
+  <h1 class="titolo">
+    I Nostri Successi
+    <span class="sottotitolo">Una storia di vittorie e traguardi</span>
+  </h1>
+
+  <!-- Società Selector -->
+  <div class="societa-selector">
+    <div *ngFor="let s of societa" 
+         class="societa-tab"
+         [class.active]="selectedSocieta === s.nome"
+         (click)="loadAchievements(s.nome)">
+      <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
+      <span>{{ s.nome }}</span>
+    </div>
+  </div>
+
+  <!-- View Toggle -->
+  <div class="view-toggle">
+    <button (click)="toggleView()" 
+            class="toggle-button" 
+            [class.active]="view === 'grid'">
+      <svg class="view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="3" y="3" width="7" height="7"/>
+        <rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Vista Griglia
+    </button>
+    <button (click)="toggleView()" 
+            class="toggle-button" 
+            [class.active]="view === 'timeline'">
+      <svg class="view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <line x1="12" y1="3" x2="12" y2="21"/>
+        <circle cx="12" cy="8" r="3"/>
+        <circle cx="12" cy="16" r="3"/>
+      </svg>
+      Timeline
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader"></div>
+    <span>Caricamento successi...</span>
+  </div>
+
+  <!-- Grid View -->
+  <div *ngIf="!loading && view === 'grid'" class="achievements-grid" [@achievementCards]>
+    <div *ngFor="let achievement of achievements"
+         class="achievement-card"
+         [@cardHover]="hoverStates[achievement.id] ? 'active' : 'inactive'"
+         (mouseenter)="toggleCardHover(achievement.id)"
+         (mouseleave)="toggleCardHover(achievement.id)">
+      <div class="card-year">{{ achievement.year }}</div>
+      <div class="card-icon">
+        <i class="lucide" [class]="'lucide-' + getLucideIcon(achievement.icon)"></i>
+      </div>
+      <h3 class="card-title">{{ achievement.title }}</h3>
+      <p class="card-description">{{ achievement.description }}</p>
+    </div>
+  </div>
+
+  <!-- Timeline View -->
+  <div *ngIf="!loading && view === 'timeline'" class="timeline-container">
+    <div class="timeline-line"></div>
+    
+    <div *ngFor="let year of getYears(); let i = index" 
+         class="timeline-year-group"
+         [class.left]="i % 2 === 0"
+         [class.right]="i % 2 !== 0">
+      
+      <div class="year-marker">
+        <div class="year-dot"></div>
+        <div class="year-label">{{ year }}</div>
+      </div>
+      
+      <div class="year-achievements">
+        <div *ngFor="let achievement of getAchievementsByYear()[year]" 
+             class="timeline-card">
+          <div class="timeline-icon">
+            <i class="lucide" [class]="'lucide-' + getLucideIcon(achievement.icon)"></i>
+          </div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">{{ achievement.title }}</h3>
+            <p class="timeline-description">{{ achievement.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && achievements.length === 0" class="empty-state">
+    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    </svg>
+    <h3>Nessun successo registrato</h3>
+    <p>Non ci sono ancora successi per {{ selectedSocieta }}</p>
+  </div>
+</div>

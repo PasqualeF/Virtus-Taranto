@@ -20,6 +20,20 @@
       </button>
     </div>
   </div>
+
+  <!-- Error message -->
+  <div class="error-message" *ngIf="error && !loading">
+    <div class="error-content">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h3>Errore nel caricamento</h3>
+      <p>{{ error }}</p>
+      <button class="retry-button" (click)="refreshNews()">Riprova</button>
+    </div>
+  </div>
   
   <!-- Loading skeleton -->
   <div class="news-grid" *ngIf="loading">
@@ -33,12 +47,14 @@
   </div>
   
   <!-- News content -->
-  <div class="news-grid" *ngIf="!loading" [@listAnimation]>
+  <div class="news-grid" *ngIf="!loading && !error" [@listAnimation]>
     <div class="news-card" *ngFor="let item of paginatedNews; let i = index" 
          [class.featured]="i === 0 && currentPage === 1"
          (click)="showNewsDetails(item)">
       <div class="news-image-container">
-        <img [src]="item.immagine" [alt]="item.titolo" class="news-image">
+        <img [src]="item.immagine" 
+             [alt]="item.titolo" 
+             class="news-image">
         <div class="news-overlay">
           <div class="news-date">
             {{ formatDate(item.data) }}
@@ -50,7 +66,8 @@
       </div>
       <div class="news-content">
         <h3 class="news-title">{{ item.titolo }}</h3>
-        <p class="news-excerpt">{{ item.descrizione | slice:0:100 }}{{ item.descrizione}}</p>
+        <!-- FIXED: Corretto il pipe slice -->
+        <p class="news-excerpt">{{ (item.descrizione | slice:0:100) + (item.descrizione.length > 100 ? '...' : '') }}</p>
         <button class="read-more-button">
           Leggi di più
           <svg xmlns="http://www.w3.org/2000/svg" class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -62,7 +79,7 @@
   </div>
 
   <!-- Messaggio nessun risultato -->
-  <div class="no-results" *ngIf="!loading && filteredNews.length === 0">
+  <div class="no-results" *ngIf="!loading && !error && filteredNews.length === 0">
     <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
       <line x1="12" y1="9" x2="12" y2="13"/>
@@ -73,8 +90,9 @@
     <button class="reset-button" (click)="filterByCategory('all')">Mostra tutte le notizie</button>
   </div>
 
+
   <!-- Pagination -->
-  <div class="pagination" *ngIf="filteredNews.length > itemsPerPage && !loading">
+  <div class="pagination" *ngIf="filteredNews.length > itemsPerPage && !loading && !error">
     <button 
       class="pagination-button" 
       [disabled]="currentPage === 1"
@@ -109,8 +127,11 @@
       
       <div class="modal-header">
         <div class="modal-image-container">
-          <img [src]="selectedNews.immagine" [alt]="selectedNews.titolo" class="modal-image">
-          <div class="news-overlay"> <!-- Aggiungiamo l'overlay per consistenza con le cards -->
+          <img [src]="selectedNews.immagine" 
+               [alt]="selectedNews.titolo" 
+               class="modal-image"
+               >
+          <div class="news-overlay">
             <div class="modal-date">{{ formatDate(selectedNews.data) }}</div>
             <div class="modal-category" *ngIf="selectedNews.categoria">{{ selectedNews.categoria }}</div>
           </div>
@@ -121,7 +142,7 @@
         <h2 class="modal-title">{{ selectedNews.titolo }}</h2>
         
         <div class="modal-content-text">
-          <p *ngIf="!selectedNews.contenuto">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p *ngIf="!selectedNews.contenuto">{{ selectedNews.descrizione }}</p>
           <p *ngIf="selectedNews.contenuto">{{ selectedNews.contenuto }}</p>
         </div>
         

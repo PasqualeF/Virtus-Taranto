@@ -47,6 +47,7 @@ import { ShopComponent } from './features/shop/shop.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MediaComponent } from './features/media/media-gallery.component';
+import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
 
 // Factory function per il TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -87,7 +88,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     NewsComponent,
     YouthTeamsComponent,
     ShopComponent,
-    MediaComponent
+    MediaComponent,
+    AchievementsComponent
     ],
   imports: [
     BrowserModule,

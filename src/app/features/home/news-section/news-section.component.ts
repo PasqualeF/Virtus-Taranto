@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { NewsService, News } from 'src/app/core/service/news.service';
+import { Subscription } from 'rxjs';
 
 interface NewsItem {
   id: number;
@@ -26,8 +28,12 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
   currentMobileSlide = 0;
   touchStartX = 0;
   autoSlideInterval: any;
+  private subscriptions: Subscription[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private newsService: NewsService
+  ) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -46,6 +52,8 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopAutoSlide();
+    // Cleanup subscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   @HostListener('window:resize')
@@ -56,76 +64,96 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
   loadNewsItems() {
     this.loading = true;
     
-    // Simulazione caricamento dati
-    setTimeout(() => {
-      this.newsItems = [
-        { 
-          id: 1, 
-          immagine: 'assets/news/1.jpg', 
-          data: '2023-05-01', 
-          titolo: 'Vittoria schiacciante nell\'ultima partita',
-          excerpt: 'La nostra squadra ha dominato sul campo avversario con un punteggio finale di 92-78. Una prestazione eccezionale da parte di tutta la squadra.'
-        },
-        { 
-          id: 2, 
-          immagine: 'assets/news/2.jpg', 
-          data: '2023-04-28', 
-          titolo: 'Nuovo sponsor per la stagione 2023/2024',
-          excerpt: 'Siamo lieti di annunciare la partnership con un nuovo sponsor che supporterà la nostra squadra durante la prossima stagione.'
-        },
-        { 
-          id: 3, 
-          immagine: 'assets/news/3.jpg', 
-          data: '2023-04-25', 
-          titolo: 'Inizia il campus estivo per giovani atleti',
-          excerpt: 'Dal 15 giugno inizierà il campus estivo per ragazzi dai 8 ai 16 anni. Un\'occasione per imparare e divertirsi con il basket.'
-        },
-        { 
-          id: 4, 
-          immagine: 'assets/news/4.jpg', 
-          data: '2023-04-22', 
-          titolo: 'Intervista esclusiva con il nostro capitano',
-          excerpt: 'Abbiamo incontrato il capitano Marco Rossi che ci ha parlato degli obiettivi per il finale di stagione e dei progetti futuri.'
-        },
-        { 
-          id: 5, 
-          immagine: 'assets/news/5.jpg', 
-          data: '2023-04-18', 
-          titolo: 'Nuovo allenatore per la squadra Under 16',
-          excerpt: 'Diamo il benvenuto a coach Luca Bianchi che guiderà i nostri giovani talenti della categoria Under 16.'
-        },
-        { 
-          id: 6, 
-          immagine: 'assets/news/6.jpg', 
-          data: '2023-04-15', 
-          titolo: 'Ristrutturazione del palazzetto quasi completata',
-          excerpt: 'I lavori di ristrutturazione del nostro palazzetto sono quasi terminati. Presto potremo tornare a giocare nella nostra casa.'
-        },
-        { 
-          id: 7, 
-          immagine: 'assets/news/7.jpg', 
-          data: '2023-04-12', 
-          titolo: 'Risultati del torneo giovanile regionale',
-          excerpt: 'Le nostre squadre giovanili hanno partecipato al torneo regionale con ottimi risultati, portando a casa due medaglie d\'oro.'
-        },
-        { 
-          id: 8, 
-          immagine: 'assets/news/8.jpg', 
-          data: '2023-04-08', 
-          titolo: 'Giornata di open day per il settore minibasket',
-          excerpt: 'Grande successo per la giornata di open day dedicata ai più piccoli, con oltre 50 bambini che hanno partecipato alle attività.'
-        },
-        { 
-          id: 9, 
-          immagine: 'assets/news/9.jpg', 
-          data: '2023-04-05', 
-          titolo: 'Collaborazione con le scuole del territorio',
-          excerpt: 'Inizia il progetto di collaborazione con le scuole elementari e medie del territorio per promuovere il basket tra i giovani.'
-        }
-      ];
-      
-      this.loading = false;
-    }, 500);
+    // Carica le notizie dal service invece di usare dati stub
+    const newsSubscription = this.newsService.getAllNews({
+      sort: 'data:desc',
+      pagination: { page: 1, pageSize: 12 } // Carica più notizie per gestire la paginazione
+    }).subscribe({
+      next: (news: News[]) => {
+        this.newsItems = this.mapNewsToNewsItems(news);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Errore nel caricamento delle notizie:', error);
+        this.loading = false;
+        // Fallback ai dati stub in caso di errore
+        this.loadStubData();
+      }
+    });
+
+    this.subscriptions.push(newsSubscription);
+  }
+
+  // Mappa i dati dal service al formato richiesto dal componente
+  private mapNewsToNewsItems(news: News[]): NewsItem[] {
+    return news.map(item => ({
+      id: item.id,
+      immagine: item.immagine,
+      data: item.data,
+      titolo: item.titolo,
+      excerpt: this.createExcerpt(item.descrizione),
+      contenuto: item.contenuto
+    }));
+  }
+
+  // Crea un estratto dalla descrizione
+  private createExcerpt(descrizione: string): string {
+    if (!descrizione) return '';
+    
+    const maxLength = 120;
+    if (descrizione.length <= maxLength) {
+      return descrizione;
+    }
+    
+    return descrizione.substring(0, maxLength).trim() + '...';
+  }
+
+  // Metodo di fallback per i dati stub (in caso di errore)
+  private loadStubData() {
+    this.newsItems = [
+      { 
+        id: 1, 
+        immagine: 'assets/news/1.jpg', 
+        data: '2023-05-01', 
+        titolo: 'Vittoria schiacciante nell\'ultima partita',
+        excerpt: 'La nostra squadra ha dominato sul campo avversario con un punteggio finale di 92-78. Una prestazione eccezionale da parte di tutta la squadra.'
+      },
+      { 
+        id: 2, 
+        immagine: 'assets/news/2.jpg', 
+        data: '2023-04-28', 
+        titolo: 'Nuovo sponsor per la stagione 2023/2024',
+        excerpt: 'Siamo lieti di annunciare la partnership con un nuovo sponsor che supporterà la nostra squadra durante la prossima stagione.'
+      },
+      { 
+        id: 3, 
+        immagine: 'assets/news/3.jpg', 
+        data: '2023-04-25', 
+        titolo: 'Inizia il campus estivo per giovani atleti',
+        excerpt: 'Dal 15 giugno inizierà il campus estivo per ragazzi dai 8 ai 16 anni. Un\'occasione per imparare e divertirsi con il basket.'
+      },
+      { 
+        id: 4, 
+        immagine: 'assets/news/4.jpg', 
+        data: '2023-04-22', 
+        titolo: 'Intervista esclusiva con il nostro capitano',
+        excerpt: 'Abbiamo incontrato il capitano Marco Rossi che ci ha parlato degli obiettivi per il finale di stagione e dei progetti futuri.'
+      },
+      { 
+        id: 5, 
+        immagine: 'assets/news/5.jpg', 
+        data: '2023-04-18', 
+        titolo: 'Nuovo allenatore per la squadra Under 16',
+        excerpt: 'Diamo il benvenuto a coach Luca Bianchi che guiderà i nostri giovani talenti della categoria Under 16.'
+      },
+      { 
+        id: 6, 
+        immagine: 'assets/news/6.jpg', 
+        data: '2023-04-15', 
+        titolo: 'Ristrutturazione del palazzetto quasi completata',
+        excerpt: 'I lavori di ristrutturazione del nostro palazzetto sono quasi terminati. Presto potremo tornare a giocare nella nostra casa.'
+      }
+    ];
   }
 
   getCurrentPageNews(): NewsItem[] {

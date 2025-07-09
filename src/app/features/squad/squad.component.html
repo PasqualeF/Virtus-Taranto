@@ -1,35 +1,125 @@
-<div class="squad-container" *ngIf="selectedSquad">
-    <h1 class="team-name">{{ selectedSquad.name }}</h1>
-    <img *ngIf="selectedSquad.foto" 
-                 [src]="selectedSquad.foto" 
-                 class="">
-    <div class="sponsors-section">
-      <app-sposor-section></app-sposor-section>
+<div class="squad-container">
+  <div class="content-wrapper">
+    <!-- Loader e messaggi di errore -->
+    <div class="loading-indicator" *ngIf="loading">
+      <p>Caricamento in corso...</p>
     </div>
-  
-    <div class="tabs-container">
-      <div class="tabs">
-        <button *ngFor="let tab of tabs" 
-                (click)="setView(tab.value)" 
-                [class.active]="selectedView === tab.value">
-          {{ tab.label }}
-        </button>
+    
+    <div class="error-message" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+    
+    <!-- Contenuto principale quando la squadra è caricata -->
+    <div *ngIf="selectedSquad && !loading">
+      <div class="header-section">
+        <h1 class="team-name">{{ selectedSquad.name }}</h1>
+        
+        <div class="team-photo-container" *ngIf="selectedSquad.foto">
+          <img [src]="selectedSquad.foto" 
+               [alt]="'Foto ' + selectedSquad.name" 
+               class="team-photo">
+        </div>
       </div>
-  
-      <div class="tab-content">
-        <table *ngIf="getDisplayData().length > 0">
-          <thead>
-            <tr>
-              <th *ngFor="let header of getTableHeaders()">{{ header | titlecase }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of getDisplayData()">
-              <td *ngFor="let header of getTableHeaders()">{{ row[header] }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <p *ngIf="getDisplayData().length === 0">Nessun dato disponibile per questa sezione.</p>
+      
+      <div class="sponsors-section" *ngIf="showSponsors">
+        <app-sposor-section></app-sposor-section>
+      </div>
+    
+      <div class="tabs-container">
+        <div class="tabs">
+          <button *ngFor="let tab of tabs" 
+                  (click)="setView(tab.value)" 
+                  [class.active]="selectedView === tab.value">
+            {{ tab.label }}
+          </button>
+        </div>
+    
+        <div class="tab-content">
+          <!-- Versione desktop della tabella - visibile solo su schermi grandi -->
+          <div *ngIf="!isMobileView() && getDisplayData().length > 0" class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th *ngFor="let header of getTableHeaders()">{{ formatHeader(header) }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of getDisplayData()">
+                  <td *ngFor="let header of getTableHeaders()">{{ formatCellValue(row[header]) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Versione mobile: card invece delle tabelle - visibile solo su schermi piccoli -->
+          <div *ngIf="isMobileView() && getDisplayData().length > 0" class="cards-container">
+            <div class="data-card" *ngFor="let row of getDisplayData()">
+              <ng-container *ngIf="selectedView === 'roster'">
+                <div class="card-header">
+                  <span class="player-number">#{{ row.numero }}</span>
+                  <h3 class="player-name">{{ row.nome }} {{ row.cognome }}</h3>
+                </div>
+                <div class="card-body">
+                  <div class="info-row">
+                    <span class="info-label">Ruolo:</span>
+                    <span class="info-value">{{ row.posizione }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Data di nascita:</span>
+                    <span class="info-value">{{ formatCellValue(row.dataNascita) }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Altezza:</span>
+                    <span class="info-value">{{ row.altezza }} cm</span>
+                  </div>
+                </div>
+              </ng-container>
+              
+              <ng-container *ngIf="selectedView === 'results'">
+                <div class="card-header">
+                  <span class="match-date">{{ formatCellValue(row.data) }}</span>
+                </div>
+                <div class="card-body">
+                  <div class="match-result">
+                    <span class="team home-team">{{ row.casa }}</span>
+                    <span class="score">{{ row.risultato }}</span>
+                    <span class="team away-team">{{ row.trasferta }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Luogo:</span>
+                    <span class="info-value">{{ row.luogo }}</span>
+                  </div>
+                </div>
+              </ng-container>
+              
+              <ng-container *ngIf="selectedView === 'standings'">
+                <div class="card-header">
+                  <span class="position">{{ row.pos }}°</span>
+                  <h3 class="team-name-standing">{{ row.squadra }}</h3>
+                </div>
+                <div class="card-body">
+                  <div class="info-row">
+                    <span class="info-label">Punti:</span>
+                    <span class="info-value bold">{{ row.punti }}</span>
+                  </div>
+                  <div class="stats-row">
+                    <div class="stat">
+                      <span class="stat-value">{{ row.vittorie }}</span>
+                      <span class="stat-label">Vittorie</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-value">{{ row.sconfitte }}</span>
+                      <span class="stat-label">Sconfitte</span>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          
+          <p *ngIf="getDisplayData().length === 0">Nessun dato disponibile per questa sezione.</p>
+        </div>
       </div>
     </div>
   </div>
+</div>

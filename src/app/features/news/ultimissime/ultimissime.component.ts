@@ -1,13 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
+// FIXED: Aggiorna questo path secondo la tua struttura
 import { NewsService, News } from 'src/app/core/service/news.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environments';
 
-// Estensione dell'interfaccia News esistente con proprietà aggiuntive
-interface EnhancedNews extends News {
-  categoria?: string;
-  descrizione?: string;
-  contenuto?: string;
-}
 
 @Component({
   selector: 'app-ultimissime',
@@ -88,21 +85,24 @@ interface EnhancedNews extends News {
   ]
 })
 export class UltimissimeComponent implements OnInit {
-  news: EnhancedNews[] = [];
-  filteredNews: EnhancedNews[] = [];
-  selectedNews: EnhancedNews | null = null;
+  news: News[] = [];
+  filteredNews: News[] = [];
+  selectedNews: News | null = null;
   loading = true;
+  error: string | null = null;
   currentPage = 1;
   itemsPerPage = 9;
   categories: string[] = [];
   activeCategory: string = 'all';
-  paginationWindowSize = 5; // Numero di pulsanti pagina da mostrare
+  paginationWindowSize = 5;
   private scrollPosition = 0;
 
-  constructor(private newsService: NewsService) {}
+constructor(private newsService: NewsService, private http: HttpClient) {}
+
 
   ngOnInit(): void {
     this.loadNews();
+    this.loadCategories();
     this.adjustItemsPerPage();
   }
 
@@ -111,7 +111,6 @@ export class UltimissimeComponent implements OnInit {
     this.adjustItemsPerPage();
   }
 
-  // Adatta il numero di elementi per pagina in base alla dimensione dello schermo
   adjustItemsPerPage(): void {
     const width = window.innerWidth;
     if (width < 576) {
@@ -125,27 +124,33 @@ export class UltimissimeComponent implements OnInit {
   }
 
   loadNews(): void {
-    this.newsService.getAllNews().subscribe((news: News[]) => {
-      // Applica una trasformazione per aggiungere categorie di esempio
-      // In un'app reale, queste potrebbero già provenire dal backend
-      this.news = news.map((item: News, index: number) => {
-        const enhancedItem: EnhancedNews = {...item};
-        // Assegna categorie di esempio in modo ciclico
-        const categoryOptions = ['Squadra', 'Campionato', 'Giovanili', 'Eventi', 'Allenamenti'];
-        enhancedItem.categoria = categoryOptions[index % categoryOptions.length];
-        
-        // Aggiungi una breve descrizione di esempio
-        enhancedItem.descrizione = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eget magna at dolor ullamcorper interdum vel eu risus. Vivamus scelerisque libero ut velit cursus.';
-        
-        return enhancedItem;
-      });
-      
-      // Estrai categorie uniche
-      this.categories = Array.from(new Set(this.news.map(item => item.categoria || '')));
-      
-      // Filtra iniziale (tutte le news)
-      this.filterByCategory('all');
-      this.loading = false;
+    this.loading = true;
+    this.error = null;
+    
+    
+    this.newsService.getAllNews({
+      sort: 'data:desc',
+      pagination: { page: 1, pageSize: 50 }
+    }).subscribe({
+      next: (news: News[]) => {
+        this.news = news;
+        this.filterByCategory('all');
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'Errore nel caricamento delle notizie. Riprova più tardi.';
+        this.loading = false;
+      }
+    });
+  }
+
+  loadCategories(): void {
+    this.newsService.getCategories().subscribe({
+      next: (categories: string[]) => {
+        this.categories = categories;
+      },
+      error: (error) => {
+      }
     });
   }
 
@@ -161,49 +166,42 @@ export class UltimissimeComponent implements OnInit {
   }
 
   updatePageState(): void {
-    // Aggiorna lo stato della paginazione se necessario
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
     }
   }
 
-  get paginatedNews(): EnhancedNews[] {
+  get paginatedNews(): News[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.filteredNews.slice(startIndex, startIndex + this.itemsPerPage);
+    const result = this.filteredNews.slice(startIndex, startIndex + this.itemsPerPage);
+    return result;
   }
 
   get totalPages(): number {
     return Math.ceil(this.filteredNews.length / this.itemsPerPage);
   }
   
-  // Genera array di numeri di pagina da visualizzare
   get pageNumbers(): number[] {
     const halfWindow = Math.floor(this.paginationWindowSize / 2);
     let start = Math.max(1, this.currentPage - halfWindow);
     let end = Math.min(this.totalPages, start + this.paginationWindowSize - 1);
     
-    // Adatta l'inizio se non abbiamo abbastanza pagine alla fine
     if (end - start + 1 < this.paginationWindowSize) {
       start = Math.max(1, end - this.paginationWindowSize + 1);
     }
     
-    // Crea l'array di numeri di pagina
     return Array.from({length: end - start + 1}, (_, i) => start + i);
   }
 
-  showNewsDetails(news: EnhancedNews): void {
-    // Salva la posizione di scroll attuale
+  showNewsDetails(news: News): void {
     this.scrollPosition = window.pageYOffset;
     this.selectedNews = news;
-    // Blocca lo scrolling del body quando il modal è aperto
     document.body.style.overflow = 'hidden';
   }
 
   closeNewsDetails(): void {
-    // Ripristina la possibilità di scrollare
     document.body.style.overflow = '';
     this.selectedNews = null;
-    // Ripristina la posizione di scroll
     setTimeout(() => {
       window.scrollTo(0, this.scrollPosition);
     }, 0);
@@ -212,7 +210,6 @@ export class UltimissimeComponent implements OnInit {
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      // Scorri in alto quando cambi pagina
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -229,17 +226,12 @@ export class UltimissimeComponent implements OnInit {
     });
   }
 
-  // Trova l'indice della news corrente nell'array filtrato
   getCurrentNewsIndex(): number {
     if (!this.selectedNews) return -1;
-    return this.filteredNews.findIndex(n => 
-      n.titolo === this.selectedNews?.titolo && 
-      n.data === this.selectedNews?.data
-    );
+    return this.filteredNews.findIndex(n => n.id === this.selectedNews?.id);
   }
 
-  // Ottieni la news precedente (se esiste)
-  getPreviousNews(): EnhancedNews | null {
+  getPreviousNews(): News | null {
     const currentIndex = this.getCurrentNewsIndex();
     if (currentIndex > 0) {
       return this.filteredNews[currentIndex - 1];
@@ -247,8 +239,7 @@ export class UltimissimeComponent implements OnInit {
     return null;
   }
 
-  // Ottieni la news successiva (se esiste)
-  getNextNews(): EnhancedNews | null {
+  getNextNews(): News | null {
     const currentIndex = this.getCurrentNewsIndex();
     if (currentIndex < this.filteredNews.length - 1 && currentIndex !== -1) {
       return this.filteredNews[currentIndex + 1];
@@ -256,7 +247,6 @@ export class UltimissimeComponent implements OnInit {
     return null;
   }
 
-  // Naviga tra le news all'interno del modale
   navigateNews(direction: 'prev' | 'next', event: Event): void {
     event.stopPropagation();
     
@@ -271,5 +261,29 @@ export class UltimissimeComponent implements OnInit {
         this.selectedNews = nextNews;
       }
     }
+  }
+
+  refreshNews(): void {
+    this.loadNews();
+    this.loadCategories();
+  }
+
+  searchNews(query: string): void {
+    if (query.trim() === '') {
+      this.filterByCategory(this.activeCategory);
+      return;
+    }
+
+    this.loading = true;
+    this.newsService.searchNews(query).subscribe({
+      next: (news: News[]) => {
+        this.filteredNews = news;
+        this.currentPage = 1;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.loading = false;
+      }
+    });
   }
 }

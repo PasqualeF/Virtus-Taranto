@@ -34,7 +34,6 @@
     -webkit-text-fill-color: #fde68a;
   }
   
-  /* Societa Selector */
   .societa-selector {
     display: flex;
     justify-content: center;
@@ -82,11 +81,6 @@
     opacity: 0.1;
   }
   
-  .societa-tab:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  }
-  
   .societa-logo {
     width: 120px;
     height: 120px;
@@ -95,6 +89,11 @@
     position: relative;
     z-index: 2;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+  
+  .societa-tab:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   }
   
   .societa-tab:hover .societa-logo {
@@ -127,6 +126,48 @@
     height: 3px;
     background: linear-gradient(90deg, #3b82f6, #fde68a);
     animation: shine 2s infinite;
+  }
+  
+  /* Versione mobile aggiornata del selettore società */
+  @media (max-width: 768px) {
+    .societa-selector {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding-bottom: 0.5rem;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+    }
+    
+    .societa-selector::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+    
+    .societa-tab {
+      flex: 0 0 auto;
+      width: 120px;
+      height: 120px;
+      padding: 1rem;
+    }
+    
+    .societa-logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .societa-tab span {
+      font-size: 0.8rem;
+      line-height: 1.2;
+      text-align: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
   
   /* Tab Navigation */
@@ -684,28 +725,7 @@
       font-size: 1.25rem;
     }
     
-    /* Societa Selector su mobile */
-    .societa-selector {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem;
-    }
   
-    .societa-tab {
-      width: 80px;
-      height: 80px;
-      padding: 0.75rem;
-    }
-  
-    .societa-logo {
-      width: 50px;
-      height: 50px;
-    }
-  
-    .societa-tab span {
-      display: none;
-    }
     
     /* Foto Gallery su mobile */
     .foto-gallery {

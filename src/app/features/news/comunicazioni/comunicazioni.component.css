@@ -1,4 +1,3 @@
-
 /* Aggiungi queste classi CSS per gestire i colori delle intestazioni */
 .card-header.from-red-500.to-red-700 {
   background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
@@ -79,8 +78,8 @@
   .search-input {
     width: 100%;
     padding: 1rem 1rem 1rem 3rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 0.5rem;
     color: white;
     font-size: 1rem;
@@ -89,9 +88,13 @@
   
   .search-input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  
+  .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
   }
   
   .filters-container {
@@ -101,17 +104,35 @@
   
   .filter-select {
     padding: 0.75rem 2rem 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 0.5rem;
     color: white;
     font-size: 0.875rem;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-select:hover {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+  
+  .filter-select:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+  
+  .filter-select option {
+    background: rgba(30, 41, 59, 0.95);
+    color: white;
+    border: none;
   }
   
   /* Loading State */
@@ -251,14 +272,11 @@
   }
   
   /* Card Content */
-/* Fix per il contenuto espanso */
+/* Fix per il contenuto espanso - animazione corretta senza spazio bianco */
 .card-content {
-    height: auto;
-    max-height: none;
-    opacity: 1;
-    overflow: visible;
+    padding: 0 2rem; /* Padding orizzontale sempre presente */
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
   }
-
   
 .card-content.ng-animating {
     overflow: hidden;
@@ -267,8 +285,9 @@
   .autore-info {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem; /* Aumentato il gap per spostare l'avatar più a destra */
     margin-bottom: 1.5rem;
+    margin-left: 1rem; /* Aggiunto margine sinistro per spostare tutto più a destra */
   }
   
   .avatar {
@@ -292,6 +311,7 @@
   .nome {
     font-weight: 600;
     color: #fde68a;
+    font-size: 1.1rem; /* Aumentato la dimensione del nome dell'autore */
   }
   
   .ruolo {
@@ -303,11 +323,14 @@
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 1.5rem;
+    margin-left: 1rem; /* Aggiunto margine sinistro per spostare il testo più a destra */
+    padding-left: 0.5rem; /* Padding aggiuntivo per staccare dal bordo */
   }
   
   /* Destinatari */
   .destinatari {
     margin-bottom: 1.5rem;
+    margin-left: 1rem; /* Spostato a destra anche i destinatari */
   }
   
   .destinatari h4 {
@@ -333,6 +356,7 @@
   /* Allegati */
   .allegati {
     margin-bottom: 1.5rem;
+    margin-left: 1rem; /* Spostato a destra anche gli allegati */
   }
   
   .allegati h4 {
@@ -397,49 +421,6 @@
     opacity: 1;
   }
   
-  /* Actions */
-  .azioni {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .action-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    background: rgba(59, 130, 246, 0.2);
-    color: #93c5fd;
-  }
-  
-  .action-button:hover {
-    background: rgba(59, 130, 246, 0.3);
-    transform: translateY(-1px);
-  }
-  
-  .action-button.archive {
-    background: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
-  }
-  
-  .action-button.archive:hover {
-    background: rgba(239, 68, 68, 0.3);
-  }
-  
-  .action-icon {
-    width: 16px;
-    height: 16px;
-    stroke: currentColor;
-  }
-  
   /* Animations */
   @keyframes spin {
     to {
@@ -482,14 +463,21 @@
     .data {
       margin-left: 0;
     }
-  
-    .azioni {
-      flex-direction: column;
+    
+    /* Responsive per il contenuto */
+    .card-content {
+      padding: 1.5rem;
     }
-  
-    .action-button {
-      width: 100%;
-      justify-content: center;
+    
+    .autore-info,
+    .contenuto,
+    .destinatari,
+    .allegati {
+      margin-left: 0;
+    }
+    
+    .contenuto {
+      padding-left: 0;
     }
   }
   

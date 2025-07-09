@@ -23,13 +23,6 @@
             <option value="importante">Importanti</option>
             <option value="standard">Standard</option>
           </select>
-  
-          <select [(ngModel)]="filterStatus" (change)="filterComunicazioni('')" class="filter-select">
-            <option value="tutti">Tutti gli stati</option>
-            <option value="nuovo">Non letti</option>
-            <option value="letto">Letti</option>
-            <option value="archiviato">Archiviati</option>
-          </select>
         </div>
       </div>
     </div>
@@ -114,25 +107,6 @@
                 </svg>
               </div>
             </div>
-          </div>
-  
-          <div class="azioni">
-            <button class="action-button" (click)="markAsRead(comunicazione)" 
-                    *ngIf="comunicazione.stato === 'nuovo'">
-              <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M20 6L9 17l-5-5"></path>
-              </svg>
-              Segna come letto
-            </button>
-            <button class="action-button archive" (click)="archiveCommunication(comunicazione)"
-                    *ngIf="comunicazione.stato !== 'archiviato'">
-              <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                <rect x="1" y="3" width="22" height="5"></rect>
-                <line x1="10" y1="12" x2="14" y2="12"></line>
-              </svg>
-              Archivia
-            </button>
           </div>
         </div>
       </div>
