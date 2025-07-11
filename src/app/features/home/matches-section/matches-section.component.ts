@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-matches-section',
@@ -7,16 +7,17 @@ import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChil
 })
 export class MatchesSectionComponent implements OnInit, OnDestroy {
   @Input() upcomingMatches: any[] = [];
-  @ViewChild('mobileCarousel') mobileCarousel: ElementRef | undefined;
   
   currentMatchIndex = 0;
   currentMobileIndex = 0;
   cardWidth = 480;
   cardMargin = 48;
   isMobile = false;
-  touchStartX = 0;
-  autoSlideInterval: any;
   countdownInterval: any;
+
+  // Touch handling per mobile
+  private touchStartX = 0;
+  private touchEndX = 0;
 
   constructor() {}
 
@@ -29,19 +30,10 @@ export class MatchesSectionComponent implements OnInit, OnDestroy {
         this.getCountdown(this.upcomingMatches[0].date);
       }
     }, 1000);
-    
-    // Imposta lo scorrimento automatico solo se necessario
-    if (this.isMobile && this.upcomingMatches.length > 1) {
-      // Piccolo ritardo per assicurarsi che tutto sia caricato
-      setTimeout(() => {
-        this.startAutoSlide();
-      }, 500);
-    }
   }
   
   ngOnDestroy() {
-    // Pulisci gli intervalli quando il componente viene distrutto
-    this.stopAutoSlide();
+    // Pulisci l'intervallo quando il componente viene distrutto
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
@@ -49,17 +41,7 @@ export class MatchesSectionComponent implements OnInit, OnDestroy {
   
   @HostListener('window:resize')
   checkScreenSize() {
-    const wasAlreadyMobile = this.isMobile;
     this.isMobile = window.innerWidth < 768;
-    
-    // Se siamo passati da desktop a mobile, avvia lo scorrimento automatico
-    if (!wasAlreadyMobile && this.isMobile) {
-      this.startAutoSlide();
-    }
-    // Se siamo passati da mobile a desktop, ferma lo scorrimento automatico
-    else if (wasAlreadyMobile && !this.isMobile) {
-      this.stopAutoSlide();
-    }
     
     // Aggiorna le dimensioni del carousel desktop in base alla viewport
     if (window.innerWidth < 992) {
@@ -129,88 +111,36 @@ export class MatchesSectionComponent implements OnInit, OnDestroy {
     return result;
   }
   
-  // Metodi per il carousel mobile
-  nextMobileMatch() {
-    if (this.currentMobileIndex < this.upcomingMatches.length - 1) {
-      this.currentMobileIndex++;
-      this.scrollToCurrentSlide();
-      this.restartAutoSlide();
-    }
-  }
-  
-  previousMobileMatch() {
-    if (this.currentMobileIndex > 0) {
-      this.currentMobileIndex--;
-      this.scrollToCurrentSlide();
-      this.restartAutoSlide();
-    }
-  }
-  
-  goToSlide(index: number) {
+  // Metodo mobile - semplice come in teams
+  goToMatch(index: number) {
     this.currentMobileIndex = index;
-    this.scrollToCurrentSlide();
-    this.restartAutoSlide();
   }
-  
-  scrollToCurrentSlide() {
-    if (this.mobileCarousel) {
-      const container = this.mobileCarousel.nativeElement;
-      const slideWidth = container.clientWidth;
-      const scrollPosition = this.currentMobileIndex * slideWidth;
-      
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    }
-  }
-  
-  // Gestione touch per mobile
+
+  // Touch handling per mobile swipe
+  @HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent) {
-    this.stopAutoSlide();
-    this.touchStartX = event.touches[0].clientX;
+    this.touchStartX = event.changedTouches[0].screenX;
   }
 
+  @HostListener('touchend', ['$event'])
   onTouchEnd(event: TouchEvent) {
-    const touchEndX = event.changedTouches[0].clientX;
-    const diffX = this.touchStartX - touchEndX;
-
-    if (Math.abs(diffX) > 50) { // Soglia di swipe
-      if (diffX > 0 && this.currentMobileIndex < this.upcomingMatches.length - 1) {
-        // Swipe a sinistra - avanti
-        this.nextMobileMatch();
-      } else if (diffX < 0 && this.currentMobileIndex > 0) {
-        // Swipe a destra - indietro
-        this.previousMobileMatch();
-      }
-    }
-    
-    if (this.upcomingMatches.length > 1) {
-      this.startAutoSlide();
-    }
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
   }
-  
-  // Auto-rotazione delle slide su mobile
-  startAutoSlide() {
-    this.autoSlideInterval = setInterval(() => {
+
+  private handleSwipe() {
+    if (this.touchEndX < this.touchStartX - 50) {
+      // Swipe left - next match
       if (this.currentMobileIndex < this.upcomingMatches.length - 1) {
-        this.nextMobileMatch();
-      } else {
-        this.currentMobileIndex = 0;
-        this.scrollToCurrentSlide();
+        this.currentMobileIndex++;
       }
-    }, 5000); // Cambia slide ogni 5 secondi
-  }
-
-  stopAutoSlide() {
-    if (this.autoSlideInterval) {
-      clearInterval(this.autoSlideInterval);
     }
-  }
-
-  restartAutoSlide() {
-    this.stopAutoSlide();
-    this.startAutoSlide();
+    if (this.touchEndX > this.touchStartX + 50) {
+      // Swipe right - previous match
+      if (this.currentMobileIndex > 0) {
+        this.currentMobileIndex--;
+      }
+    }
   }
 
   // Metodi di formattazione

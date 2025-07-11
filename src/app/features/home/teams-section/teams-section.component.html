@@ -1,24 +1,34 @@
 <section class="teams-section">
   <div class="container-fluid">
-    <h2 class="section-title">Le Squadre</h2>
+    <h2 class="section-title">Le Nostre Squadre</h2>
 
-    <div class="teams-carousel">
+    <!-- Desktop View -->
+    <div class="teams-carousel desktop-view">
       <div class="teams-container">
         <div class="row">
           <div class="col-md-4" *ngFor="let team of visibleTeams">
             <div class="team-card">
               <div class="image-container">
                 <img *ngIf="team.foto" 
-                [src]="team.foto" 
-                class="">
+                     [src]="team.foto" 
+                     [alt]="team.name"
+                     class="team-image">
+                <img *ngIf="!team.foto" 
+                     src="assets/default-team.png" 
+                     [alt]="team.name"
+                     class="team-image">
                 <div class="image-overlay"></div>
+                <!-- Nome sempre visibile sulla card -->
+                <div class="team-name-overlay">
+                  <h3>{{ team.name }}</h3>
+                </div>
               </div>
               <div class="card-body">
                 <div>
                   <h3 class="team-name">{{ team.name }}</h3>
-                  <p class="team-description">{{ team.descrizione }}</p>
+                  <p class="team-description">{{ team.descrizione || 'Scopri di più su questa squadra' }}</p>
                 </div>
-                <a href="{{ team.link }}" class="view-more">Scopri di più</a>
+                <a [href]="team.link" class="view-more">Scopri di più</a>
               </div>
             </div>
           </div>
@@ -33,6 +43,45 @@
               [disabled]="currentTeamIndex + 3 >= teams.length">
         <i class="fas fa-chevron-right"></i>
       </button>
+    </div>
+
+    <!-- Mobile View - Simile a Matches -->
+    <div class="teams-mobile mobile-view">
+      <div class="mobile-carousel-container">
+        <div class="mobile-team-card" *ngFor="let team of teams; let i = index" 
+             [class.active]="i === currentMobileIndex">
+          <div class="mobile-team-content">
+            <div class="mobile-team-image">
+              <img *ngIf="team.foto" 
+                   [src]="team.foto" 
+                   [alt]="team.name">
+              <img *ngIf="!team.foto" 
+                   src="assets/default-team.png" 
+                   [alt]="team.name">
+              <div class="mobile-team-overlay">
+                <h3 class="mobile-team-name">{{ team.name }}</h3>
+              </div>
+            </div>
+            <div class="mobile-team-info">
+              <h4>{{ team.name }}</h4>
+              <p>{{ team.descrizione || 'Scopri di più su questa squadra' }}</p>
+              <a [href]="team.link" class="mobile-view-more">
+                Vai alla squadra
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Dots -->
+      <div class="mobile-navigation">
+        <button class="nav-dot" 
+                *ngFor="let team of teams; let i = index"
+                [class.active]="i === currentMobileIndex"
+                (click)="goToTeam(i)">
+        </button>
+      </div>
     </div>
   </div>
 </section>

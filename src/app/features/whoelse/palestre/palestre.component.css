@@ -16,17 +16,24 @@
   min-height: 100vh;
 }
 
+
 .titolo {
-  font-size: 3.5rem;
-  font-weight: 800;
   text-align: center;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.sottotitolo {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .descrizione-generale {

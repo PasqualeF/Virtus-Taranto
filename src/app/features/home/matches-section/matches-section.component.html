@@ -74,76 +74,68 @@
       </button>
     </div>
 
-    <!-- Vista Mobile -->
+    <!-- Vista Mobile - Come Teams -->
     <div class="mobile-matches-view" *ngIf="isMobile">
-      <div class="mobile-carousel-wrapper">
-        <div class="mobile-carousel-container" #mobileCarousel (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
-          <div class="mobile-match-slide" *ngFor="let match of upcomingMatches; let i = index">
-            <div class="mobile-match-card" [ngClass]="{'home-match': match.isHome, 'away-match': !match.isHome}">
-              <div class="match-badge" *ngIf="match.isHome">Casa</div>
-              <div class="match-badge away" *ngIf="!match.isHome">Trasferta</div>
-              
-              <div class="mobile-match-header">
-                <div class="mobile-match-date">{{ getFormattedDate(match.date) }}</div>
-                <div class="mobile-match-time">{{ match.time }}</div>
+      <div class="mobile-carousel-container">
+        <div class="mobile-match-card" *ngFor="let match of upcomingMatches; let i = index" 
+             [class.active]="i === currentMobileIndex"
+             [ngClass]="{'home-match': match.isHome, 'away-match': !match.isHome}">
+          <div class="match-badge" *ngIf="match.isHome">Casa</div>
+          <div class="match-badge away" *ngIf="!match.isHome">Trasferta</div>
+          
+          <div class="mobile-match-header">
+            <div class="mobile-match-date">{{ getFormattedDate(match.date) }}</div>
+            <div class="mobile-match-time">{{ match.time }}</div>
+          </div>
+          
+          <div class="mobile-teams-container">
+            <div class="mobile-team">
+              <div class="team-logo" *ngIf="match.homeTeamLogo">
+                <img [src]="match.homeTeamLogo" [alt]="match.homeTeam">
               </div>
-              
-              <div class="mobile-teams-container">
-                <div class="mobile-team">
-                  <div class="team-logo" *ngIf="match.homeTeamLogo">
-                    <img [src]="match.homeTeamLogo" [alt]="match.homeTeam">
-                  </div>
-                  <div class="team-logo default-logo" *ngIf="!match.homeTeamLogo">
-                    <i class="fas fa-basketball-ball"></i>
-                  </div>
-                  <div class="team-name">{{ match.homeTeam }}</div>
-                </div>
-                
-                <div class="vs-container">VS</div>
-                
-                <div class="mobile-team">
-                  <div class="team-logo" *ngIf="match.awayTeamLogo">
-                    <img [src]="match.awayTeamLogo" [alt]="match.awayTeam">
-                  </div>
-                  <div class="team-logo default-logo" *ngIf="!match.awayTeamLogo">
-                    <i class="fas fa-basketball-ball"></i>
-                  </div>
-                  <div class="team-name">{{ match.awayTeam }}</div>
-                </div>
+              <div class="team-logo default-logo" *ngIf="!match.homeTeamLogo">
+                <i class="fas fa-basketball-ball"></i>
               </div>
-              
-              <div class="mobile-match-info">
-                <div class="venue-info">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span>{{ match.venue }}</span>
-                </div>
-                <div class="league-info">
-                  <i class="fas fa-trophy"></i>
-                  <span>{{ match.league }}</span>
-                </div>
-              </div>
-              
-              <div class="mobile-countdown">
-                <div class="countdown-label">Mancano:</div>
-                <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
-              </div>
+              <div class="team-name">{{ match.homeTeam }}</div>
             </div>
+            
+            <div class="vs-container">VS</div>
+            
+            <div class="mobile-team">
+              <div class="team-logo" *ngIf="match.awayTeamLogo">
+                <img [src]="match.awayTeamLogo" [alt]="match.awayTeam">
+              </div>
+              <div class="team-logo default-logo" *ngIf="!match.awayTeamLogo">
+                <i class="fas fa-basketball-ball"></i>
+              </div>
+              <div class="team-name">{{ match.awayTeam }}</div>
+            </div>
+          </div>
+          
+          <div class="mobile-match-info">
+            <div class="venue-info">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{{ match.venue }}</span>
+            </div>
+            <div class="league-info">
+              <i class="fas fa-trophy"></i>
+              <span>{{ match.league }}</span>
+            </div>
+          </div>
+          
+          <div class="mobile-countdown">
+            <div class="countdown-label">Mancano:</div>
+            <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
           </div>
         </div>
       </div>
       
-      <div class="mobile-indicators">
-        <div class="indicator" *ngFor="let match of upcomingMatches; let i = index" 
-             [class.active]="currentMobileIndex === i"
-             (click)="goToSlide(i)"></div>
-      </div>
-      
+      <!-- Mobile Navigation Dots - Come Teams -->
       <div class="mobile-navigation">
-        <button class="mobile-nav-btn" [class.disabled]="currentMobileIndex === 0" (click)="previousMobileMatch()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="mobile-nav-btn" [class.disabled]="currentMobileIndex >= upcomingMatches.length - 1" (click)="nextMobileMatch()">
-          <i class="fas fa-chevron-right"></i>
+        <button class="nav-dot" 
+                *ngFor="let match of upcomingMatches; let i = index"
+                [class.active]="i === currentMobileIndex"
+                (click)="goToMatch(i)">
         </button>
       </div>
     </div>

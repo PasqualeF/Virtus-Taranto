@@ -89,7 +89,7 @@ export class SquadStrapiService extends StrapiBaseService {
    */
   getAllSquadsSmall(): Observable<StrapiSquad[]> {
     const params = {
-      'populate': 'foto,roster'  // Popola solo foto e roster
+       'populate': '*'
     };
 
     return this.http.get<StrapiResponse<StrapiSquad[]>>(

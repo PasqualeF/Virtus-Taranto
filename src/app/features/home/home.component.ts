@@ -1,7 +1,8 @@
 // home.component.ts
 import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList, HostListener, AfterViewInit, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { SquadService } from 'src/app/core/service/squad.service';
+import { SquadService } from 'src/app/core/service/squad.service'; // RIPRISTINATO all'originale
+import { PartnerService } from 'src/app/core/service/partner.service'; // AGGIUNTO
 import { TeamSmall } from 'src/app/core/models/squad.model';
 
 interface Match {
@@ -73,7 +74,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isTyping = false;
   error: string | null = null;
 
-
   // Typewriter Configuration - Aggiornata
   private phrases = ['Passione', 'Tradizione', 'Eccellenza', 'Dal 1948', 'Who Else?'];
   private currentPhrase = 0;
@@ -81,7 +81,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private isDeleting = false;
   private typewriterSpeed = 100;
   
-  private squadService = inject(SquadService);
+  private squadService = inject(SquadService); // RIPRISTINATO all'originale
+  private partnerService = inject(PartnerService); // AGGIUNTO
+  
   // Assets
   logos = ['assets/logo-virtus-taranto.svg', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
 
@@ -129,7 +131,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       league: 'Coppa Italia',
       backgroundImage: 'assets/logo-virtus-taranto.png'
     },
-    
     { 
       homeTeam: 'Team B', 
       awayTeam: 'Virtus Taranto', 
@@ -164,13 +165,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   teams: TeamSmall[] = [];
 
-  sponsors = [
-    { name: 'Fondazione 251', imageUrl: 'assets/fondazione251.png' },
-    { name: 'Bialetti', imageUrl: 'assets/bialetti.png' },
-    { name: 'NU', imageUrl: 'assets/nu.png' },
-    { name: 'Suite', imageUrl: 'assets/suite.png' },
-    { name: 'Vibe', imageUrl: 'assets/vibe.png' }
-  ];
+  // MODIFICATO: da array statico a array vuoto che verrà popolato dal service
+  sponsors: Sponsor[] = [];
+  
+  // AGGIUNTO: getter per duplicare gli sponsor per il carousel infinito
+  get duplicatedSponsors(): Sponsor[] {
+    if (this.sponsors.length === 0) return [];
+    // Duplica l'array più volte per garantire uno scroll continuo
+    const timesToDuplicate = Math.max(3, Math.ceil(10 / this.sponsors.length));
+    let duplicated: Sponsor[] = [];
+    for (let i = 0; i < timesToDuplicate; i++) {
+      duplicated = [...duplicated, ...this.sponsors];
+    }
+    return duplicated;
+  }
+
   // Achievement Data
   achievements: Achievement[] = [
     {
@@ -232,12 +241,38 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.sortUpcomingMatches();
     this.startAnimationSequence();
     this.loadSquad();
+    this.loadPartners();
+    
     // Simula loading screen
     setTimeout(() => {
       this.isLoading = false;
-    }, 2000);
+    }, 1000);
   }
 
+  // AGGIUNTO: nuovo metodo per caricare i partner
+  loadPartners() {
+    this.partnerService.getPartners().subscribe({
+      next: (partners) => {
+        // Mappiamo i partner dal formato del service al formato Sponsor
+        this.sponsors = partners.map(partner => ({
+          name: partner.name,
+          imageUrl: partner.logo
+        }));
+        console.log('Partners caricati:', this.sponsors);
+      },
+      error: (error) => {
+        console.error('Errore nel caricamento dei partner:', error);
+        // In caso di errore, usiamo i dati di fallback
+        this.sponsors = [
+          { name: 'Fondazione 251', imageUrl: 'assets/fondazione251.png' },
+          { name: 'Bialetti', imageUrl: 'assets/bialetti.png' },
+          { name: 'NU', imageUrl: 'assets/nu.png' },
+          { name: 'Suite', imageUrl: 'assets/suite.png' },
+          { name: 'Vibe', imageUrl: 'assets/vibe.png' }
+        ];
+      }
+    });
+  }
   
   onLogoLoad(index: number) {
     this.logoLoadStates[index] = true;
@@ -253,7 +288,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // Avvia l'effetto typewriter dopo il caricamento della vista
     setTimeout(() => {
       this.startTypewriter();
-    }, 2000); // Ridotto da 2500 a 2000 per iniziare prima l'animazione
+    }, 2000);
   }
 
   @HostListener('window:scroll', [])
@@ -301,7 +336,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (this.currentChar === phrase.length) {
           this.isDeleting = true;
-          this.typewriterSpeed = 1200; // Pausa più lunga prima di cancellare
+          this.typewriterSpeed = 1200;
         }
       } else {
         elem.textContent = phrase.substring(0, this.currentChar - 1);
@@ -367,12 +402,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     element.style.animationPlayState = 'running';
   }
 
-
   loadSquad() {
     this.squadService.getAllSquadsSmall()
     .subscribe(teams => {
-      this.teams = teams // Array di TeamSmall
-      console.log(this.teams)
+      this.teams = teams;
+      console.log(this.teams);
     });
   }
 }

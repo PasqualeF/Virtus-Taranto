@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   color: white;
+  padding: 60px 15px;
   font-family: 'Inter', sans-serif;
 }
 
@@ -18,17 +19,15 @@
 }
 
 .titolo {
-  font-size: 4.5rem;
-  font-weight: 800;
   text-align: center;
-  margin-bottom: 7rem;
-  line-height: 1.8;
-  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
+
 
 .descrizione-generale {
   font-size: 1.25rem;

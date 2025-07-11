@@ -37,6 +37,8 @@ export class SquadService {
     );
   }
 
+  
+
   /**
    * Ottiene una squadra per ID
    */

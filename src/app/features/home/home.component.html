@@ -155,7 +155,7 @@
              #sponsorCarousel
              (mouseenter)="pauseAnimation(sponsorCarousel)"
              (mouseleave)="resumeAnimation(sponsorCarousel)">
-          <div class="sponsor-item" *ngFor="let sponsor of sponsors">
+          <div class="sponsor-item" *ngFor="let sponsor of duplicatedSponsors">
             <img [src]="sponsor.imageUrl" [alt]="sponsor.name">
           </div>
         </div>

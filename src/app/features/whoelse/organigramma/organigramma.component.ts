@@ -1,8 +1,7 @@
-// organigramma.component.ts
+// organigramma.component.ts - VERSIONE FINALE STRAPI V5
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
-import { OrganigrammaService, Societa } from 'src/app/core/service/organigramma.service';
-import { environment } from 'src/environments/environments';
+import { OrganigrammaStrapiService, Societa } from 'src/app/core/service/organigramma-strapi.service';
 import { OrganigrammaData, StaffMember } from 'src/app/core/models/person.model';
 
 @Component({
@@ -62,13 +61,18 @@ export class OrganigrammaComponent implements OnInit {
   view: 'cards' | 'tree' = 'cards';
   isMobile: boolean = false;
   presidentCountClass: string = '';
+  
+  // Nuove proprietà per gestione errori e stato
+  error: string | null = null;
+  loadingStaff = false;
+  loadingSocieta = false;
 
-  constructor(private organigrammaService: OrganigrammaService) {}
+  constructor(private organigrammaService: OrganigrammaStrapiService) {}
 
   ngOnInit() {
     this.checkScreenSize();
     this.initializeSocieta();
-    this.loadStaff(this.selectedSocieta);
+    this.loadInitialData();
   }
 
   @HostListener('window:resize')
@@ -76,54 +80,101 @@ export class OrganigrammaComponent implements OnInit {
     this.isMobile = window.innerWidth < 768;
   }
 
+  /**
+   * Inizializza le società predefinite con loghi
+   */
   private initializeSocieta() {
     this.societa = this.organigrammaService.getSocieta();
   }
 
-  loadSocieta() {
-    this.loading = true;
+  /**
+   * Carica i dati iniziali
+   */
+  private loadInitialData() {
+    this.loadAvailableSocieta();
+    this.loadStaff(this.selectedSocieta);
+  }
+
+  /**
+   * Carica le società disponibili da Strapi
+   */
+  loadAvailableSocieta() {
+    this.loadingSocieta = true;
+    this.error = null;
+    
     this.organigrammaService.getAllSocieta().subscribe({
-      next: (organigramm) => {
-        console.log(organigramm);
-        this.loading = false;
-        if (organigramm.length > 0) {
-          this.selectedSocieta = organigramm[0];
-          this.loadStaff(this.selectedSocieta);
+      next: (societas) => {
+        this.loadingSocieta = false;
+        
+        // Aggiorna le società con quelle disponibili su Strapi
+        if (societas.length > 0) {
+          // Mantieni le società predefinite ma verifica quali sono disponibili
+          this.societa = this.societa.filter(s => societas.includes(s.nome));
+          
+          // Se la società selezionata non è disponibile, prendi la prima disponibile
+          if (!societas.includes(this.selectedSocieta) && societas.length > 0) {
+            this.selectedSocieta = societas[0];
+          }
         }
       },
       error: (error) => {
         console.error('Errore nel caricamento delle società:', error);
-        this.loading = false;
+        this.error = 'Errore nel caricamento delle società. Utilizzo società predefinite.';
+        this.loadingSocieta = false;
+        // In caso di errore, mantieni le società predefinite
       }
     });
   }
 
+  /**
+   * Carica tutto lo staff di una società specifica
+   */
   loadStaff(societa: string) {
+    if (!societa) {
+      console.warn('Società non specificata');
+      return;
+    }
+
+    this.loadingStaff = true;
     this.loading = true;
     this.selectedSocieta = societa;
+    this.error = null;
+    
     this.organigrammaService.getStaff(societa).subscribe({
       next: (staff) => {
         this.staffMembers = staff;
+        this.loadingStaff = false;
         this.loading = false;
+        
+        // Inizializza stati hover
         this.staffMembers.forEach(member => {
           this.hoverStates[member.id] = false;
         });
         
-        // Check president count for CSS class
+        // Determina la classe CSS per il centraggio della presidenza
         const presidentCount = this.getStaffByLevel(1).length;
         this.presidentCountClass = presidentCount === 2 ? 'two-cards' : '';
       },
       error: (error) => {
         console.error('Errore nel caricamento dello staff:', error);
+        this.error = `Errore nel caricamento dello staff per ${societa}`;
+        this.loadingStaff = false;
         this.loading = false;
+        this.staffMembers = [];
       }
     });
   }
-  
+
+  /**
+   * Filtra lo staff per livello
+   */
   getStaffByLevel(level: number): StaffMember[] {
     return this.staffMembers.filter(member => member.livello === level);
   }
 
+  /**
+   * Ottiene il titolo per ogni livello
+   */
   getLevelTitle(level: number): string {
     switch (level) {
       case 1:
@@ -135,22 +186,111 @@ export class OrganigrammaComponent implements OnInit {
       case 4:
         return 'Staff Medico';
       default:
-        return '';
+        return `Livello ${level}`;
     }
   }
 
+  /**
+   * Gestisce l'hover dei membri
+   */
   toggleMemberHover(memberId: number) {
     this.hoverStates[memberId] = !this.hoverStates[memberId];
   }
 
+  /**
+   * Cambia la vista tra cards e tree
+   */
   toggleView() {
     this.view = this.view === 'cards' ? 'tree' : 'cards';
+    console.log(`Vista cambiata a: ${this.view}`);
   }
 
+  /**
+   * Ottiene l'URL dell'immagine per un membro (compatibilità)
+   */
   getImageUrl(person: StaffMember): string {
-    if (person.image && person.image.formats) {
-      return `${environment.apiUrl}${person.image.formats.medium.url}`;
+    if (person.imageBase64) {
+      return person.imageBase64;
     }
+    
+    if (person.image) {
+      return this.organigrammaService.getImageUrls(person.image, 'medium');
+    }
+    
     return person.foto || 'assets/default-profile.png';
+  }
+
+  /**
+   * Ricarica i dati
+   */
+  reloadData() {
+    console.log('Ricaricamento dati...');
+    this.loadInitialData();
+  }
+
+  /**
+   * Cerca membri dello staff
+   */
+  searchStaff(query: string) {
+    if (!query.trim()) {
+      this.loadStaff(this.selectedSocieta);
+      return;
+    }
+
+    this.organigrammaService.searchStaff(query, this.selectedSocieta).subscribe({
+      next: (results) => {
+        this.staffMembers = results;
+        console.log(`Risultati ricerca per "${query}":`, results);
+      },
+      error: (error) => {
+        console.error('Errore nella ricerca:', error);
+        this.error = 'Errore durante la ricerca';
+      }
+    });
+  }
+
+  /**
+   * Verifica se ci sono dati disponibili
+   */
+  hasData(): boolean {
+    return this.staffMembers.length > 0;
+  }
+
+  /**
+   * Verifica se ci sono dati per un livello specifico
+   */
+  hasDataForLevel(level: number): boolean {
+    return this.getStaffByLevel(level).length > 0;
+  }
+
+  /**
+   * Ottiene i livelli disponibili
+   */
+  getAvailableLevels(): number[] {
+    const levels = [...new Set(this.staffMembers.map(member => member.livello))];
+    return levels.sort((a, b) => a - b);
+  }
+
+  /**
+   * Gestisce il click su una società
+   */
+  onSocietaClick(societa: Societa) {
+    if (this.selectedSocieta !== societa.nome) {
+      this.loadStaff(societa.nome);
+    }
+  }
+
+  /**
+   * Pulisce i messaggi di errore
+   */
+  clearError() {
+    this.error = null;
+  }
+
+  /**
+   * Verifica se il componente è in stato di caricamento
+   */
+  isLoading(): boolean {
+    return this.loading || this.loadingStaff || this.loadingSocieta;
   }
 }

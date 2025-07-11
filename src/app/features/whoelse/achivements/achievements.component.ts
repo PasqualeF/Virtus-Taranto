@@ -20,8 +20,8 @@ interface Societa {
         style({ transform: 'translateY(30px)', opacity: 0 }),
         animate('600ms cubic-bezier(0.35, 0, 0.25, 1)',
           style({ transform: 'translateY(0)', opacity: 1 }))
-      ])
-    ]),
+      ]) 
+    ]), 
     trigger('achievementCards', [
       transition(':enter', [
         query('.achievement-card', [
