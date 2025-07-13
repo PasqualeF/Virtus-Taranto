@@ -1,14 +1,15 @@
 <div class="storia-valori-container">
-  <!-- Header con selezione società -->
-
+  <!-- Header con titolo -->
   <h1 class="titolo" [@fadeIn]>
     {{ 'STORIA.TITOLO' | translate }}
     <span class="sottotitolo">{{ 'STORIA.SOTTOTITOLO' | translate }}</span>
   </h1>
+
+  <!-- Società Selector (nuovo design da achievements) -->
   <div class="societa-selector">
-    <div *ngFor="let s of societa" 
+    <div *ngFor="let s of societaOptions" 
          class="societa-tab"
-         [class.active]="selectedSocieta?.nome === s.nome"
+         [class.active]="isSocietaActive(s)"
          (click)="selectSocieta(s)"
          [@fadeIn]>
       <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
@@ -41,7 +42,7 @@
     <div class="tab-content">
       <!-- Storia -->
       <div *ngIf="activeTab === 'storia'" class="content-section" [@fadeIn]>
-        <h2 >{{ 'STORIA.SEZIONI.STORIA_TITOLO' | translate }}</h2>
+        <h2>{{ 'STORIA.SEZIONI.STORIA_TITOLO' | translate }}</h2>
         <p [innerHTML]="'STORIA.SOCIETA.' + selectedSocieta.nome.toUpperCase() + '.storia' | translate"></p>
       </div>
 

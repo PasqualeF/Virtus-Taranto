@@ -1,7 +1,7 @@
 // achievement.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, catchError } from 'rxjs';
 import { StrapiBaseService, StrapiResponse } from './strapi-base.service';
 import { Achievement, AchievementData } from '../models/achievement.model';
 
@@ -26,7 +26,7 @@ export class AchievementService extends StrapiBaseService {
         console.log('Risposta grezza da Strapi:', response);
         return response;
       }),
-      this.handleError
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -47,7 +47,7 @@ export class AchievementService extends StrapiBaseService {
         console.log('Risposta completa:', response);
         return this.mapAchievements(response);
       }),
-      this.handleError
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -69,7 +69,7 @@ export class AchievementService extends StrapiBaseService {
         console.log('Risposta featured:', response);
         return this.mapAchievements(response);
       }),
-      this.handleError
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -97,7 +97,7 @@ export class AchievementService extends StrapiBaseService {
         console.log('Risposta completa:', response);
         return this.mapAchievements(response);
       }),
-      this.handleError
+      catchError(error => this.handleError(error))
     );
   }
 

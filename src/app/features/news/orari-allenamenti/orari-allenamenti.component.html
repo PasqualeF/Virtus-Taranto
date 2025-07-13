@@ -1,102 +1,216 @@
 <div class="titolo-1">Orari Allenamenti</div>
 
 <div class="orari-container" [@fadeIn]>
-  <div class="orari-header">
-    <div class="filtri-container">
-      <mat-form-field appearance="outline" class="filtro">
-        <mat-label>Squadra</mat-label>
-        <mat-select [(ngModel)]="filtroGruppo" (selectionChange)="filtraOrari()">
-          <mat-option value="">Tutte</mat-option>
-          <mat-option *ngFor="let gruppo of gruppiUnici" [value]="gruppo">{{ gruppo }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      
-      <mat-form-field appearance="outline" class="filtro">
-        <mat-label>Fascia oraria</mat-label>
-        <mat-select [(ngModel)]="filtroOrario" (selectionChange)="filtraOrari()">
-          <mat-option value="">Tutte</mat-option>
-          <mat-option *ngFor="let orario of orariUnici" [value]="orario">{{ orario }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      
-      <mat-form-field appearance="outline" class="filtro">
-        <mat-label>Palestra</mat-label>
-        <mat-select [(ngModel)]="filtroPalestra" (selectionChange)="filtraOrari()">
-          <mat-option value="">Tutte</mat-option>
-          <mat-option *ngFor="let palestra of palestreUniche" [value]="palestra">{{ palestra }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+ 
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loader">
+      <i class="fas fa-spinner fa-spin"></i>
     </div>
+    <p>Caricamento orari allenamenti...</p>
   </div>
-  
-  <!-- Vista desktop - Tabella orari allenamenti -->
-  <div class="desktop-view" *ngIf="!isMobile">
-    <table mat-table [dataSource]="dataSource" class="orari-table">
-      <!-- Colonna Gruppi -->
-      <ng-container matColumnDef="gruppo">
-        <th mat-header-cell *matHeaderCellDef>Squadra</th>
-        <td mat-cell *matCellDef="let row" class="gruppo-cell">
-          <div class="gruppo-label">{{ row.gruppo }}</div>
-        </td>
-      </ng-container>
-      
-      <!-- Colonne Giorni -->
-      <ng-container *ngFor="let giorno of giorni" [matColumnDef]="giorno">
-        <th mat-header-cell *matHeaderCellDef>{{ giorno }}</th>
-        <td mat-cell *matCellDef="let row">
-          <div class="allenamento-slot" *ngFor="let allenamento of row[giorno]">
-            <div class="allenamento-card">
-              <div class="allenamento-orario">{{ allenamento.orario }}</div>
-              <div class="allenamento-palestra">{{ allenamento.palestra }}</div>
-            </div>
-          </div>
-          <div class="no-allenamento" *ngIf="row[giorno].length === 0">-</div>
-        </td>
-      </ng-container>
-      
-      <!-- Costruzione tabella -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
-  
-  <!-- Vista mobile -->
-  <div class="mobile-view" *ngIf="isMobile">
-    <div class="days-selector-container">
-      <div class="days-selector">
-        <div class="day-button" *ngFor="let giorno of giorni; let i = index" 
-            [class.active]="selectedDayIndex === i"
-            (click)="selectDay(i)">
-          {{ giorno.substring(0, 3) }}
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading">
+    <div class="orari-header">
+      <div class="header-actions">
+        <button class="refresh-btn" (click)="refreshData()" [disabled]="isLoading" title="Aggiorna dati">
+          <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+          Aggiorna
+        </button>
+        <button class="clear-filters-btn" (click)="clearFilters()" title="Pulisci filtri" *ngIf="hasActiveFilters()">
+          <i class="fas fa-filter"></i>
+          Pulisci filtri
+        </button>
+      </div>
+
+      <!-- Statistiche Header -->
+      <div class="header-stats" *ngIf="orariAllenamenti.length > 0">
+        <div class="stat-item">
+          <i class="fas fa-calendar-alt stat-icon"></i>
+          <span>Totale allenamenti: <span class="stat-value">{{ orariAllenamenti.length }}</span></span>
         </div>
+        <div class="stat-item">
+          <i class="fas fa-users stat-icon"></i>
+          <span>Squadre: <span class="stat-value">{{ gruppiUnici.length }}</span></span>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-map-marker-alt stat-icon"></i>
+          <span>Palestre: <span class="stat-value">{{ palestreUniche.length }}</span></span>
+        </div>
+        <div class="stat-item" *ngIf="hasActiveFilters()">
+          <i class="fas fa-filter stat-icon"></i>
+          <span>Filtrati: <span class="stat-value">{{ getFilteredResultsCount() }}</span></span>
+        </div>
+      </div>
+      
+      <div class="filtri-container">
+        <mat-form-field appearance="outline" class="filtro">
+          <mat-label>Squadra</mat-label>
+          <mat-select [(ngModel)]="filtroGruppo" (selectionChange)="filtraOrari()">
+            <mat-option value="">Tutte le squadre</mat-option>
+            <mat-option *ngFor="let gruppo of gruppiUnici" [value]="gruppo">{{ gruppo }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filtro">
+          <mat-label>Fascia oraria</mat-label>
+          <mat-select [(ngModel)]="filtroOrario" (selectionChange)="filtraOrari()">
+            <mat-option value="">Tutti gli orari</mat-option>
+            <mat-option *ngFor="let orario of orariUnici" [value]="orario">{{ orario }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filtro">
+          <mat-label>Palestra</mat-label>
+          <mat-select [(ngModel)]="filtroPalestra" (selectionChange)="filtraOrari()">
+            <mat-option value="">Tutte le palestre</mat-option>
+            <mat-option *ngFor="let palestra of palestreUniche" [value]="palestra">{{ palestra }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
     
-    <div class="day-content">
-      <h3>{{ giorni[selectedDayIndex] }}</h3>
-      
-      <div class="mobile-squadre-list">
-        <div class="mobile-squadra-card" *ngFor="let squadra of getSquadreForDay(giorni[selectedDayIndex])">
-          <div class="mobile-squadra-header">
-            <div class="mobile-squadra-name">{{ squadra.gruppo }}</div>
-          </div>
-          <div class="mobile-allenamenti-container">
-            <div class="mobile-allenamento-card" *ngFor="let allenamento of squadra.allenamenti">
-              <div class="mobile-allenamento-time">
-                <i class="fas fa-clock"></i> {{ allenamento.orario }}
+    <!-- Vista desktop - Tabella orari allenamenti -->
+    <div class="desktop-view" *ngIf="!isMobile && orariAllenamenti.length > 0">
+      <table mat-table [dataSource]="dataSource" class="orari-table">
+        <!-- Colonna Gruppi -->
+        <ng-container matColumnDef="gruppo">
+          <th mat-header-cell *matHeaderCellDef>
+            <i class="fas fa-users"></i> Squadra
+          </th>
+          <td mat-cell *matCellDef="let row" class="gruppo-cell">
+            <div class="gruppo-label">{{ row.gruppo }}</div>
+          </td>
+        </ng-container>
+        
+        <!-- Colonne Giorni -->
+        <ng-container *ngFor="let giorno of giorni" [matColumnDef]="giorno">
+          <th mat-header-cell *matHeaderCellDef>
+            <i class="fas fa-calendar-day"></i> {{ giorno }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="allenamento-slot">
+              <div class="allenamento-card" 
+                   *ngFor="let allenamento of row[giorno]"
+                   [title]="getTooltipText(allenamento)"
+                   [attr.data-reference]="allenamento.referenceNumber"
+                   (click)="onAllenamentoClick(allenamento)">
+                
+                <div class="allenamento-orario">
+                  {{ allenamento.orario }}
+                  <span class="recurring-badge" *ngIf="allenamento.isRecurring" title="Allenamento ricorrente">
+                    <i class="fas fa-repeat"></i>
+                  </span>
+                </div>
+                
+                <div class="allenamento-palestra">
+                  {{ allenamento.palestra }}
+                </div>
+                
+                <div class="allenamento-title" *ngIf="allenamento.title && allenamento.title.trim()">
+                  {{ allenamento.title }}
+                </div>
+                
+                <div class="allenamento-description" *ngIf="allenamento.description && allenamento.description.trim()">
+                  {{ allenamento.description | slice:0:50 }}<span *ngIf="allenamento.description.length > 50">...</span>
+                </div>
+
+                <!-- Indicatore di connessione per ogni card -->
+                <div class="connection-indicator" 
+                     [class.disconnected]="!isConnectedToLibreBooking"
+                     [title]="isConnectedToLibreBooking ? 'Dati live da LibreBooking' : 'Dati locali'">
+                </div>
               </div>
-              <div class="mobile-allenamento-place">
-                <i class="fas fa-map-marker-alt"></i> {{ allenamento.palestra }}
+            </div>
+            
+            <div class="no-allenamento" *ngIf="row[giorno].length === 0">
+              <i class="fas fa-calendar-times"></i>
+              Nessun allenamento
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Costruzione tabella -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    
+    <!-- Vista mobile -->
+    <div class="mobile-view" *ngIf="isMobile && orariAllenamenti.length > 0">
+      <div class="days-selector-container">
+        <div class="days-selector">
+          <div class="day-button" *ngFor="let giorno of giorni; let i = index" 
+              [class.active]="selectedDayIndex === i"
+              (click)="selectDay(i)">
+            {{ giorno.substring(0, 3) }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="day-content">
+        <h3>{{ giorni[selectedDayIndex] }}</h3>
+        
+        <div class="mobile-squadre-list">
+          <div class="mobile-squadra-card" *ngFor="let squadra of getSquadreForDay(giorni[selectedDayIndex])">
+            <div class="mobile-squadra-header">
+              <div class="mobile-squadra-name">{{ squadra.gruppo }}</div>
+            </div>
+            <div class="mobile-allenamenti-container">
+              <div class="mobile-allenamento-card" 
+                   *ngFor="let allenamento of squadra.allenamenti"
+                   [attr.data-reference]="allenamento.referenceNumber">
+                <div class="mobile-allenamento-time">
+                  <i class="fas fa-clock"></i> {{ allenamento.orario }}
+                  <span class="recurring-badge" *ngIf="allenamento.isRecurring">
+                    <i class="fas fa-repeat" title="Ricorrente"></i>
+                  </span>
+                </div>
+                <div class="mobile-allenamento-place">
+                  <i class="fas fa-map-marker-alt"></i> {{ allenamento.palestra }}
+                </div>
+                <div class="mobile-allenamento-title" *ngIf="allenamento.title">
+                  <i class="fas fa-tag"></i> {{ allenamento.title }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div class="no-allenamenti-message" *ngIf="getSquadreForDay(giorni[selectedDayIndex]).length === 0">
-          <i class="fas fa-calendar-xmark"></i>
-          <p>Nessun allenamento programmato per questo giorno</p>
+          
+          <div class="no-allenamenti-message" *ngIf="getSquadreForDay(giorni[selectedDayIndex]).length === 0">
+            <i class="fas fa-calendar-xmark"></i>
+            <p>Nessun allenamento programmato per questo giorno</p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Messaggio quando non ci sono dati -->
+    <div class="no-data-message" *ngIf="orariAllenamenti.length === 0 && !isLoading">
+      <div class="no-data-icon">
+        <i class="fas fa-calendar-times"></i>
+      </div>
+      <h3>Nessun orario disponibile</h3>
+      <p>Non sono stati trovati orari di allenamento.</p>
+      <div class="no-data-actions">
+        <button class="action-btn primary" (click)="refreshData()">
+          <i class="fas fa-sync-alt"></i>
+          Ricarica dati
+        </button>
+        <button class="action-btn secondary" (click)="useFallbackData()">
+          <i class="fas fa-database"></i>
+          Usa dati esempio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Info (visibile solo in development) -->
+  <div class="debug-info" *ngIf="!isConnectedToLibreBooking && orariAllenamenti.length > 0">
+    <details>
+      <summary>ℹ️ Informazioni Debug</summary>
+      <pre>{{ getDebugInfo() }}</pre>
+    </details>
   </div>
 </div>

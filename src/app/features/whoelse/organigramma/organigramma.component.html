@@ -1,4 +1,4 @@
-<!-- organigramma.component.html - AGGIORNATO PER STRAPI V5 -->
+<!-- organigramma.component.html - AGGIORNATO CON NUOVO DESIGN SOCIETÀ SELECTOR -->
 <div class="organigramma-container">
   <h1 class="titolo">
     Organigramma Societario
@@ -25,11 +25,11 @@
     </button>
   </div>
 
-  <!-- Società Selector - Improved for mobile -->
+  <!-- Società Selector (nuovo design da achievements e storia) -->
   <div class="societa-selector" *ngIf="!loadingSocieta">
-    <div *ngFor="let s of societa" 
+    <div *ngFor="let s of societaOptions" 
          class="societa-tab"
-         [class.active]="selectedSocieta === s.nome"
+         [class.active]="isSocietaActive(s)"
          (click)="onSocietaClick(s)">
       <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
       <span>{{ s.nome }}</span>
@@ -102,8 +102,7 @@
           <div class="member-photo-container">
             <img [src]="getImageUrl(member)" 
                  [alt]="member.nome"
-                 class="member-photo"
-                 >
+                 class="member-photo">
             <div class="member-overlay"></div>
           </div>
 
@@ -144,8 +143,7 @@
             <div class="member-photo-container">
               <img [src]="getImageUrl(member)" 
                    [alt]="member.nome"
-                   class="member-photo"
-                  >
+                   class="member-photo">
               <div class="member-overlay"></div>
             </div>
             <div class="member-info">
@@ -183,8 +181,7 @@
              style="animation-delay: 0.2s">
           <img [src]="getImageUrl(member)" 
                [alt]="member.nome"
-               class="tree-photo"
-             >
+               class="tree-photo">
           <div class="tree-name">{{ member.nome }}</div>
           <div class="tree-role">{{ member.ruolo }}</div>
         </div>
@@ -201,8 +198,7 @@
              [style.animation-delay]="(i * 0.1 + 0.4) + 's'">
           <img [src]="getImageUrl(member)" 
                [alt]="member.nome"
-               class="tree-photo"
-               >
+               class="tree-photo">
           <div class="tree-name">{{ member.nome }}</div>
           <div class="tree-role">{{ member.ruolo }}</div>
         </div>

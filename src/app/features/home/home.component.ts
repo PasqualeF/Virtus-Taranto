@@ -1,20 +1,10 @@
-// home.component.ts
+// home.component.ts - AGGIORNATO
 import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList, HostListener, AfterViewInit, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { SquadService } from 'src/app/core/service/squad.service'; // RIPRISTINATO all'originale
-import { PartnerService } from 'src/app/core/service/partner.service'; // AGGIUNTO
+import { SquadService } from 'src/app/core/service/squad.service';
+import { PartnerService } from 'src/app/core/service/partner.service';
+import { MatchService, Match } from 'src/app/core/service/match.service'; // NUOVO IMPORT
 import { TeamSmall } from 'src/app/core/models/squad.model';
-
-interface Match {
-  homeTeam: string;
-  awayTeam: string;
-  date: Date;
-  time: string;
-  venue: string;
-  isHome: boolean;
-  league: string;
-  backgroundImage: string;
-}
 
 interface Team {
   name: string;
@@ -74,15 +64,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isTyping = false;
   error: string | null = null;
 
-  // Typewriter Configuration - Aggiornata
+  // Typewriter Configuration
   private phrases = ['Passione', 'Tradizione', 'Eccellenza', 'Dal 1948', 'Who Else?'];
   private currentPhrase = 0;
   private currentChar = 0;
   private isDeleting = false;
   private typewriterSpeed = 100;
   
-  private squadService = inject(SquadService); // RIPRISTINATO all'originale
-  private partnerService = inject(PartnerService); // AGGIUNTO
+  // Services
+  private squadService = inject(SquadService);
+  private partnerService = inject(PartnerService);
+  private matchService = inject(MatchService); // NUOVO SERVICE
   
   // Assets
   logos = ['assets/logo-virtus-taranto.svg', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
@@ -99,87 +91,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { id: 'shop', name: 'Shop' }
   ];
 
-  // Content Data
-  upcomingMatches: Match[] = [
-    { 
-      homeTeam: 'Virtus Taranto', 
-      awayTeam: 'Team A', 
-      date: new Date('2025-04-15'), 
-      time: '18:00', 
-      venue: 'PalaMazzola',
-      isHome: true,
-      league: 'Serie A2',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    },
-    { 
-      homeTeam: 'Team B', 
-      awayTeam: 'Virtus Taranto', 
-      date: new Date('2025-04-16'), 
-      time: '20:30', 
-      venue: 'PalaSport B',
-      isHome: false,
-      league: 'Coppa Italia',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    },
-    { 
-      homeTeam: 'Team B', 
-      awayTeam: 'Virtus Taranto', 
-      date: new Date('2025-04-17'), 
-      time: '20:30', 
-      venue: 'PalaSport B',
-      isHome: false,
-      league: 'Coppa Italia',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    },
-    { 
-      homeTeam: 'Team B', 
-      awayTeam: 'Virtus Taranto', 
-      date: new Date('2025-05-15'),  
-      time: '20:30', 
-      venue: 'PalaSport B',
-      isHome: false,
-      league: 'Coppa Italia',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    },
-    { 
-      homeTeam: 'Virtus Taranto', 
-      awayTeam: 'Team A', 
-      date: new Date('2025-06-15'), 
-      time: '18:00', 
-      venue: 'PalaMazzola',
-      isHome: true,
-      league: 'Serie A2',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    },
-    { 
-      homeTeam: 'Virtus Taranto', 
-      awayTeam: 'Team A', 
-      date: new Date('2025-06-16'),  
-      time: '18:00', 
-      venue: 'PalaMazzola',
-      isHome: true,
-      league: 'Serie A2',
-      backgroundImage: 'assets/logo-virtus-taranto.png'
-    }
-  ];
-
+  // Content Data - AGGIORNATO: ora viene caricato dinamicamente
+  upcomingMatches: Match[] = [];
   teams: TeamSmall[] = [];
-
-  // MODIFICATO: da array statico a array vuoto che verrà popolato dal service
   sponsors: Sponsor[] = [];
   
-  // AGGIUNTO: getter per duplicare gli sponsor per il carousel infinito
-  get duplicatedSponsors(): Sponsor[] {
-    if (this.sponsors.length === 0) return [];
-    // Duplica l'array più volte per garantire uno scroll continuo
-    const timesToDuplicate = Math.max(3, Math.ceil(10 / this.sponsors.length));
-    let duplicated: Sponsor[] = [];
-    for (let i = 0; i < timesToDuplicate; i++) {
-      duplicated = [...duplicated, ...this.sponsors];
-    }
-    return duplicated;
-  }
-
   // Achievement Data
   achievements: Achievement[] = [
     {
@@ -207,6 +123,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
       icon: 'heart'
     }
   ];
+
+  // AGGIUNTO: getter per duplicare gli sponsor per il carousel infinito
+  get duplicatedSponsors(): Sponsor[] {
+    if (this.sponsors.length === 0) return [];
+    const timesToDuplicate = Math.max(3, Math.ceil(10 / this.sponsors.length));
+    let duplicated: Sponsor[] = [];
+    for (let i = 0; i < timesToDuplicate; i++) {
+      duplicated = [...duplicated, ...this.sponsors];
+    }
+    return duplicated;
+  }
 
   constructor() {
     this.initializeLoading();
@@ -238,10 +165,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.sortUpcomingMatches();
     this.startAnimationSequence();
-    this.loadSquad();
-    this.loadPartners();
+    this.loadAllData();
     
     // Simula loading screen
     setTimeout(() => {
@@ -249,20 +174,82 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }, 1000);
   }
 
-  // AGGIUNTO: nuovo metodo per caricare i partner
+  // NUOVO: metodo unificato per caricare tutti i dati
+  private loadAllData() {
+    this.loadMatches();
+    this.loadSquad();
+    this.loadPartners();
+  }
+
+  // NUOVO: metodo per caricare le partite da Strapi
+  private loadMatches() {
+    console.log('🏀 Caricamento partite da Strapi...');
+    
+    this.matchService.getUpcomingMatches(6).subscribe({
+      next: (matches) => {
+        this.upcomingMatches = matches;
+        console.log('✅ Partite caricate:', this.upcomingMatches);
+        
+        // Log per debugging
+        this.upcomingMatches.forEach((match, index) => {
+          console.log(`Partita ${index + 1}:`, {
+            homeTeam: match.homeTeam,
+            awayTeam: match.awayTeam,
+            date: match.date,
+            isHome: match.isHome,
+            venue: match.venue
+          });
+        });
+      },
+      error: (error) => {
+        console.error('❌ Errore nel caricamento delle partite:', error);
+        this.error = 'Errore nel caricamento delle partite';
+        
+        // Dati di fallback come backup
+        this.loadFallbackMatches();
+      }
+    });
+  }
+
+  // NUOVO: dati di fallback in caso di errore
+  private loadFallbackMatches() {
+    console.log('🔄 Caricamento dati di fallback per le partite...');
+    
+    this.upcomingMatches = [
+      { 
+        homeTeam: 'Virtus Taranto', 
+        awayTeam: 'Team A', 
+        date: new Date('2025-08-15'), 
+        time: '18:00', 
+        venue: 'PalaMazzola',
+        isHome: true,
+        league: 'Serie A2'
+      },
+      { 
+        homeTeam: 'Team B', 
+        awayTeam: 'Virtus Taranto', 
+        date: new Date('2025-08-22'), 
+        time: '20:30', 
+        venue: 'PalaSport B',
+        isHome: false,
+        league: 'Coppa Italia'
+      }
+    ];
+  }
+
+  // Metodo per caricare i partner
   loadPartners() {
     this.partnerService.getPartners().subscribe({
       next: (partners) => {
-        // Mappiamo i partner dal formato del service al formato Sponsor
         this.sponsors = partners.map(partner => ({
           name: partner.name,
           imageUrl: partner.logo
         }));
-        console.log('Partners caricati:', this.sponsors);
+        console.log('✅ Partners caricati:', this.sponsors);
       },
       error: (error) => {
-        console.error('Errore nel caricamento dei partner:', error);
-        // In caso di errore, usiamo i dati di fallback
+        console.error('❌ Errore nel caricamento dei partner:', error);
+        // Dati di fallback
         this.sponsors = [
           { name: 'Fondazione 251', imageUrl: 'assets/fondazione251.png' },
           { name: 'Bialetti', imageUrl: 'assets/bialetti.png' },
@@ -276,7 +263,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
   onLogoLoad(index: number) {
     this.logoLoadStates[index] = true;
-    // Avvia l'animazione del logo successivo
     if (index < this.logos.length - 1) {
       setTimeout(() => {
         this.logoAnimationStates[index + 1] = true;
@@ -285,7 +271,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Avvia l'effetto typewriter dopo il caricamento della vista
     setTimeout(() => {
       this.startTypewriter();
     }, 2000);
@@ -306,14 +291,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   // Animation Methods
   startAnimationSequence(): void {
-    // Logo animations
     this.logos.forEach((_, index) => {
       setTimeout(() => {
         this.logoAnimationStates[index] = true;
       }, index * 200);
     });
 
-    // Other animations
     setTimeout(() => this.titleAnimationState = true, 1000);
     setTimeout(() => this.buttonAnimationState = true, 2000);
   }
@@ -321,7 +304,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private startTypewriter(): void {
     const typeNextChar = () => {
       const phrase = this.phrases[this.currentPhrase];
-      // Select appropriate element based on device
       const elem = this.isMobile && this.mobileTypewriterText ? 
                   this.mobileTypewriterText.nativeElement : 
                   this.typewriterText?.nativeElement;
@@ -356,11 +338,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     typeNextChar();
   }
 
-  // Utility Methods
-  private sortUpcomingMatches(): void {
-    this.upcomingMatches.sort((a, b) => a.date.getTime() - b.date.getTime());
-  }
-
+  // Utility Methods - AGGIORNATO: rimosse le partite hardcoded
   getMatchDay(date: Date): string {
     return date.toLocaleDateString('it-IT', { weekday: 'long' });
   }
@@ -406,7 +384,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.squadService.getAllSquadsSmall()
     .subscribe(teams => {
       this.teams = teams;
-      console.log(this.teams);
+      console.log('✅ Squadre caricate:', this.teams);
     });
   }
 }

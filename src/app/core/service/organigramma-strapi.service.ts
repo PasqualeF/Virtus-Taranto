@@ -76,23 +76,31 @@ export class OrganigrammaStrapiService {
    * Recupera tutto lo staff - ora usa la collection staff-members
    */
   getStaff(societa: string): Observable<StaffMember[]> {
-    return this.http.get<StrapiResponse<StrapiStaffMember[]>>(`${this.apiUrl}/api/staff-members?populate=image`, {
+  // Sintassi alternativa per Strapi v5
+  const params = new URLSearchParams();
+  params.append('populate[0]', 'image');
+  params.append('populate[1]', 'organigramma');
+  params.append('filters[organigramma][societa][$eq]', societa);
+  
+  return this.http.get<StrapiResponse<StrapiStaffMember[]>>(
+    `${this.apiUrl}/api/staff-members?${params.toString()}`, 
+    {
       headers: this.getHeaders()
-    }).pipe(
-      map(response => {
-        if (!response.data || !Array.isArray(response.data)) {
-          return [];
-        }
-        
-        // Per ora restituiamo tutti i membri (puoi filtrare per società se hai quel campo)
-        return this.mapStaffMembers(response.data);
-      }),
-      catchError(error => {
-        console.error('Errore nel caricamento staff:', error);
-        return of([]);
-      })
-    );
-  }
+    }
+  ).pipe(
+    map(response => {
+      if (!response.data || !Array.isArray(response.data)) {
+        return [];
+      }
+      
+      return this.mapStaffMembers(response.data);
+    }),
+    catchError(error => {
+      console.error('Errore nel caricamento staff:', error);
+      return of([]);
+    })
+  );
+}
 
   /**
    * Recupera tutte le società disponibili

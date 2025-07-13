@@ -2,23 +2,7 @@ import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/cor
 import { MatTableDataSource } from '@angular/material/table';
 import { OrariAllenamentiService } from 'src/app/core/service/orari-allenamenti.service';
 import { animate, style, transition, trigger } from '@angular/animations';
-
-interface OrarioAllenamento {
-  gruppo: string;
-  giorno: string;
-  orario: string;
-  palestra: string;
-}
-
-interface TabellaOrari {
-  gruppo: string;
-  [key: string]: string | OrarioAllenamento[];
-}
-
-interface SquadraGiorno {
-  gruppo: string;
-  allenamenti: OrarioAllenamento[];
-}
+import { OrarioAllenamento, TabellaOrari, SquadraGiorno } from 'src/app/core/models/reservation.model';
 
 @Component({
   selector: 'app-orari-allenamenti',
@@ -53,6 +37,11 @@ export class OrariAllenamentiComponent implements OnInit {
   isMobile: boolean = false;
   selectedDayIndex: number = 0;
 
+  // Stato del componente
+  isLoading: boolean = false;
+  error: string | null = null;
+  isConnectedToLibreBooking: boolean = false;
+
   dataSource: MatTableDataSource<TabellaOrari>;
   displayedColumns: string[] = ['gruppo', ...this.giorni];
 
@@ -62,8 +51,8 @@ export class OrariAllenamentiComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.caricaOrariAllenamenti();
     this.impostaGiornoCorrente();
+    this.caricaOrariAllenamenti();
   }
 
   impostaGiornoCorrente() {
@@ -82,50 +71,100 @@ export class OrariAllenamentiComponent implements OnInit {
   }
 
   caricaOrariAllenamenti() {
-    this.orariAllenamentiService.getOrariAllenamenti().subscribe(
-      (data: OrarioAllenamento[]) => {
+    this.isLoading = true;
+    this.error = null;
+    
+    console.log('🔄 Caricamento orari allenamenti da LibreBooking...');
+    
+    this.orariAllenamentiService.getOrariAllenamenti().subscribe({
+      next: (data: OrarioAllenamento[]) => {
+        console.log('✅ Dati ricevuti:', data);
+        this.orariAllenamenti = data;
+        this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
+        this.estraiValoriUnici();
+        this.filtraOrari();
+        this.isLoading = false;
+        
+        // Log delle statistiche
+        console.log(`📊 Statistiche caricamento:
+          - Prenotazioni totali: ${data.length}
+          - Gruppi unici: ${this.gruppiUnici.length}
+          - Palestre uniche: ${this.palestreUniche.length}
+          - Connesso a LibreBooking: ${this.isConnectedToLibreBooking}`);
+      },
+      error: (error) => {
+        console.error('❌ Errore nel caricamento degli orari allenamenti:', error);
+        this.error = 'Errore nel caricamento dei dati. Verifica la connessione.';
+        this.isLoading = false;
+        this.isConnectedToLibreBooking = false;
+        
+        // Carica dati di fallback
+        this.caricaDatiFallback();
+      }
+    });
+  }
+
+  caricaDatiFallback() {
+    console.log('🔄 Caricamento dati di fallback...');
+    this.orariAllenamentiService.getFallbackData().subscribe({
+      next: (data: OrarioAllenamento[]) => {
         this.orariAllenamenti = data;
         this.estraiValoriUnici();
         this.filtraOrari();
-        
-        // Non impostiamo qui il giorno corrente perché lo abbiamo già fatto in ngOnInit
+        console.log('✅ Dati di fallback caricati');
       },
-      error => {
-        console.error('Errore nel caricamento degli orari allenamenti:', error);
-        // Carica dati di esempio in caso di errore
-        this.caricaDatiEsempio();
+      error: (error) => {
+        console.error('❌ Errore anche nel caricamento dei dati di fallback:', error);
       }
-    );
+    });
   }
 
-  caricaDatiEsempio() {
-    // Dati di esempio nel caso il servizio non sia disponibile
-    this.orariAllenamenti = [
-      { gruppo: 'Under 15', giorno: 'Lunedì', orario: '16:00-17:30', palestra: 'Palestra A' },
-      { gruppo: 'Under 15', giorno: 'Mercoledì', orario: '16:00-17:30', palestra: 'Palestra A' },
-      { gruppo: 'Under 15', giorno: 'Venerdì', orario: '16:00-17:30', palestra: 'Palestra B' },
-      { gruppo: 'Under 17', giorno: 'Lunedì', orario: '17:30-19:00', palestra: 'Palestra A' },
-      { gruppo: 'Under 17', giorno: 'Giovedì', orario: '17:30-19:00', palestra: 'Palestra A' },
-      { gruppo: 'Under 17', giorno: 'Venerdì', orario: '17:30-19:00', palestra: 'Palestra A' },
-      { gruppo: 'Prima Squadra', giorno: 'Lunedì', orario: '20:00-22:00', palestra: 'Palestra Centrale' },
-      { gruppo: 'Prima Squadra', giorno: 'Martedì', orario: '20:00-22:00', palestra: 'Palestra Centrale' },
-      { gruppo: 'Prima Squadra', giorno: 'Giovedì', orario: '20:00-22:00', palestra: 'Palestra Centrale' },
-      { gruppo: 'Prima Squadra', giorno: 'Sabato', orario: '10:00-12:00', palestra: 'Palestra Centrale' },
-      { gruppo: 'Minibasket', giorno: 'Martedì', orario: '15:00-16:30', palestra: 'Palestra B' },
-      { gruppo: 'Minibasket', giorno: 'Giovedì', orario: '15:00-16:30', palestra: 'Palestra B' },
-      { gruppo: 'Senior Femminile', giorno: 'Lunedì', orario: '19:00-20:30', palestra: 'Palestra B' },
-      { gruppo: 'Senior Femminile', giorno: 'Mercoledì', orario: '19:00-20:30', palestra: 'Palestra B' },
-      { gruppo: 'Senior Femminile', giorno: 'Venerdì', orario: '19:00-20:30', palestra: 'Palestra B' }
-    ];
+  /**
+   * Forza il refresh dei dati da LibreBooking
+   */
+  refreshData() {
+    console.log('🔄 Refresh forzato dei dati...');
+    this.isLoading = true;
+    this.error = null;
     
-    this.estraiValoriUnici();
-    this.filtraOrari();
+    this.orariAllenamentiService.refreshData().subscribe({
+      next: (data: OrarioAllenamento[]) => {
+        console.log('✅ Dati aggiornati:', data);
+        this.orariAllenamenti = data;
+        this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
+        this.estraiValoriUnici();
+        this.filtraOrari();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('❌ Errore nel refresh:', error);
+        this.error = 'Errore nell\'aggiornamento dei dati.';
+        this.isLoading = false;
+        this.isConnectedToLibreBooking = false;
+      }
+    });
+  }
+
+  /**
+   * Passa ai dati di fallback manualmente
+   */
+  useFallbackData() {
+    console.log('🔄 Utilizzo dati di fallback...');
+    this.caricaDatiFallback();
+    this.error = null;
+    this.isConnectedToLibreBooking = false;
   }
 
   estraiValoriUnici() {
     this.gruppiUnici = [...new Set(this.orariAllenamenti.map(o => o.gruppo))].sort();
     this.orariUnici = [...new Set(this.orariAllenamenti.map(o => o.orario))].sort();
     this.palestreUniche = [...new Set(this.orariAllenamenti.map(o => o.palestra))].sort();
+    
+    console.log('📋 Valori unici estratti:', {
+      gruppi: this.gruppiUnici,
+      orari: this.orariUnici,
+      palestre: this.palestreUniche
+    });
   }
 
   filtraOrari() {
@@ -146,10 +185,13 @@ export class OrariAllenamentiComponent implements OnInit {
       });
 
     this.dataSource.data = tabellaOrari;
+    
+    console.log(`🔍 Filtri applicati: ${orariFiltrati.length} risultati`);
   }
 
   selectDay(index: number) {
     this.selectedDayIndex = index;
+    console.log(`📅 Giorno selezionato: ${this.giorni[index]}`);
   }
 
   getSquadreForDay(giorno: string): SquadraGiorno[] {
@@ -178,5 +220,193 @@ export class OrariAllenamentiComponent implements OnInit {
     });
 
     return squadre.sort((a, b) => a.gruppo.localeCompare(b.gruppo));
+  }
+
+  /**
+   * Pulisce i filtri
+   */
+  clearFilters() {
+    this.filtroGruppo = '';
+    this.filtroOrario = '';
+    this.filtroPalestra = '';
+    this.filtraOrari();
+    console.log('🧹 Filtri puliti');
+  }
+
+  /**
+   * Ottiene informazioni di debug
+   */
+  getDebugInfo(): string {
+    const serviceStatus = this.orariAllenamentiService.getServiceStatus();
+    return `
+      Connesso a LibreBooking: ${this.isConnectedToLibreBooking}
+      Prenotazioni caricate: ${this.orariAllenamenti.length}
+      Gruppi unici: ${this.gruppiUnici.length}
+      Autenticato: ${serviceStatus.isAuthenticated}
+      Cache timeout: ${Math.round(serviceStatus.cacheTimeoutMs / 1000 / 60)} minuti
+      Ultima auth: ${serviceStatus.lastAuthTime ? new Date(serviceStatus.lastAuthTime).toLocaleTimeString('it-IT') : 'Mai'}
+      Base URL: ${serviceStatus.config.baseUrl}
+    `;
+  }
+
+  /**
+   * Genera testo tooltip per le card allenamento
+   */
+  getTooltipText(allenamento: OrarioAllenamento): string {
+    let tooltip = `${allenamento.gruppo}\n`;
+    tooltip += `📅 ${allenamento.giorno}\n`;
+    tooltip += `🕐 ${allenamento.orario}\n`;
+    tooltip += `📍 ${allenamento.palestra}`;
+    
+    if (allenamento.title && allenamento.title.trim()) {
+      tooltip += `\n📝 ${allenamento.title}`;
+    }
+    
+    if (allenamento.description && allenamento.description.trim()) {
+      tooltip += `\n💬 ${allenamento.description}`;
+    }
+    
+    if (allenamento.isRecurring) {
+      tooltip += `\n🔄 Allenamento ricorrente`;
+    }
+    
+    if (allenamento.referenceNumber) {
+      tooltip += `\n🔗 Ref: ${allenamento.referenceNumber}`;
+    }
+    
+    return tooltip;
+  }
+
+  /**
+   * Gestisce il click su una card allenamento
+   */
+  onAllenamentoClick(allenamento: OrarioAllenamento) {
+    console.log('🏀 Click su allenamento:', allenamento);
+    
+    // Esempio di azioni possibili:
+    if (allenamento.referenceNumber) {
+      console.log(`📋 Dettagli prenotazione: ${allenamento.referenceNumber}`);
+      // Qui potresti aprire un modal con i dettagli
+      this.showAllenamentoDetails(allenamento);
+    }
+  }
+
+  /**
+   * Mostra i dettagli di un allenamento (esempio)
+   */
+  private showAllenamentoDetails(allenamento: OrarioAllenamento) {
+    // Implementazione per mostrare dettagli
+    console.log('📊 Dettagli allenamento:', {
+      gruppo: allenamento.gruppo,
+      orario: allenamento.orario,
+      palestra: allenamento.palestra,
+      title: allenamento.title,
+      description: allenamento.description,
+      isRecurring: allenamento.isRecurring,
+      referenceNumber: allenamento.referenceNumber,
+      startDate: allenamento.startDate,
+      endDate: allenamento.endDate
+    });
+    
+    // Qui potresti aprire un modal, navigare a una pagina di dettaglio, etc.
+  }
+
+  /**
+   * Verifica se ci sono filtri attivi
+   */
+  hasActiveFilters(): boolean {
+    return !!(this.filtroGruppo || this.filtroOrario || this.filtroPalestra);
+  }
+
+  /**
+   * Ottiene il numero di risultati dopo i filtri
+   */
+  getFilteredResultsCount(): number {
+    if (!this.hasActiveFilters()) {
+      return this.orariAllenamenti.length;
+    }
+    
+    return this.orariAllenamenti.filter(orario =>
+      (this.filtroGruppo ? orario.gruppo === this.filtroGruppo : true) &&
+      (this.filtroOrario ? orario.orario === this.filtroOrario : true) &&
+      (this.filtroPalestra ? orario.palestra === this.filtroPalestra : true)
+    ).length;
+  }
+
+  /**
+   * Test di connettività manuale
+   */
+  testConnection() {
+    console.log('🔧 Avvio test di connettività...');
+    this.orariAllenamentiService.testConnection().subscribe({
+      next: (isConnected) => {
+        console.log(`🔌 Test di connettività: ${isConnected ? 'SUCCESSO' : 'FALLITO'}`);
+        if (isConnected) {
+          console.log('✅ La connessione a LibreBooking funziona correttamente');
+        } else {
+          console.log('❌ Problemi di connessione a LibreBooking');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Errore nel test di connettività:', error);
+      }
+    });
+  }
+
+  /**
+   * Logout manuale dal servizio
+   */
+  logout() {
+    console.log('🚪 Logout dal servizio LibreBooking...');
+    this.orariAllenamentiService.logout();
+    this.isConnectedToLibreBooking = false;
+    
+    // Ricarica con dati di fallback
+    this.useFallbackData();
+  }
+
+  /**
+   * Ottiene lo stato dettagliato del servizio
+   */
+  getServiceStatus() {
+    return this.orariAllenamentiService.getServiceStatus();
+  }
+
+  /**
+   * Formatta la data per la visualizzazione
+   */
+  formatDate(dateString?: string): string {
+    if (!dateString) return 'N/A';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Errore nel parsing della data:', error);
+      return 'Data non valida';
+    }
+  }
+
+  /**
+   * Verifica se un allenamento è oggi
+   */
+  isToday(allenamento: OrarioAllenamento): boolean {
+    const oggi = new Date();
+    const giornoOggi = this.getGiornoSettimana(oggi);
+    return allenamento.giorno === giornoOggi;
+  }
+
+  /**
+   * Converte una data nel giorno della settimana in italiano
+   */
+  private getGiornoSettimana(date: Date): string {
+    const giorni = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+    return giorni[date.getDay()];
   }
 }

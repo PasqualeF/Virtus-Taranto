@@ -91,7 +91,7 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
       immagine: item.immagine,
       data: item.data,
       titolo: item.titolo,
-      excerpt: this.createExcerpt(item.descrizione),
+      excerpt: this.createExcerpt(item.contenuto),
       contenuto: item.contenuto
     }));
   }
@@ -185,7 +185,7 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openNewsDetail(news: NewsItem) {
     // Navigazione alla pagina di dettaglio
-    this.router.navigate(['/notizie', news.id]);
+    this.router.navigate(['/news/ultimissime']);
   }
 
   // Gestione touch per mobile

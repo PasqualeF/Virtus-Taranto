@@ -1,147 +1,192 @@
+<!-- matches-section.component.html - AGGIORNATO -->
 <section class="matches-section">
   <div class="container-fluid">
     <h2 class="section-title">Prossime Partite</h2>
 
-    <!-- Vista Desktop -->
-    <div class="matches-carousel" *ngIf="!isMobile">
-      <div class="matches-container">
-        <div class="mobile-match-card desktop-match-card" *ngFor="let match of displayedDesktopMatches(); let i = index"
-             [ngClass]="{'home-match': match.isHome, 'away-match': !match.isHome, 'active-card': i === 1}"
-             (click)="selectDesktopMatch(currentMatchIndex + i - 1)">
-          <div class="match-badge" *ngIf="match.isHome">Casa</div>
-          <div class="match-badge away" *ngIf="!match.isHome">Trasferta</div>
-          
-          <div class="mobile-match-header">
-            <div class="mobile-match-date">{{ getFormattedDate(match.date) }}</div>
-            <div class="mobile-match-time">{{ match.time }}</div>
-          </div>
-          
-          <div class="mobile-teams-container">
-            <div class="mobile-team">
-              <div class="team-logo" *ngIf="match.homeTeamLogo">
-                <img [src]="match.homeTeamLogo" [alt]="match.homeTeam">
-              </div>
-              <div class="team-logo default-logo" *ngIf="!match.homeTeamLogo">
-                <i class="fas fa-basketball-ball"></i>
-              </div>
-              <div class="team-name">{{ match.homeTeam }}</div>
-            </div>
-            
-            <div class="vs-container">VS</div>
-            
-            <div class="mobile-team">
-              <div class="team-logo" *ngIf="match.awayTeamLogo">
-                <img [src]="match.awayTeamLogo" [alt]="match.awayTeam">
-              </div>
-              <div class="team-logo default-logo" *ngIf="!match.awayTeamLogo">
-                <i class="fas fa-basketball-ball"></i>
-              </div>
-              <div class="team-name">{{ match.awayTeam }}</div>
-            </div>
-          </div>
-          
-          <div class="mobile-match-info">
-            <div class="venue-info">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>{{ match.venue }}</span>
-            </div>
-            <div class="league-info">
-              <i class="fas fa-trophy"></i>
-              <span>{{ match.league }}</span>
-            </div>
-          </div>
-          
-          <div class="mobile-countdown">
-            <div class="countdown-label">Mancano:</div>
-            <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
-          </div>
-        </div>
+    <!-- Messaggio di caricamento -->
+    <div class="loading-message" *ngIf="!upcomingMatches || upcomingMatches.length === 0">
+      <div class="loading-spinner">
+        <i class="fas fa-basketball-ball fa-spin"></i>
       </div>
-
-      <div class="desktop-indicators">
-        <div class="indicator" *ngFor="let match of upcomingMatches; let i = index" 
-             [class.active]="currentMatchIndex === i"
-             (click)="selectDesktopMatch(i)"></div>
-      </div>
-      
-      <button class="carousel-control prev" (click)="previousMatches()" 
-              [disabled]="currentMatchIndex === 0">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="carousel-control next" (click)="nextMatches()" 
-              [disabled]="currentMatchIndex >= upcomingMatches.length - 1">
-        <i class="fas fa-chevron-right"></i>
-      </button>
+      <p>Caricamento partite...</p>
     </div>
+<!-- SEZIONE DESKTOP DA SOSTITUIRE nel template matches-section.component.html -->
 
-    <!-- Vista Mobile - Come Teams -->
-    <div class="mobile-matches-view" *ngIf="isMobile">
-      <div class="mobile-carousel-container">
-        <div class="mobile-match-card" *ngFor="let match of upcomingMatches; let i = index" 
-             [class.active]="i === currentMobileIndex"
-             [ngClass]="{'home-match': match.isHome, 'away-match': !match.isHome}">
-          <div class="match-badge" *ngIf="match.isHome">Casa</div>
-          <div class="match-badge away" *ngIf="!match.isHome">Trasferta</div>
-          
-          <div class="mobile-match-header">
-            <div class="mobile-match-date">{{ getFormattedDate(match.date) }}</div>
-            <div class="mobile-match-time">{{ match.time }}</div>
+<!-- Vista Desktop -->
+<div class="matches-carousel" *ngIf="!isMobile && upcomingMatches && upcomingMatches.length > 0">
+  <div class="matches-container">
+    <div class="mobile-match-card desktop-match-card" 
+         *ngFor="let match of displayedDesktopMatches(); let i = index"
+         [ngClass]="getMatchClass(match)"
+         [class.active-card]="i === 1"
+         (click)="selectDesktopMatch(currentMatchIndex + i - 1)">
+      
+      <!-- Badge partita -->
+      <div class="match-badge" [ngClass]="{'home': match.isHome, 'away': !match.isHome}">
+        {{ match.isHome ? 'Casa' : 'Trasferta' }}
+      </div>
+      
+      <!-- Badge speciali per partite oggi/domani -->
+      <div class="special-badge today" *ngIf="isToday(match.date)">OGGI</div>
+      <div class="special-badge tomorrow" *ngIf="isTomorrow(match.date)">DOMANI</div>
+      
+      <div class="mobile-match-header">
+        <div class="mobile-match-date">{{ getDateDescription(match.date) }}</div>
+        <div class="mobile-match-time">{{ match.time }}</div>
+      </div>
+      
+      <div class="mobile-teams-container">
+        <div class="mobile-team" [class.virtus-team]="match.homeTeam.toLowerCase().includes('virtus')">
+          <div class="team-logo">
+            <!-- Sistema delle iniziali per desktop -->
+            <div class="team-initials">{{ getTeamInitials(match.homeTeam) }}</div>
           </div>
-          
-          <div class="mobile-teams-container">
-            <div class="mobile-team">
-              <div class="team-logo" *ngIf="match.homeTeamLogo">
-                <img [src]="match.homeTeamLogo" [alt]="match.homeTeam">
-              </div>
-              <div class="team-logo default-logo" *ngIf="!match.homeTeamLogo">
-                <i class="fas fa-basketball-ball"></i>
-              </div>
-              <div class="team-name">{{ match.homeTeam }}</div>
-            </div>
-            
-            <div class="vs-container">VS</div>
-            
-            <div class="mobile-team">
-              <div class="team-logo" *ngIf="match.awayTeamLogo">
-                <img [src]="match.awayTeamLogo" [alt]="match.awayTeam">
-              </div>
-              <div class="team-logo default-logo" *ngIf="!match.awayTeamLogo">
-                <i class="fas fa-basketball-ball"></i>
-              </div>
-              <div class="team-name">{{ match.awayTeam }}</div>
-            </div>
+          <div class="team-name">{{ match.homeTeam }}</div>
+        </div>
+        
+        <div class="vs-container">VS</div>
+        
+        <div class="mobile-team" [class.virtus-team]="match.awayTeam.toLowerCase().includes('virtus')">
+          <div class="team-logo">
+            <!-- Sistema delle iniziali per desktop -->
+            <div class="team-initials">{{ getTeamInitials(match.awayTeam) }}</div>
           </div>
-          
-          <div class="mobile-match-info">
-            <div class="venue-info">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>{{ match.venue }}</span>
-            </div>
-            <div class="league-info">
-              <i class="fas fa-trophy"></i>
-              <span>{{ match.league }}</span>
-            </div>
-          </div>
-          
-          <div class="mobile-countdown">
-            <div class="countdown-label">Mancano:</div>
-            <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
-          </div>
+          <div class="team-name">{{ match.awayTeam }}</div>
         </div>
       </div>
       
-      <!-- Mobile Navigation Dots - Come Teams -->
-      <div class="mobile-navigation">
-        <button class="nav-dot" 
-                *ngFor="let match of upcomingMatches; let i = index"
-                [class.active]="i === currentMobileIndex"
-                (click)="goToMatch(i)">
-        </button>
+      <div class="mobile-match-info">
+        <div class="venue-info">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ match.venue || 'Sede da definire' }}</span>
+        </div>
+        <div class="league-info">
+        <i class="fas fa-users"></i> <!-- Cambiato da trophy a users -->
+        <span>{{ match.league }}</span> <!-- Ora mostra il nome della squadra -->
+        </div>
       </div>
+      
+      <div class="mobile-countdown" [class.critical]="isCriticalMatch(match.date)">
+        <div class="countdown-label">
+          <span *ngIf="!isCriticalMatch(match.date)">Mancano:</span>
+          <span *ngIf="isCriticalMatch(match.date)">⚡ Imminente:</span>
+        </div>
+        <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicatori desktop -->
+  <div class="desktop-indicators" *ngIf="upcomingMatches.length > 3">
+    <div class="indicator" 
+         *ngFor="let match of upcomingMatches; let i = index" 
+         [class.active]="currentMatchIndex === i"
+         (click)="selectDesktopMatch(i)">
+    </div>
+  </div>
+  
+  <!-- Controlli navigation -->
+  <button class="carousel-control prev" 
+          (click)="previousMatches()" 
+          [disabled]="currentMatchIndex === 0"
+          *ngIf="upcomingMatches.length > 3">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <button class="carousel-control next" 
+          (click)="nextMatches()" 
+          [disabled]="currentMatchIndex >= upcomingMatches.length - 1"
+          *ngIf="upcomingMatches.length > 3">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+</div>
+
+<!-- SEZIONE DA SOSTITUIRE nel template matches-section.component.html -->
+<!-- Solo la parte mobile, lascia invariata quella desktop -->
+
+<div class="mobile-matches-view" *ngIf="isMobile && upcomingMatches && upcomingMatches.length > 0">
+  <div class="mobile-carousel-container">
+    <div class="mobile-match-card" 
+         *ngFor="let match of upcomingMatches; let i = index" 
+         [class.active]="i === currentMobileIndex"
+         [ngClass]="getMatchClass(match)">
+      
+      <!-- Badge partita -->
+      <div class="match-badge" [ngClass]="{'home': match.isHome, 'away': !match.isHome}">
+        {{ match.isHome ? 'Casa' : 'Trasferta' }}
+      </div>
+      
+      <!-- Badge speciali -->
+      <div class="special-badge today" *ngIf="isToday(match.date)">OGGI</div>
+      <div class="special-badge tomorrow" *ngIf="isTomorrow(match.date)">DOMANI</div>
+      
+      <div class="mobile-match-header">
+        <div class="mobile-match-date">{{ getDateDescription(match.date) }}</div>
+        <div class="mobile-match-time">{{ match.time }}</div>
+      </div>
+      
+      <div class="mobile-teams-container">
+        <div class="mobile-team" [class.virtus-team]="match.homeTeam.toLowerCase().includes('virtus')">
+          <div class="team-logo">
+            <!-- Sistema delle iniziali -->
+            <div class="team-initials">{{ getTeamInitials(match.homeTeam) }}</div>
+          </div>
+          <div class="team-name">{{ match.homeTeam }}</div>
+        </div>
+        
+        <div class="vs-container">VS</div>
+        
+        <div class="mobile-team" [class.virtus-team]="match.awayTeam.toLowerCase().includes('virtus')">
+          <div class="team-logo">
+            <!-- Sistema delle iniziali -->
+            <div class="team-initials">{{ getTeamInitials(match.awayTeam) }}</div>
+          </div>
+          <div class="team-name">{{ match.awayTeam }}</div>
+        </div>
+      </div>
+      
+      <div class="mobile-match-info">
+        <div class="venue-info">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ match.venue || 'Sede da definire' }}</span>
+        </div>
+        <div class="league-info">
+          <i class="fas fa-users"></i> <!-- AGGIORNATO: da trophy a users -->
+          <span>{{ match.league }}</span> <!-- Ora mostra il nome della squadra -->
+        </div>
+      </div>
+      
+      <div class="mobile-countdown" [class.critical]="isCriticalMatch(match.date)">
+        <div class="countdown-label">
+          <span *ngIf="!isCriticalMatch(match.date)">Mancano:</span>
+          <span *ngIf="isCriticalMatch(match.date)">⚡ Imminente:</span>
+        </div>
+        <div class="countdown-timer">{{ getCountdown(match.date) }}</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile Navigation Dots -->
+  <div class="mobile-navigation" *ngIf="upcomingMatches.length > 1">
+    <button class="nav-dot" 
+            *ngFor="let match of upcomingMatches; let i = index"
+            [class.active]="i === currentMobileIndex"
+            [class.today]="isToday(match.date)"
+            (click)="goToMatch(i)">
+    </button>
+  </div>
+</div>
+    
+    <!-- Messaggio quando non ci sono partite -->
+    <div class="no-matches-message" *ngIf="upcomingMatches && upcomingMatches.length === 0">
+      <div class="no-matches-icon">
+        <i class="fas fa-calendar-times"></i>
+      </div>
+      <h3>Nessuna partita programmata</h3>
+      <p>Non ci sono partite programmate al momento.</p>
     </div>
     
     <!-- CTA per tutte le partite -->
-    <div class="view-all-matches">
+    <div class="view-all-matches" *ngIf="upcomingMatches && upcomingMatches.length > 0">
       <a [routerLink]="['/calendario']" class="view-all-btn">
         <span *ngIf="!isMobile">Visualizza tutte le partite</span>
         <span *ngIf="isMobile">Calendario completo</span>

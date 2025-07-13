@@ -1,154 +1,625 @@
-<!-- eventi-speciali.component.html -->
-<div class="eventi-container">
+<!-- eventi.component.html -->
+<div class="eventi-container" [class.modal-blur]="showDettagliModal || showIscrizioneModal">
+  <header class="eventi-header">
     <h1 class="titolo">
-      Eventi Speciali
-      <span class="sottotitolo">Esperienze uniche oltre il campo</span>
+      Eventi
+      <span class="sottotitolo">Scopri tutti i nostri eventi</span>
     </h1>
-  
-    <div class="societa-selector">
-      <div 
-        *ngFor="let s of societa"
-        class="societa-tab"
-        [class.active]="selectedSocieta?.nome === s.nome"
-        (click)="selectSocieta(s)"
-        [@fadeIn]>
-        <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
-        <span>{{ s.nome }}</span>
+  </header>
+
+  <!-- Filtri -->
+  <div class="filters-section" [@fadeIn]>
+    <div class="filters-bar">
+      <div class="filter-group">
+        <select 
+          [(ngModel)]="selectedCategoria" 
+          (change)="applyFilters()"
+          class="filter-select">
+          <option value="">Tutte le categorie</option>
+          <option 
+            *ngFor="let categoria of categorie" 
+            [value]="categoria.documentId">
+            {{ categoria.nome }}
+          </option>
+        </select>
+
+        <select 
+          [(ngModel)]="selectedStato" 
+          (change)="applyFilters()"
+          class="filter-select">
+          <option value="">Tutti gli stati</option>
+          <option value="PROGRAMMATO">Programmati</option>
+          <option value="IN_CORSO">In Corso</option>
+          <option value="CONCLUSO">Conclusi</option>
+        </select>
+
+        <label class="filter-checkbox">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="showSoloConPosti"
+            (change)="applyFilters()">
+          <span class="checkmark"></span>
+          Solo con posti disponibili
+        </label>
       </div>
-    </div>
-  
-    <div class="eventi-content" *ngIf="selectedSocieta" [@slideIn]>
-      <div class="filters-bar">
+
+      <div class="view-controls">
         <div class="view-toggle">
-          <button class="view-button" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+          <button 
+            class="view-button" 
+            [class.active]="viewMode === 'grid'"
+            (click)="setViewMode('grid')">
             <span class="material-icons">grid_view</span>
           </button>
-          <button class="view-button" [class.active]="viewMode === 'timeline'" (click)="viewMode = 'timeline'">
-            <span class="material-icons">timeline</span>
+          <button 
+            class="view-button" 
+            [class.active]="viewMode === 'list'"
+            (click)="setViewMode('list')">
+            <span class="material-icons">view_list</span>
           </button>
         </div>
-  
-        <div class="filter-group">
-          <select [(ngModel)]="filterTipo" class="filter-select">
-            <option value="TUTTI">Tutti i tipi</option>
-            <option value="MOTIVAZIONALE">Incontri Motivazionali</option>
-            <option value="FAMIGLIA">Eventi Famiglia</option>
-            <option value="OPEN_DAY">Open Day</option>
-            <option value="SOCIALE">Iniziative Sociali</option>
-            <option value="FORMAZIONE">Formazione</option>
-          </select>
-  
-          <select [(ngModel)]="filterStato" class="filter-select">
-            <option value="TUTTI">Tutti gli stati</option>
-            <option value="PROGRAMMATO">Programmati</option>
-            <option value="IN_CORSO">In Corso</option>
-            <option value="CONCLUSO">Conclusi</option>
-          </select>
+
+        <button class="reset-filters-btn" (click)="resetFilters()">
+          <span class="material-icons">refresh</span>
+          Reset Filtri
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Caricamento eventi...</p>
+  </div>
+
+  <!-- Lista Eventi -->
+  <div *ngIf="!isLoading && eventiCaricati" class="eventi-content">
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid'" class="eventi-grid">
+      <div 
+        *ngFor="let evento of eventi" 
+        class="evento-card"
+        [class.expanded]="expandedCardId === evento.documentId"
+        [@fadeIn]>
+        
+        <!-- Immagine evento con gestione errori -->
+        <div class="evento-image" 
+             [style.backgroundImage]="hasValidImage(evento) ? 'url(' + getImageUrl(evento) + ')' : 'none'"
+             [class.no-image]="!hasValidImage(evento)">
+          
+          <!-- Placeholder per immagini mancanti -->
+          <div *ngIf="!hasValidImage(evento)" class="image-placeholder">
+            <span class="material-icons">sports_basketball</span>
+            <span class="placeholder-text">{{ evento.categoria?.nome || 'Evento' }}</span>
+          </div>
+
+          <div class="evento-overlay">
+            <div class="evento-badges">
+              <span 
+                class="categoria-badge" 
+                [style.backgroundColor]="getCategoriaColor(evento.categoria!)"
+                *ngIf="evento.categoria">
+                {{ evento.categoria.nome }}
+              </span>
+              <span 
+                class="stato-badge" 
+                [class]="getStatoClass(evento.stato)">
+                {{ evento.stato }}
+              </span>
+            </div>
+            
+            <div class="evento-date" *ngIf="isEventoOggi(evento)">
+              <span class="oggi-badge">OGGI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenuto evento -->
+        <div class="evento-content" (click)="toggleCardExpansion(evento.documentId)">
+          <h3 class="evento-title">{{ evento.titolo }}</h3>
+          
+          <div class="evento-meta">
+            <div class="meta-item">
+              <span class="material-icons">event</span>
+              <span>{{ formatDate(evento.dataInizio) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="material-icons">schedule</span>
+              <span>{{ formatTime(evento.orarioInizio) }}</span>
+              <span *ngIf="evento.orarioFine"> - {{ formatTime(evento.orarioFine) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="material-icons">place</span>
+              <span>{{ evento.location }}</span>
+            </div>
+          </div>
+
+          <p class="evento-description">{{ evento.descrizione }}</p>
+
+          <!-- Programma espanso -->
+          <div 
+            *ngIf="expandedCardId === evento.documentId && evento.programma?.length" 
+            class="evento-programma">
+            <h4>Programma</h4>
+            <div class="timeline-programma">
+              <div 
+                *ngFor="let item of evento.programma" 
+                class="programma-item">
+                <div class="programma-time">{{ item.orario }}</div>
+                <div class="programma-content">
+                  <h5>{{ item.attivita }}</h5>
+                  <p *ngIf="item.descrizione">{{ item.descrizione }}</p>
+                  <small *ngIf="item.durata">Durata: {{ formatDuration(item.durata) }}</small>
+                  <small *ngIf="item.relatore">Relatore: {{ item.relatore }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Istruzioni aggiuntive -->
+          <div 
+            *ngIf="expandedCardId === evento.documentId && evento.istruzioni" 
+            class="evento-istruzioni">
+            <h4>Informazioni aggiuntive</h4>
+            <p>{{ evento.istruzioni }}</p>
+          </div>
+        </div>
+
+        <!-- Footer evento -->
+        <div class="evento-footer">
+          <!-- Posti disponibili -->
+          <div 
+            *ngIf="evento.richiedeIscrizione && evento.postiDisponibili" 
+            class="posti-info">
+            <div class="progress-bar">
+              <div 
+                class="progress" 
+                [style.width.%]="getProgressWidth(evento)">
+              </div>
+            </div>
+            <span class="posti-text">
+              {{ getPostiDisponibili(evento) }} posti disponibili
+            </span>
+          </div>
+
+          <!-- Costo -->
+          <div *ngIf="evento.costo" class="costo-info">
+            <span class="material-icons">euro</span>
+            <span>{{ evento.costo }}€</span>
+          </div>
+
+          <!-- Pulsanti azione -->
+          <div class="evento-actions">
+            <button 
+              *ngIf="evento.richiedeIscrizione && canIscriversi(evento)"
+              class="iscrizione-btn primary"
+              (click)="openIscrizioneModal(evento)">
+              <span class="material-icons">person_add</span>
+              Iscriviti
+            </button>
+            
+            <button 
+              *ngIf="evento.richiedeIscrizione && isEventoPieno(evento)"
+              class="iscrizione-btn disabled"
+              disabled>
+              <span class="material-icons">block</span>
+              Evento Completo
+            </button>
+            
+            <button 
+              *ngIf="evento.richiedeIscrizione && isEventoPassato(evento)"
+              class="iscrizione-btn disabled"
+              disabled>
+              <span class="material-icons">schedule</span>
+              Evento Passato
+            </button>
+
+            <button 
+              class="dettagli-btn"
+              (click)="selectEvento(evento)">
+              <span class="material-icons">info</span>
+              Dettagli
+            </button>
+          </div>
         </div>
       </div>
-  
-      <!-- Grid View -->
-      <div class="eventi-grid" *ngIf="viewMode === 'grid'">
-        <div 
-          class="evento-card" 
-          *ngFor="let evento of getEventiFiltrati()"
-          [@expandCard]="expandedCardId === evento.id ? 'expanded' : 'collapsed'"
-          (click)="toggleCardExpansion(evento.id)">
-          <div class="evento-cover" [style.backgroundImage]="'url(' + evento.immagineCopertina + ')'">
-            <div class="evento-overlay">
-              <span [class]="'tipo-badge ' + evento.tipo.toLowerCase()">
-                {{ getTipoEvento(evento.tipo) }}
+    </div>
+
+    <!-- List View -->
+    <div *ngIf="viewMode === 'list'" class="eventi-list">
+      <div 
+        *ngFor="let evento of eventi" 
+        class="evento-list-item"
+        [@slideIn]>
+        <div class="list-item-content">
+          <div class="list-item-image">
+            <img *ngIf="hasValidImage(evento)" 
+                 [src]="getImageUrl(evento)" 
+                 [alt]="evento.titolo"
+                 >
+            <div *ngIf="!hasValidImage(evento)" class="list-image-placeholder">
+              <span class="material-icons">sports_basketball</span>
+            </div>
+          </div>
+          
+          <div class="list-item-details">
+            <h3>{{ evento.titolo }}</h3>
+            <p>{{ evento.descrizione }}</p>
+            
+            <div class="list-item-meta">
+              <span>{{ formatDate(evento.dataInizio) }}</span>
+              <span>{{ formatTime(evento.orarioInizio) }}</span>
+              <span>{{ evento.location }}</span>
+            </div>
+          </div>
+          
+          <div class="list-item-actions">
+            <button 
+              *ngIf="evento.richiedeIscrizione && canIscriversi(evento)"
+              class="iscrizione-btn primary"
+              (click)="openIscrizioneModal(evento)">
+              Iscriviti
+            </button>
+            
+            <button 
+              class="dettagli-btn"
+              (click)="selectEvento(evento)">
+              Dettagli
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messaggio nessun evento -->
+    <div *ngIf="eventi.length === 0" class="no-eventi">
+      <span class="material-icons">event_busy</span>
+      <h3>Nessun evento trovato</h3>
+      <p>Prova a modificare i filtri di ricerca</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dettagli Evento -->
+<div 
+  *ngIf="showDettagliModal" 
+  class="modal-overlay"
+  (click)="closeDettagliModal()">
+  <div class="modal-content modal-dettagli" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ selectedEvento?.titolo }}</h2>
+      <button class="close-btn" (click)="closeDettagliModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Immagine evento nel modal -->
+      <div *ngIf="selectedEvento" class="dettagli-image-container">
+        <div class="dettagli-image" 
+             [style.backgroundImage]="hasValidImage(selectedEvento) ? 'url(' + getImageUrl(selectedEvento) + ')' : 'none'"
+             [class.no-image]="!hasValidImage(selectedEvento)">
+          
+          <div *ngIf="!hasValidImage(selectedEvento)" class="image-placeholder">
+            <span class="material-icons">sports_basketball</span>
+          </div>
+
+          <div class="dettagli-overlay">
+            <div class="dettagli-badges">
+              <span 
+                class="categoria-badge" 
+                [style.backgroundColor]="getCategoriaColor(selectedEvento.categoria!)"
+                *ngIf="selectedEvento.categoria">
+                {{ selectedEvento.categoria.nome }}
+              </span>
+              <span 
+                class="stato-badge" 
+                [class]="getStatoClass(selectedEvento.stato)">
+                {{ selectedEvento.stato }}
               </span>
             </div>
           </div>
-  
-          <div class="evento-content">
-            <h3 class="evento-title">{{ evento.titolo }}</h3>
-            
-            <div class="evento-meta">
-              <div class="meta-item">
-                <span class="material-icons">event</span>
-                <span>{{ evento.data | date:'fullDate':'':'it' }}</span>
-              </div>
-              <div class="meta-item">
-                <span class="material-icons">schedule</span>
-                <span>{{ evento.orario }}</span>
-              </div>
-              <div class="meta-item">
-                <span class="material-icons">place</span>
-                <span>{{ evento.location }}</span>
-              </div>
+        </div>
+      </div>
+
+      <!-- Informazioni principali -->
+      <div class="dettagli-info" *ngIf="selectedEvento">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="material-icons">event</span>
+            <div class="info-content">
+              <label>Data</label>
+              <span>{{ formatDate(selectedEvento.dataInizio) }}</span>
             </div>
-  
-            <p class="evento-description">{{ evento.descrizione }}</p>
-  
-            <div class="evento-highlights" *ngIf="evento.highlights">
-              <h4>Highlights</h4>
-              <ul>
-                <li *ngFor="let highlight of evento.highlights">{{ highlight }}</li>
-              </ul>
+          </div>
+
+          <div class="info-item">
+            <span class="material-icons">schedule</span>
+            <div class="info-content">
+              <label>Orario</label>
+              <span>{{ formatTime(selectedEvento.orarioInizio) }}
+                <span *ngIf="selectedEvento.orarioFine"> - {{ formatTime(selectedEvento.orarioFine) }}</span>
+              </span>
             </div>
-  
-            <div class="evento-programma" *ngIf="evento.programma">
-              <h4>Programma</h4>
-              <div class="timeline-programma">
-                <div class="programma-item" *ngFor="let item of evento.programma">
-                  <div class="time">{{ item.orario }}</div>
-                  <div class="content">
-                    <h5>{{ item.attivita }}</h5>
-                    <p>{{ item.descrizione }}</p>
-                    <span class="durata">{{ item.durata }}</span>
-                  </div>
-                </div>
-              </div>
+          </div>
+
+          <div class="info-item">
+            <span class="material-icons">place</span>
+            <div class="info-content">
+              <label>Luogo</label>
+              <span>{{ selectedEvento.location }}</span>
             </div>
-  
-            <div class="evento-footer">
-              <div class="posti-info" *ngIf="evento.maxPartecipanti">
-                <div class="progress-bar">
-                    <div class="progress" 
-                    [style.width.%]="getProgressWidth(evento)">
-                </div>
-                </div>
-                <span>{{ getPostiDisponibili(evento) }} posti disponibili</span>
-              </div>
-  
-              <button class="iscrizione-btn" 
-              [disabled]="isEventoCompleto(evento)"
-              (click)="iscrivitiEvento(evento, $event)">
-         {{ isEventoCompleto(evento) ? 'Evento Completo' : 'Iscriviti' }}
-      </button>
+          </div>
+
+          <div class="info-item" *ngIf="selectedEvento.costo">
+            <span class="material-icons">euro</span>
+            <div class="info-content">
+              <label>Costo</label>
+              <span>{{ selectedEvento.costo }}€</span>
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="selectedEvento.etaMinima || selectedEvento.etaMaxima">
+            <span class="material-icons">groups</span>
+            <div class="info-content">
+              <label>Età</label>
+              <span>
+                <span *ngIf="selectedEvento.etaMinima">Da {{ selectedEvento.etaMinima }} anni</span>
+                <span *ngIf="selectedEvento.etaMaxima"> a {{ selectedEvento.etaMaxima }} anni</span>
+                <span *ngIf="!selectedEvento.etaMinima && !selectedEvento.etaMaxima">Tutte le età</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="selectedEvento.richiedeIscrizione">
+            <span class="material-icons">people</span>
+            <div class="info-content">
+              <label>Posti</label>
+              <span *ngIf="selectedEvento.postiDisponibili">
+                {{ getPostiDisponibili(selectedEvento) }} disponibili su {{ selectedEvento.postiDisponibili }}
+              </span>
+              <span *ngIf="!selectedEvento.postiDisponibili">Posti illimitati</span>
             </div>
           </div>
         </div>
-      </div>
-  
-      <!-- Timeline View -->
-      <div class="eventi-timeline" *ngIf="viewMode === 'timeline'">
-        <div class="timeline">
-          <div class="timeline-item" *ngFor="let evento of getEventiFiltrati()" [@fadeIn]>
-            <div class="timeline-marker" [class]="getStatoClass(evento.stato)"></div>
-            <div class="timeline-content">
-              <div class="timeline-card">
-                <div class="timeline-header">
-                  <span class="timeline-date">{{ evento.data | date:'mediumDate' }}</span>
-                  <span [class]="'tipo-badge ' + evento.tipo.toLowerCase()">
-                    {{ getTipoEvento(evento.tipo) }}
+
+        <!-- Descrizione completa -->
+        <div class="dettagli-description">
+          <h3>Descrizione</h3>
+          <p>{{ selectedEvento.descrizione }}</p>
+        </div>
+
+        <!-- Programma dettagliato -->
+        <div *ngIf="selectedEvento.programma?.length" class="dettagli-programma">
+          <h3>Programma Dettagliato</h3>
+          <div class="programma-timeline">
+            <div *ngFor="let item of selectedEvento.programma" class="programma-item-detailed">
+              <div class="programma-time-detailed">{{ item.orario }}</div>
+              <div class="programma-content-detailed">
+                <h4>{{ item.attivita }}</h4>
+                <p *ngIf="item.descrizione">{{ item.descrizione }}</p>
+                <div class="programma-meta" *ngIf="item.durata || item.relatore">
+                  <span *ngIf="item.durata" class="durata-badge">
+                    <span class="material-icons">schedule</span>
+                    {{ formatDuration(item.durata) }}
                   </span>
-                </div>
-                
-                <h3>{{ evento.titolo }}</h3>
-                <p>{{ evento.descrizione }}</p>
-                
-                <div class="timeline-footer">
-                  <button class="details-btn" (click)="selectEvento(evento)">
-                    Dettagli
-                  </button>
+                  <span *ngIf="item.relatore" class="relatore-badge">
+                    <span class="material-icons">person</span>
+                    {{ item.relatore }}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Istruzioni aggiuntive -->
+        <div *ngIf="selectedEvento.istruzioni" class="dettagli-istruzioni">
+          <h3>Informazioni Aggiuntive</h3>
+          <p>{{ selectedEvento.istruzioni }}</p>
+        </div>
+
+        <!-- Posti disponibili (se richiede iscrizione) -->
+        <div *ngIf="selectedEvento.richiedeIscrizione && selectedEvento.postiDisponibili" class="dettagli-posti">
+          <h3>Disponibilità Posti</h3>
+          <div class="progress-container">
+            <div class="progress-bar-detailed">
+              <div class="progress-detailed" [style.width.%]="getProgressWidth(selectedEvento)"></div>
+            </div>
+            <div class="progress-info">
+              <span class="posti-occupati">{{ selectedEvento.postiOccupati || 0 }} iscritti</span>
+              <span class="posti-totali">{{ selectedEvento.postiDisponibili }} posti totali</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Azioni -->
+        <div class="dettagli-actions">
+          <button 
+            *ngIf="selectedEvento.richiedeIscrizione && canIscriversi(selectedEvento)"
+            class="btn primary btn-large"
+            (click)="openIscrizioneModal(selectedEvento); closeDettagliModal()">
+            <span class="material-icons">person_add</span>
+            Iscriviti all'Evento
+          </button>
+          
+          <button 
+            *ngIf="selectedEvento.richiedeIscrizione && isEventoPieno(selectedEvento)"
+            class="btn disabled btn-large"
+            disabled>
+            <span class="material-icons">block</span>
+            Evento Completo
+          </button>
+          
+          <button 
+            *ngIf="selectedEvento.richiedeIscrizione && isEventoPassato(selectedEvento)"
+            class="btn disabled btn-large"
+            disabled>
+            <span class="material-icons">schedule</span>
+            Evento Passato
+          </button>
+
+          <button 
+            class="btn secondary btn-large"
+            (click)="closeDettagliModal()">
+            <span class="material-icons">close</span>
+            Chiudi
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal Iscrizione -->
+<div 
+  *ngIf="showIscrizioneModal" 
+  class="modal-overlay"
+  (click)="closeIscrizioneModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Iscrizione a {{ selectedEvento?.titolo }}</h2>
+      <button class="close-btn" (click)="closeIscrizioneModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Informazioni evento -->
+      <div class="evento-info">
+        <div class="info-item">
+          <span class="material-icons">event</span>
+          <span>{{ formatDate(selectedEvento?.dataInizio!) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="material-icons">schedule</span>
+          <span>{{ formatTime(selectedEvento?.orarioInizio!) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="material-icons">place</span>
+          <span>{{ selectedEvento?.location }}</span>
+        </div>
+        <div class="info-item" *ngIf="selectedEvento?.costo">
+          <span class="material-icons">euro</span>
+          <span>{{ selectedEvento?.costo }}€</span>
+        </div>
+      </div>
+
+      <!-- Form iscrizione -->
+      <form [formGroup]="iscrizioneForm" (ngSubmit)="submitIscrizione()" class="iscrizione-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nome">Nome *</label>
+            <input 
+              type="text" 
+              id="nome"
+              formControlName="nome"
+              class="form-control"
+              [class.error]="iscrizioneForm.get('nome')?.invalid && iscrizioneForm.get('nome')?.touched">
+            <div 
+              *ngIf="iscrizioneForm.get('nome')?.invalid && iscrizioneForm.get('nome')?.touched"
+              class="error-message">
+              Il nome è obbligatorio
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cognome">Cognome *</label>
+            <input 
+              type="text" 
+              id="cognome"
+              formControlName="cognome"
+              class="form-control"
+              [class.error]="iscrizioneForm.get('cognome')?.invalid && iscrizioneForm.get('cognome')?.touched">
+            <div 
+              *ngIf="iscrizioneForm.get('cognome')?.invalid && iscrizioneForm.get('cognome')?.touched"
+              class="error-message">
+              Il cognome è obbligatorio
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              type="email" 
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [class.error]="iscrizioneForm.get('email')?.invalid && iscrizioneForm.get('email')?.touched">
+            <div 
+              *ngIf="iscrizioneForm.get('email')?.invalid && iscrizioneForm.get('email')?.touched"
+              class="error-message">
+              Inserisci un'email valida
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="telefono">Telefono</label>
+            <input 
+              type="tel" 
+              id="telefono"
+              formControlName="telefono"
+              class="form-control">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eta">Età</label>
+            <input 
+              type="number" 
+              id="eta"
+              formControlName="eta"
+              class="form-control"
+              min="1" 
+              max="120">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="note">Note aggiuntive</label>
+          <textarea 
+            id="note"
+            formControlName="note"
+            class="form-control"
+            rows="3"
+            placeholder="Eventuali richieste o informazioni aggiuntive...">
+          </textarea>
+        </div>
+
+        <!-- Messaggi -->
+        <div *ngIf="messaggioSuccesso" class="success-message">
+          <span class="material-icons">check_circle</span>
+          {{ messaggioSuccesso }}
+        </div>
+
+        <div *ngIf="messaggioErrore" class="error-message">
+          <span class="material-icons">error</span>
+          {{ messaggioErrore }}
+        </div>
+
+        <!-- Pulsanti -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn secondary"
+            (click)="closeIscrizioneModal()"
+            [disabled]="isSubmittingIscrizione">
+            Annulla
+          </button>
+          
+          <button 
+            type="submit" 
+            class="btn primary"
+            [disabled]="iscrizioneForm.invalid || isSubmittingIscrizione">
+            <span *ngIf="isSubmittingIscrizione" class="loading-spinner small"></span>
+            {{ isSubmittingIscrizione ? 'Invio...' : 'Conferma Iscrizione' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

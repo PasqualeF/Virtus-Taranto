@@ -25,7 +25,7 @@ export interface News {
   id: number;
   titolo: string;
   descrizione: string;
-  contenuto?: string;
+  contenuto: string;
   data: string;
   categoria?: string;
   featured?: boolean;

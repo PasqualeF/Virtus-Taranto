@@ -1,8 +1,14 @@
 // organigramma.component.ts - VERSIONE FINALE STRAPI V5
 import { Component, OnInit, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
-import { OrganigrammaStrapiService, Societa } from 'src/app/core/service/organigramma-strapi.service';
+import { OrganigrammaStrapiService } from 'src/app/core/service/organigramma-strapi.service';
 import { OrganigrammaData, StaffMember } from 'src/app/core/models/person.model';
+
+// Interfaccia per il selector delle società (allineata con achievements e storia)
+interface SocietaSelector {
+  nome: string;
+  logo: string;
+}
 
 @Component({
   selector: 'app-organigramma',
@@ -52,7 +58,13 @@ import { OrganigrammaData, StaffMember } from 'src/app/core/models/person.model'
   ]
 })
 export class OrganigrammaComponent implements OnInit {
-  societa: Societa[] = [];
+  // Struttura società per il selector (allineata con achievements e storia)
+  societaOptions: SocietaSelector[] = [
+    { nome: 'Virtus Taranto', logo: 'assets/logo-virtus-taranto.svg' },
+    { nome: 'Polisportiva 74020', logo: 'assets/poliLogo.png' },
+    { nome: 'Support_o', logo: 'assets/support_o2022 (1).png' }
+  ];
+
   organigramm: OrganigrammaData[] = [];
   selectedSocieta: string = 'Virtus Taranto';
   staffMembers: StaffMember[] = [];
@@ -84,7 +96,7 @@ export class OrganigrammaComponent implements OnInit {
    * Inizializza le società predefinite con loghi
    */
   private initializeSocieta() {
-    this.societa = this.organigrammaService.getSocieta();
+    // Le società sono già definite nell'array societaOptions
   }
 
   /**
@@ -109,7 +121,7 @@ export class OrganigrammaComponent implements OnInit {
         // Aggiorna le società con quelle disponibili su Strapi
         if (societas.length > 0) {
           // Mantieni le società predefinite ma verifica quali sono disponibili
-          this.societa = this.societa.filter(s => societas.includes(s.nome));
+          this.societaOptions = this.societaOptions.filter(s => societas.includes(s.nome));
           
           // Se la società selezionata non è disponibile, prendi la prima disponibile
           if (!societas.includes(this.selectedSocieta) && societas.length > 0) {
@@ -141,6 +153,7 @@ export class OrganigrammaComponent implements OnInit {
     this.error = null;
     
     this.organigrammaService.getStaff(societa).subscribe({
+      
       next: (staff) => {
         this.staffMembers = staff;
         this.loadingStaff = false;
@@ -202,7 +215,6 @@ export class OrganigrammaComponent implements OnInit {
    */
   toggleView() {
     this.view = this.view === 'cards' ? 'tree' : 'cards';
-    console.log(`Vista cambiata a: ${this.view}`);
   }
 
   /**
@@ -224,7 +236,6 @@ export class OrganigrammaComponent implements OnInit {
    * Ricarica i dati
    */
   reloadData() {
-    console.log('Ricaricamento dati...');
     this.loadInitialData();
   }
 
@@ -240,7 +251,7 @@ export class OrganigrammaComponent implements OnInit {
     this.organigrammaService.searchStaff(query, this.selectedSocieta).subscribe({
       next: (results) => {
         this.staffMembers = results;
-        console.log(`Risultati ricerca per "${query}":`, results);
+
       },
       error: (error) => {
         console.error('Errore nella ricerca:', error);
@@ -272,12 +283,19 @@ export class OrganigrammaComponent implements OnInit {
   }
 
   /**
-   * Gestisce il click su una società
+   * Gestisce il click su una società (aggiornato per il nuovo design)
    */
-  onSocietaClick(societa: Societa) {
-    if (this.selectedSocieta !== societa.nome) {
-      this.loadStaff(societa.nome);
+  onSocietaClick(societaOption: SocietaSelector) {
+    if (this.selectedSocieta !== societaOption.nome) {
+      this.loadStaff(societaOption.nome);
     }
+  }
+
+  /**
+   * Verifica se una società è attiva (per il CSS)
+   */
+  isSocietaActive(societaOption: SocietaSelector): boolean {
+    return this.selectedSocieta === societaOption.nome;
   }
 
   /**

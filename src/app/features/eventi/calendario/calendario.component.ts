@@ -125,15 +125,7 @@ export class CalendarioComponent implements OnInit {
   }
 
   selectSocieta(societa: Societa) {
-    this.selectedSocieta = societa;
-    this.eventiService.getEventiSocieta(societa.id).subscribe({
-      next: (eventi) => {
-        this.calendarOptions.events = eventi;
-      },
-      error: (error) => {
-        console.error('Errore nel caricamento eventi:', error);
-      }
-    });
+   
   }
 
   handleEventClick(arg: any) {

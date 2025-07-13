@@ -29,6 +29,10 @@ export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'squadra/basket/:id', component: SquadComponent },
+  { path: 'squadra/basket-maschile/:id', component: SquadComponent },
+  { path: 'squadra/basket-femminile/:id', component: SquadComponent },
+  { path: 'squadra/pallavolo/:id', component: SquadComponent },
+  { path: 'squadra/mini/:id', component: YouthTeamsComponent },
   { path: 'squadra/mini/minibasket', component: YouthTeamsComponent },
   /*news*/
   { path: 'news/orari-allenamenti', component: OrariAllenamentiComponent },

@@ -153,7 +153,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
           {
             label: '',
             items: [
-              { name: 'Tornei', route: '/eventi/tornei' },
               { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
               { name: 'Calendario', route: '/eventi/calendario' }
             ]

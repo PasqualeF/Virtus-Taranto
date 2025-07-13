@@ -7,6 +7,7 @@ export interface StrapiSquad {
   documentId: string;
   name: string;
   photoUrl: string | null;
+  tipo: string; 
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
