@@ -14,7 +14,6 @@ export class RichiesteInformazioniService {
   constructor(private http: HttpClient) {}
 
   createRichiesta(richiesta: RichiestaInformazioniCreate): Observable<RichiestaInformazioni> {
-    console.log('🚀 STRAPI V5 - Invio richiesta...');
     
     // ENDPOINT CORRETTO basato sui tuoi API ID
     const correctEndpoint = 'richieste-informazionis'; // Il tuo Plural API ID

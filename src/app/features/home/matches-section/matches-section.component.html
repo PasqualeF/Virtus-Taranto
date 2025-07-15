@@ -187,7 +187,7 @@
     
     <!-- CTA per tutte le partite -->
     <div class="view-all-matches" *ngIf="upcomingMatches && upcomingMatches.length > 0">
-      <a [routerLink]="['/calendario']" class="view-all-btn">
+      <a [routerLink]="['/eventi/calendario']" class="view-all-btn">
         <span *ngIf="!isMobile">Visualizza tutte le partite</span>
         <span *ngIf="isMobile">Calendario completo</span>
         <i class="fas fa-arrow-right"></i>

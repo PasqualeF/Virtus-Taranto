@@ -27,14 +27,21 @@
     
       <div class="tabs-container">
         <div class="tabs">
-          <button *ngFor="let tab of tabs" 
+          <!-- Mostra solo i tab che hanno dati disponibili -->
+          <button *ngFor="let tab of getAvailableTabs()" 
                   (click)="setView(tab.value)" 
-                  [class.active]="selectedView === tab.value">
+                  [class.active]="selectedView === tab.value"
+                  [disabled]="!hasSectionData(tab.value)">
             {{ tab.label }}
           </button>
+          
+          <!-- Messaggio se nessun tab ha dati -->
+          <div *ngIf="getAvailableTabs().length === 0" class="no-data-message">
+            <p>Nessun dato disponibile per questa squadra</p>
+          </div>
         </div>
     
-        <div class="tab-content">
+        <div class="tab-content" *ngIf="getAvailableTabs().length > 0">
           <!-- Versione desktop della tabella - visibile solo su schermi grandi -->
           <div *ngIf="!isMobileView() && getDisplayData().length > 0" class="table-container">
             <table>
@@ -117,7 +124,10 @@
             </div>
           </div>
           
-          <p *ngIf="getDisplayData().length === 0">Nessun dato disponibile per questa sezione.</p>
+          <!-- Messaggio quando la sezione corrente non ha dati -->
+          <div *ngIf="getDisplayData().length === 0" class="no-section-data">
+            <p>Nessun dato disponibile per {{ selectedView === 'roster' ? 'il roster' : selectedView === 'results' ? 'i risultati' : 'la classifica' }}.</p>
+          </div>
         </div>
       </div>
     </div>

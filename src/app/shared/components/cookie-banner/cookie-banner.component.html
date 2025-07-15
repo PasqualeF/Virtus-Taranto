@@ -1,0 +1,177 @@
+<!-- cookie-banner.component.html -->
+<div class="cookie-banner" *ngIf="showBanner">
+  <div class="cookie-banner-content">
+    
+    <!-- Informativa principale -->
+    <div class="cookie-main-info" *ngIf="!showDetails && !showPrivacyPolicy">
+      <div class="cookie-icon">🍪</div>
+      <h3>Rispetta la tua privacy</h3>
+      <p>
+        Questo sito web utilizza i cookie. Il nostro sito usa cookie tecnici per il suo funzionamento. Solo con il tuo consenso usa cookie per personalizzare l'esperienza sul sito, effettuare analisi comportamentali, e inviare messaggi pubblicitari personalizzati sulla base dall'utilizzo delle funzionalità e dalla navigazione in rete. Trovi più informazioni 
+        <a [routerLink]="['/privacy-policy']" >qui</a>, dove potrai sempre modificare i tuoi consensi.
+      </p>
+      
+      <div class="cookie-actions">
+       
+        <button class="btn-link" (click)="toggleDetails()">
+          Personalizza
+        </button>
+         <button class="btn-primary" (click)="acceptAll()">
+          Accetta tutti
+        </button>
+      </div>
+    </div>
+
+    <!-- Dettagli personalizzazione -->
+    <div class="cookie-details" *ngIf="showDetails && !showPrivacyPolicy">
+      <h3>Personalizza le tue preferenze</h3>
+      <p>Scegli quali categorie di cookie accettare. I cookie necessari sono sempre attivi per garantire il corretto funzionamento del sito.</p>
+      
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h4>🔧 Cookie Necessari</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" [checked]="cookiePreferences.necessary" disabled>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <p>Questi cookie sono essenziali per il funzionamento del sito web e non possono essere disattivati.</p>
+        <div class="cookie-examples">
+          <strong>Esempi:</strong> autenticazione, sessioni, sicurezza, carrello
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h4>📊 Cookie Analytics</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" 
+                   [checked]="cookiePreferences.analytics" 
+                   (change)="onPreferenceChange('analytics', $event)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <p>Ci aiutano a capire come i visitatori interagiscono con il sito raccogliendo informazioni in modo anonimo.</p>
+        <div class="cookie-examples">
+          <strong>Servizi:</strong> Google Analytics (GA4)
+          <br><strong>Finalità:</strong> statistiche di utilizzo, miglioramento del sito
+          <br><strong>Durata:</strong> 24 mesi
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h4>🎯 Cookie Marketing</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" 
+                   [checked]="cookiePreferences.marketing" 
+                   (change)="onPreferenceChange('marketing', $event)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <p>Utilizzati per tracciare i visitatori sui siti web per mostrare annunci pertinenti e coinvolgenti.</p>
+        <div class="cookie-examples">
+          <strong>Servizi:</strong> Google Ads, Facebook Pixel, LinkedIn Ads
+          <br><strong>Finalità:</strong> pubblicità personalizzata, remarketing
+          <br><strong>Durata:</strong> 12 mesi
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h4>⚙️ Cookie Preferenze</h4>
+          <label class="toggle-switch">
+            <input type="checkbox" 
+                   [checked]="cookiePreferences.preferences" 
+                   (change)="onPreferenceChange('preferences', $event)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <p>Permettono al sito di ricordare le tue scelte per fornirti un'esperienza personalizzata.</p>
+        <div class="cookie-examples">
+          <strong>Esempi:</strong> lingua, tema, layout, preferenze di visualizzazione
+          <br><strong>Durata:</strong> 12 mesi
+        </div>
+      </div>
+      
+      <div class="cookie-actions">
+        <button class="btn-secondary" (click)="toggleDetails()">
+          Indietro
+        </button>
+        <button class="btn-primary" (click)="acceptSelected()">
+          Salva e continua
+        </button>
+      </div>
+    </div>
+
+    <!-- Informativa Privacy -->
+    <div class="cookie-privacy" *ngIf="showPrivacyPolicy">
+      <h3>Informativa Privacy e Cookie</h3>
+      <div class="privacy-content">
+        <h4>Titolare del Trattamento</h4>
+        <p>
+          [Nome della tua azienda]<br>
+          [Indirizzo completo]<br>
+          Email: [email]<br>
+          Tel: [telefono]<br>
+          P.IVA: [partita iva]
+        </p>
+
+        <h4>Finalità del Trattamento</h4>
+        <p>I tuoi dati personali sono trattati per le seguenti finalità:</p>
+        <ul>
+          <li>Fornire i servizi e le funzionalità richieste</li>
+          <li>Analizzare l'utilizzo del sito web (solo con consenso)</li>
+          <li>Migliorare l'esperienza utente e le prestazioni</li>
+          <li>Personalizzare contenuti e pubblicità (solo con consenso)</li>
+          <li>Adempiere agli obblighi legali e normativi</li>
+        </ul>
+
+        <h4>Base Giuridica</h4>
+        <p>
+          Il trattamento è basato sul <strong>consenso</strong> (art. 6 comma 1 lett. a GDPR) per cookie non necessari 
+          e sul <strong>legittimo interesse</strong> (art. 6 comma 1 lett. f GDPR) per cookie tecnici necessari.
+        </p>
+
+        <h4>I tuoi diritti secondo il GDPR</h4>
+        <p>Hai diritto di:</p>
+        <ul>
+          <li><strong>Accesso:</strong> ottenere informazioni sui tuoi dati personali</li>
+          <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
+          <li><strong>Cancellazione:</strong> richiedere la rimozione dei tuoi dati</li>
+          <li><strong>Limitazione:</strong> limitare il trattamento dei tuoi dati</li>
+          <li><strong>Opposizione:</strong> opporti al trattamento</li>
+          <li><strong>Portabilità:</strong> ricevere i tuoi dati in formato strutturato</li>
+          <li><strong>Revoca:</strong> revocare il consenso in qualsiasi momento</li>
+        </ul>
+
+        <h4>Conservazione dei Dati</h4>
+        <p>I dati sono conservati per il tempo necessario alle finalità del trattamento:</p>
+        <ul>
+          <li>Cookie necessari: per la durata della sessione</li>
+          <li>Cookie analytics: fino a 24 mesi</li>
+          <li>Cookie marketing: fino a 12 mesi</li>
+        </ul>
+
+        <h4>Trasferimento dei Dati</h4>
+        <p>
+          Alcuni servizi di terze parti potrebbero trasferire dati al di fuori dell'Unione Europea. 
+          Tutti i trasferimenti avvengono con adeguate garanzie di protezione conformi al GDPR.
+        </p>
+
+        <h4>Contatti</h4>
+        <p>
+          Per esercitare i tuoi diritti o per qualsiasi domanda relativa al trattamento dei dati, 
+          contatta il Titolare del Trattamento agli indirizzi sopra indicati.
+        </p>
+      </div>
+      
+      <div class="cookie-actions">
+        <button class="btn-secondary" (click)="togglePrivacyPolicy()">
+          Chiudi
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

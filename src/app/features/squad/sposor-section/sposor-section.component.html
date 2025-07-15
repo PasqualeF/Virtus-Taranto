@@ -1,13 +1,42 @@
-   <!-- Sponsors Section (Bianco) -->
-   <section class="sponsors-section" style="background-color: #002b49a0;">
-    <div class="sponsor-titolo">I nostri sponsor</div>
-    <div class="sponsor-carousel-container">
-     <div class="sponsor-carousel" #sponsorCarousel>
-       <ng-container *ngFor="let sponsor of sponsors">
-         <img [src]="sponsor.imageUrl" [alt]="sponsor.name" 
-              (mouseenter)="pauseAnimation(sponsorCarousel)" 
-              (mouseleave)="resumeAnimation(sponsorCarousel)">
-       </ng-container>
-     </div>
-   </div>
- </section>
+<!-- Sponsors Section -->
+<section class="sponsors-section" style="background-color: #002b49a0;">
+  <div class="sponsor-titolo">I nostri sponsor</div>
+  
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Caricamento sponsor...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="error-message">
+      <span class="error-icon">⚠️</span>
+      <p>{{ error }}</p>
+      <button class="retry-button" (click)="reloadSponsors()">Riprova</button>
+    </div>
+  </div>
+
+  <!-- Sponsors Carousel -->
+  <div class="sponsor-carousel-container" *ngIf="!loading && !error && sponsors.length > 0">
+    <div class="sponsor-carousel" #sponsorCarousel>
+      <ng-container *ngFor="let sponsor of duplicatedSponsors; trackBy: trackBySponsor">
+        <img [src]="sponsor.imageUrl" 
+             [alt]="sponsor.name" 
+             [title]="sponsor.name"
+             (mouseenter)="pauseAnimation(sponsorCarousel)" 
+             (mouseleave)="resumeAnimation(sponsorCarousel)"
+             (error)="onImageError($event)"
+             loading="lazy">
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-container" *ngIf="!loading && !error && sponsors.length === 0">
+    <div class="empty-message">
+      <span class="empty-icon">📝</span>
+      <p>Nessuno sponsor disponibile al momento</p>
+    </div>
+  </div>
+</section>

@@ -82,9 +82,6 @@ export class EventiSpecialiComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Debug endpoints (rimuovi in produzione)
-    this.eventiService.debugEndpoints();
-    
     this.loadCategorie();
     this.loadEventi();
     
@@ -98,7 +95,6 @@ export class EventiSpecialiComponent implements OnInit, OnDestroy {
     
     // Rimuovi listener e ripristina scroll
     document.removeEventListener('keydown', this.handleEscapeKey.bind(this));
-    this.enableBodyScroll();
   }
 
   // Gestione chiusura con ESC

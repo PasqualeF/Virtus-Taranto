@@ -172,34 +172,7 @@ export class EventiService extends StrapiBaseService {
     return oggi.toDateString() === dataEvento.toDateString();
   }
 
-  // Metodo di debug per verificare gli endpoint disponibili
-  debugEndpoints(): void {
-    console.log('🔍 Verificando endpoint Strapi...');
-    
-    // Test endpoint categorie
-    this.http.get(`${this.apiUrl}/api/categoria-eventos`, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: (response) => console.log('✅ Categoria-eventos endpoint OK:', response),
-      error: (error) => console.error('❌ Categoria-eventos endpoint ERRORE:', error)
-    });
-
-    // Test endpoint eventi
-    this.http.get(`${this.apiUrl}/api/eventos`, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: (response) => console.log('✅ Eventos endpoint OK:', response),
-      error: (error) => console.error('❌ Eventos endpoint ERRORE:', error)
-    });
-
-    // Test endpoint iscrizioni
-    this.http.get(`${this.apiUrl}/api/iscrizione-eventos`, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: (response) => console.log('✅ Iscrizione-eventos endpoint OK:', response),
-      error: (error) => console.error('❌ Iscrizione-eventos endpoint ERRORE:', error)
-    });
-  }
+ 
   private transformEvento(evento: any): Evento {
     return {
       ...evento,

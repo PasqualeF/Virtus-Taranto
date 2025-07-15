@@ -55,14 +55,7 @@
       </svg>
       Card View
     </button>
-    <button (click)="toggleView()" 
-            class="toggle-button" 
-            [class.active]="view === 'tree'">
-      <svg class="view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M12 3v18M5 21h14M5 3h14"/>
-      </svg>
-      Tree View
-    </button>
+    
   </div>
 
   <!-- Loading State -->
@@ -173,55 +166,7 @@
   </div>
 
   <!-- Improved Tree View for mobile -->
-  <div *ngIf="hasData() && !isLoading() && view === 'tree'" class="org-tree">
-    <div class="tree-container">
-      <!-- Livello Presidente -->
-      <div *ngIf="hasDataForLevel(1)" class="tree-level">
-        <div *ngFor="let member of getStaffByLevel(1)" class="tree-card presidente tree-appear"
-             style="animation-delay: 0.2s">
-          <img [src]="getImageUrl(member)" 
-               [alt]="member.nome"
-               class="tree-photo">
-          <div class="tree-name">{{ member.nome }}</div>
-          <div class="tree-role">{{ member.ruolo }}</div>
-        </div>
-      </div>
-
-      <!-- Connettore -->
-      <div *ngIf="hasDataForLevel(1) && (hasDataForLevel(2) || hasDataForLevel(3) || hasDataForLevel(4))" 
-           class="tree-connector" style="height: 50px; top: 180px; left: 50%"></div>
-
-      <!-- Livello Dirigenza/Staff Tecnico -->
-      <div *ngIf="hasDataForLevel(2)" class="tree-level">
-        <div *ngFor="let member of getStaffByLevel(2); let i = index" 
-             class="tree-card tree-appear"
-             [style.animation-delay]="(i * 0.1 + 0.4) + 's'">
-          <img [src]="getImageUrl(member)" 
-               [alt]="member.nome"
-               class="tree-photo">
-          <div class="tree-name">{{ member.nome }}</div>
-          <div class="tree-role">{{ member.ruolo }}</div>
-        </div>
-      </div>
-
-      <!-- Connettori per altri livelli -->
-      <div *ngIf="hasDataForLevel(2) && (hasDataForLevel(3) || hasDataForLevel(4))" 
-           class="tree-connector" style="height: 50px; top: 380px; left: 50%"></div>
-
-      <!-- Staff Tecnico e Medico -->
-      <div *ngIf="hasDataForLevel(3) || hasDataForLevel(4)" class="tree-level">
-        <div *ngFor="let member of getStaffByLevel(3).concat(getStaffByLevel(4)); let i = index"
-             class="tree-card tree-appear"
-             [style.animation-delay]="(i * 0.1 + 0.6) + 's'">
-          <img [src]="getImageUrl(member)" 
-               [alt]="member.nome"
-               class="tree-photo">
-          <div class="tree-name">{{ member.nome }}</div>
-          <div class="tree-role">{{ member.ruolo }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
 
   <!-- Search functionality (optional) -->
   <div *ngIf="hasData() && !isLoading()" class="search-container">

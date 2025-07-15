@@ -74,23 +74,16 @@ export class OrariAllenamentiComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
-    console.log('🔄 Caricamento orari allenamenti da LibreBooking...');
     
     this.orariAllenamentiService.getOrariAllenamenti().subscribe({
       next: (data: OrarioAllenamento[]) => {
-        console.log('✅ Dati ricevuti:', data);
         this.orariAllenamenti = data;
         this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
         this.estraiValoriUnici();
         this.filtraOrari();
         this.isLoading = false;
         
-        // Log delle statistiche
-        console.log(`📊 Statistiche caricamento:
-          - Prenotazioni totali: ${data.length}
-          - Gruppi unici: ${this.gruppiUnici.length}
-          - Palestre uniche: ${this.palestreUniche.length}
-          - Connesso a LibreBooking: ${this.isConnectedToLibreBooking}`);
+
       },
       error: (error) => {
         console.error('❌ Errore nel caricamento degli orari allenamenti:', error);
@@ -105,16 +98,13 @@ export class OrariAllenamentiComponent implements OnInit {
   }
 
   caricaDatiFallback() {
-    console.log('🔄 Caricamento dati di fallback...');
     this.orariAllenamentiService.getFallbackData().subscribe({
       next: (data: OrarioAllenamento[]) => {
         this.orariAllenamenti = data;
         this.estraiValoriUnici();
         this.filtraOrari();
-        console.log('✅ Dati di fallback caricati');
       },
       error: (error) => {
-        console.error('❌ Errore anche nel caricamento dei dati di fallback:', error);
       }
     });
   }
@@ -123,13 +113,11 @@ export class OrariAllenamentiComponent implements OnInit {
    * Forza il refresh dei dati da LibreBooking
    */
   refreshData() {
-    console.log('🔄 Refresh forzato dei dati...');
     this.isLoading = true;
     this.error = null;
     
     this.orariAllenamentiService.refreshData().subscribe({
       next: (data: OrarioAllenamento[]) => {
-        console.log('✅ Dati aggiornati:', data);
         this.orariAllenamenti = data;
         this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
         this.estraiValoriUnici();
@@ -137,7 +125,6 @@ export class OrariAllenamentiComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Errore nel refresh:', error);
         this.error = 'Errore nell\'aggiornamento dei dati.';
         this.isLoading = false;
         this.isConnectedToLibreBooking = false;
@@ -149,7 +136,6 @@ export class OrariAllenamentiComponent implements OnInit {
    * Passa ai dati di fallback manualmente
    */
   useFallbackData() {
-    console.log('🔄 Utilizzo dati di fallback...');
     this.caricaDatiFallback();
     this.error = null;
     this.isConnectedToLibreBooking = false;
@@ -160,11 +146,6 @@ export class OrariAllenamentiComponent implements OnInit {
     this.orariUnici = [...new Set(this.orariAllenamenti.map(o => o.orario))].sort();
     this.palestreUniche = [...new Set(this.orariAllenamenti.map(o => o.palestra))].sort();
     
-    console.log('📋 Valori unici estratti:', {
-      gruppi: this.gruppiUnici,
-      orari: this.orariUnici,
-      palestre: this.palestreUniche
-    });
   }
 
   filtraOrari() {
@@ -186,12 +167,10 @@ export class OrariAllenamentiComponent implements OnInit {
 
     this.dataSource.data = tabellaOrari;
     
-    console.log(`🔍 Filtri applicati: ${orariFiltrati.length} risultati`);
   }
 
   selectDay(index: number) {
     this.selectedDayIndex = index;
-    console.log(`📅 Giorno selezionato: ${this.giorni[index]}`);
   }
 
   getSquadreForDay(giorno: string): SquadraGiorno[] {
@@ -230,7 +209,6 @@ export class OrariAllenamentiComponent implements OnInit {
     this.filtroOrario = '';
     this.filtroPalestra = '';
     this.filtraOrari();
-    console.log('🧹 Filtri puliti');
   }
 
   /**
@@ -281,11 +259,9 @@ export class OrariAllenamentiComponent implements OnInit {
    * Gestisce il click su una card allenamento
    */
   onAllenamentoClick(allenamento: OrarioAllenamento) {
-    console.log('🏀 Click su allenamento:', allenamento);
     
     // Esempio di azioni possibili:
     if (allenamento.referenceNumber) {
-      console.log(`📋 Dettagli prenotazione: ${allenamento.referenceNumber}`);
       // Qui potresti aprire un modal con i dettagli
       this.showAllenamentoDetails(allenamento);
     }
@@ -295,18 +271,7 @@ export class OrariAllenamentiComponent implements OnInit {
    * Mostra i dettagli di un allenamento (esempio)
    */
   private showAllenamentoDetails(allenamento: OrarioAllenamento) {
-    // Implementazione per mostrare dettagli
-    console.log('📊 Dettagli allenamento:', {
-      gruppo: allenamento.gruppo,
-      orario: allenamento.orario,
-      palestra: allenamento.palestra,
-      title: allenamento.title,
-      description: allenamento.description,
-      isRecurring: allenamento.isRecurring,
-      referenceNumber: allenamento.referenceNumber,
-      startDate: allenamento.startDate,
-      endDate: allenamento.endDate
-    });
+    
     
     // Qui potresti aprire un modal, navigare a una pagina di dettaglio, etc.
   }
@@ -333,31 +298,12 @@ export class OrariAllenamentiComponent implements OnInit {
     ).length;
   }
 
-  /**
-   * Test di connettività manuale
-   */
-  testConnection() {
-    console.log('🔧 Avvio test di connettività...');
-    this.orariAllenamentiService.testConnection().subscribe({
-      next: (isConnected) => {
-        console.log(`🔌 Test di connettività: ${isConnected ? 'SUCCESSO' : 'FALLITO'}`);
-        if (isConnected) {
-          console.log('✅ La connessione a LibreBooking funziona correttamente');
-        } else {
-          console.log('❌ Problemi di connessione a LibreBooking');
-        }
-      },
-      error: (error) => {
-        console.error('❌ Errore nel test di connettività:', error);
-      }
-    });
-  }
+  
 
   /**
    * Logout manuale dal servizio
    */
   logout() {
-    console.log('🚪 Logout dal servizio LibreBooking...');
     this.orariAllenamentiService.logout();
     this.isConnectedToLibreBooking = false;
     

@@ -1,45 +1,161 @@
 <!-- calendario.component.html -->
 <div class="calendario-container">
+  <!-- Header con titolo animato -->
+  <div class="header-section" [@fadeIn]>
     <h1 class="titolo">
-      Calendario Eventi
-      <span class="sottotitolo">Scopri tutte le nostre attività</span>
+      🏀 Calendario Partite
+      <span class="sottotitolo">Tutte le partite delle nostre squadre</span>
     </h1>
-  
-    <div class="societa-selector">
-      <div 
-        *ngFor="let s of societa"
-        class="societa-tab"
-        [class.active]="selectedSocieta?.nome === s.nome"
-        (click)="selectSocieta(s)"
-        [@fadeIn]>
-        <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
-        <span>{{ s.nome }}</span>
+    
+    <!-- Statistiche rapide -->
+    <div class="stats-section" *ngIf="hasEvents && !isLoading">
+      <div class="stat-card">
+        <span class="stat-number">{{ matchStats.total }}</span>
+        <span class="stat-label">Totale</span>
       </div>
-    </div>
-  
-    <div class="calendar-wrapper" *ngIf="selectedSocieta" [@slideIn]>
-      <div class="calendar-header">
-        <h2>{{ selectedSocieta.nome }}</h2>
+      <div class="stat-card upcoming">
+        <span class="stat-number">{{ matchStats.upcoming }}</span>
+        <span class="stat-label">Prossime</span>
       </div>
-  
-      <div class="calendar-content">
-        <full-calendar [options]="calendarOptions"></full-calendar>
+      <div class="stat-card ongoing" *ngIf="matchStats.ongoing > 0">
+        <span class="stat-number">{{ matchStats.ongoing }}</span>
+        <span class="stat-label">In Corso</span>
       </div>
-    </div>
-  
-    <div class="legenda" *ngIf="selectedSocieta">
-      <h3>Legenda Eventi</h3>
-      <div class="legenda-item">
-        <span class="color-dot partita"></span>
-        <span>Partite</span>
-      </div>
-      <div class="legenda-item">
-        <span class="color-dot allenamento"></span>
-        <span>Allenamenti</span>
-      </div>
-      <div class="legenda-item">
-        <span class="color-dot evento"></span>
-        <span>Eventi Speciali</span>
+      <div class="stat-card past">
+        <span class="stat-number">{{ matchStats.past }}</span>
+        <span class="stat-label">Concluse</span>
       </div>
     </div>
   </div>
+
+  <!-- Loading indicator -->
+  <div class="loading-section" *ngIf="isLoading" [@fadeIn]>
+    <div class="loading-spinner"></div>
+    <p>Caricamento partite in corso...</p>
+  </div>
+
+  <!-- Error message -->
+  <div class="error-section" *ngIf="errorMessage && !isLoading" [@fadeIn]>
+    <div class="error-card">
+      <span class="error-icon">⚠️</span>
+      <p>{{ errorMessage }}</p>
+      <button class="retry-btn" (click)="refreshData()">🔄 Riprova</button>
+    </div>
+  </div>
+
+  <!-- Selettore squadre -->
+  <div class="societa-selector" *ngIf="!isLoading" [@fadeIn]>
+    <div 
+      *ngFor="let s of societa; trackBy: trackBySocieta"
+      class="societa-tab"
+      [class.active]="selectedSocieta?.nome === s.nome"
+      (click)="selectSocieta(s)"
+      [@fadeIn]>
+      <div class="societa-content">
+        <img [src]="s.logo" [alt]="s.nome" class="societa-logo" 
+             onerror="this.src='assets/default-logo.png'">
+        <span class="societa-name">{{ s.nome }}</span>
+        <div class="societa-indicator" *ngIf="selectedSocieta?.nome === s.nome">
+          <span>✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendario principale -->
+  <div class="calendar-wrapper" *ngIf="selectedSocieta && !isLoading" [@slideIn]>
+    <div class="calendar-header">
+      <h2>
+        <span class="calendar-title">{{ selectedSocieta.nome }}</span>
+        <button class="refresh-btn" (click)="refreshData()" title="Aggiorna dati">
+          🔄
+        </button>
+      </h2>
+      
+      <!-- Istruzioni per l'utente -->
+      <div class="instructions" *ngIf="hasEvents">
+        <p>💡 <strong>Clicca su una partita</strong> per aggiungerla al tuo calendario personale</p>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!hasEvents && !isLoading">
+      <div class="empty-icon">📅</div>
+      <h3>Nessuna partita trovata</h3>
+      <p>Non ci sono partite programmate per questa squadra.</p>
+      <button class="retry-btn" (click)="refreshData()">🔄 Ricarica</button>
+    </div>
+
+    <!-- Calendario FullCalendar -->
+    <div class="calendar-content" *ngIf="hasEvents">
+      <full-calendar #fullcalendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+
+  <!-- Legenda eventi -->
+  <div class="legenda" *ngIf="selectedSocieta && hasEvents && !isLoading" [@slideIn]>
+    <h3>🎯 Legenda Eventi</h3>
+    <div class="legenda-grid">
+      <div class="legenda-item">
+        <span class="color-dot partita-futura"></span>
+        <span class="legenda-text">
+          <strong>🏀 Partite Future</strong>
+          <small>Partite ancora da giocare</small>
+        </span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-dot partita-corso"></span>
+        <span class="legenda-text">
+          <strong>🔴 Partite in Corso</strong>
+          <small>Partite attualmente in svolgimento</small>
+        </span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-dot partita-passata"></span>
+        <span class="legenda-text">
+          <strong>✅ Partite Concluse</strong>
+          <small>Partite già terminate</small>
+        </span>
+      </div>
+    </div>
+    
+    <!-- Informazioni aggiuntive -->
+    <div class="info-section">
+      <div class="info-card">
+        <h4>📱 Come aggiungere al calendario</h4>
+        <ol>
+          <li>Clicca su una partita nel calendario</li>
+          <li>Conferma l'aggiunta nel popup</li>
+          <li>L'evento si aprirà in Google Calendar</li>
+          <li>Opzionalmente scarica il file .ics per dispositivi mobile</li>
+        </ol>
+      </div>
+      
+      <div class="info-card">
+        <h4>🏀 Dettagli eventi</h4>
+        <p>Ogni evento include:</p>
+        <ul>
+          <li>📅 Data e ora della partita</li>
+          <li>📍 Luogo dell'incontro</li>
+          <li>🏆 Campionato di riferimento</li>
+          <li>⚡ Stato attuale (futura/in corso/conclusa)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer con azioni -->
+  <div class="footer-actions" *ngIf="!isLoading" [@fadeIn]>
+    <button class="action-btn primary" (click)="refreshData()">
+      🔄 Aggiorna Partite
+    </button>
+    <button class="action-btn secondary" (click)="selectSocieta(societa[0])">
+      👁️ Mostra Tutte
+    </button>
+  </div>
+</div>
+
+<!-- Floating action button per mobile -->
+<div class="fab" *ngIf="!isLoading" (click)="refreshData()">
+  🔄
+</div>

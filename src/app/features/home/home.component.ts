@@ -1,10 +1,12 @@
-// home.component.ts - AGGIORNATO
+// home.component.ts - AGGIORNATO con Smart Loading
 import { Component, OnInit, ElementRef, ViewChild, ViewChildren, QueryList, HostListener, AfterViewInit, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SquadService } from 'src/app/core/service/squad.service';
 import { PartnerService } from 'src/app/core/service/partner.service';
-import { MatchService, Match } from 'src/app/core/service/match.service'; // NUOVO IMPORT
+import { MatchService, Match } from 'src/app/core/service/match.service';
 import { TeamSmall } from 'src/app/core/models/squad.model';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
 interface Team {
   name: string;
@@ -51,11 +53,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // States
   currentSection = 'hero';
   scrollProgress = 0;
-  isLoading = true;
+  isLoading = false; // Inizia come false
   showSponsors = false;
   loadingProgress = 0;
   logoLoadStates: boolean[] = [false, false, false];
   isMobile = false;
+  
+  // NEW: Smart loading states
+  private dataLoadingStates = {
+    matches: false,
+    teams: false,
+    partners: false
+  };
 
   // Animation States
   logoAnimationStates = [false, false, false];
@@ -64,8 +73,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isTyping = false;
   error: string | null = null;
 
-  // Typewriter Configuration
-  private phrases = ['Passione', 'Tradizione', 'Eccellenza', 'Dal 1948', 'Who Else?'];
+  // Typewriter Configuration - UPDATED with basketball theme
+  private phrases = [
+    'Passione 🏀', 
+    'Tradizione 🏆', 
+    'Eccellenza 👑', 
+    'Dal 1948 📅', 
+    'Who Else? 💪',
+    'Taranto Basket ❤️',
+    'Famiglia 🤝'
+  ];
   private currentPhrase = 0;
   private currentChar = 0;
   private isDeleting = false;
@@ -74,7 +91,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // Services
   private squadService = inject(SquadService);
   private partnerService = inject(PartnerService);
-  private matchService = inject(MatchService); // NUOVO SERVICE
+  private matchService = inject(MatchService);
   
   // Assets
   logos = ['assets/logo-virtus-taranto.svg', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
@@ -91,7 +108,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { id: 'shop', name: 'Shop' }
   ];
 
-  // Content Data - AGGIORNATO: ora viene caricato dinamicamente
+  // Content Data
   upcomingMatches: Match[] = [];
   teams: TeamSmall[] = [];
   sponsors: Sponsor[] = [];
@@ -124,7 +141,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  // AGGIUNTO: getter per duplicare gli sponsor per il carousel infinito
   get duplicatedSponsors(): Sponsor[] {
     if (this.sponsors.length === 0) return [];
     const timesToDuplicate = Math.max(3, Math.ceil(10 / this.sponsors.length));
@@ -136,23 +152,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   constructor() {
-    this.initializeLoading();
     this.checkIfMobile();
-  }
-  
-  private initializeLoading() {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 2;
-      this.loadingProgress = Math.min(progress, 100);
-      
-      if (this.loadingProgress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 500);
-      }
-    }, 50);
   }
 
   private checkIfMobile() {
@@ -166,99 +166,161 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.startAnimationSequence();
-    this.loadAllData();
-    
-    // Simula loading screen
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1000);
+    this.smartLoadAllData();
   }
 
-  // NUOVO: metodo unificato per caricare tutti i dati
-  private loadAllData() {
-    this.loadMatches();
-    this.loadSquad();
-    this.loadPartners();
-  }
-
-  // NUOVO: metodo per caricare le partite da Strapi
-  private loadMatches() {
-    console.log('🏀 Caricamento partite da Strapi...');
+  // NEW: Smart loading method that shows loading screen only if needed
+  private smartLoadAllData() {
+    // Verifica se i dati sono già disponibili (cache, localStorage, etc.)
+    const hasData = this.hasExistingData();
     
-    this.matchService.getUpcomingMatches(6).subscribe({
-      next: (matches) => {
-        this.upcomingMatches = matches;
-        console.log('✅ Partite caricate:', this.upcomingMatches);
-        
-        // Log per debugging
-        this.upcomingMatches.forEach((match, index) => {
-          console.log(`Partita ${index + 1}:`, {
-            homeTeam: match.homeTeam,
-            awayTeam: match.awayTeam,
-            date: match.date,
-            isHome: match.isHome,
-            venue: match.venue
-          });
-        });
+    if (!hasData) {
+      // Mostra loading screen solo se non ci sono dati
+      this.isLoading = true;
+      this.startLoadingAnimation();
+    }
+
+    // Carica tutti i dati in parallelo
+    const matchesRequest = this.matchService.getUpcomingMatches(6).pipe(
+      catchError(error => {
+        this.loadFallbackMatches();
+        return of([]);
+      })
+    );
+
+    const teamsRequest = this.squadService.getAllSquadsSmall().pipe(
+      catchError(error => {
+        return of([]);
+      })
+    );
+
+    const partnersRequest = this.partnerService.getPartners().pipe(
+      catchError(error => {
+        this.loadFallbackPartners();
+        return of([]);
+      })
+    );
+
+    // Esegui tutte le richieste in parallelo
+    forkJoin({
+      matches: matchesRequest,
+      teams: teamsRequest,
+      partners: partnersRequest
+    }).pipe(
+      finalize(() => {
+        // Completa il loading solo se era attivo
+        if (this.isLoading) {
+          this.completeLoading();
+        }
+      })
+    ).subscribe({
+      next: (results) => {
+        this.upcomingMatches = results.matches;
+        this.teams = results.teams;
+        this.sponsors = results.partners.map(partner => ({
+          name: partner.name,
+          imageUrl: partner.logo
+        }));
+
+        // Aggiorna gli stati di caricamento
+        this.dataLoadingStates = {
+          matches: true,
+          teams: true,
+          partners: true
+        };
+
       },
       error: (error) => {
-        console.error('❌ Errore nel caricamento delle partite:', error);
-        this.error = 'Errore nel caricamento delle partite';
-        
-        // Dati di fallback come backup
-        this.loadFallbackMatches();
+        this.error = 'Errore nel caricamento dei dati';
       }
     });
   }
 
-  // NUOVO: dati di fallback in caso di errore
-  private loadFallbackMatches() {
-    console.log('🔄 Caricamento dati di fallback per le partite...');
+  // NEW: Check if data already exists (could be from cache, localStorage, etc.)
+  private hasExistingData(): boolean {
+    // Implementa la logica per verificare se i dati sono già disponibili
+    // Per ora restituisce false, ma puoi aggiungere controlli per:
+    // - localStorage
+    // - cache del browser
+    // - dati pre-caricati
+    return false;
+  }
+
+  // NEW: Start loading animation only when needed
+  private startLoadingAnimation() {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 3;
+      this.loadingProgress = Math.min(progress, 90); // Si ferma al 90%
+      
+      if (this.loadingProgress >= 90) {
+        clearInterval(interval);
+      }
+    }, 50);
+  }
+
+  // NEW: Complete loading process
+  private completeLoading() {
+    // Completa il progresso
+    this.loadingProgress = 100;
+    
+    // Rimuovi il loading screen dopo un breve delay
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 300);
+  }
+
+  // UPDATED: Enhanced fallback matches method
+  private loadFallbackMatches() {    
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + Math.floor(Math.random() * 30) + 1);
     
     this.upcomingMatches = [
       { 
         homeTeam: 'Virtus Taranto', 
-        awayTeam: 'Team A', 
-        date: new Date('2025-08-15'), 
+        awayTeam: 'Pallacanestro Bari', 
+        date: futureDate, 
         time: '18:00', 
         venue: 'PalaMazzola',
         isHome: true,
         league: 'Serie A2'
       },
       { 
-        homeTeam: 'Team B', 
+        homeTeam: 'Basket Lecce', 
         awayTeam: 'Virtus Taranto', 
-        date: new Date('2025-08-22'), 
+        date: new Date(futureDate.getTime() + 7 * 24 * 60 * 60 * 1000), 
         time: '20:30', 
-        venue: 'PalaSport B',
+        venue: 'PalaSport Lecce',
         isHome: false,
         league: 'Coppa Italia'
       }
     ];
   }
 
-  // Metodo per caricare i partner
-  loadPartners() {
-    this.partnerService.getPartners().subscribe({
-      next: (partners) => {
-        this.sponsors = partners.map(partner => ({
-          name: partner.name,
-          imageUrl: partner.logo
-        }));
-        console.log('✅ Partners caricati:', this.sponsors);
-      },
-      error: (error) => {
-        console.error('❌ Errore nel caricamento dei partner:', error);
-        // Dati di fallback
-        this.sponsors = [
-          { name: 'Fondazione 251', imageUrl: 'assets/fondazione251.png' },
-          { name: 'Bialetti', imageUrl: 'assets/bialetti.png' },
-          { name: 'NU', imageUrl: 'assets/nu.png' },
-          { name: 'Suite', imageUrl: 'assets/suite.png' },
-          { name: 'Vibe', imageUrl: 'assets/vibe.png' }
-        ];
-      }
-    });
+  // NEW: Fallback partners method
+  private loadFallbackPartners() {
+    this.sponsors = [
+      { name: 'Fondazione 251', imageUrl: 'assets/fondazione251.png' },
+      { name: 'Bialetti', imageUrl: 'assets/bialetti.png' },
+      { name: 'NU', imageUrl: 'assets/nu.png' },
+      { name: 'Suite', imageUrl: 'assets/suite.png' },
+      { name: 'Vibe', imageUrl: 'assets/vibe.png' }
+    ];
+  }
+
+  // NEW: Method to handle social media links
+  openSocialLink(platform: string): void {
+    const socialLinks = {
+      instagram: 'https://www.instagram.com/virtustaranto/', // Sostituisci con il link reale
+      facebook: 'https://www.facebook.com/virtustaranto/', // Sostituisci con il link reale
+      youtube: 'https://www.youtube.com/channel/UCxxxxx', // Sostituisci con il link reale
+      tiktok: 'https://www.tiktok.com/@virtustaranto' // Sostituisci con il link reale
+    };
+
+    const url = socialLinks[platform as keyof typeof socialLinks];
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   }
   
   onLogoLoad(index: number) {
@@ -338,7 +400,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     typeNextChar();
   }
 
-  // Utility Methods - AGGIORNATO: rimosse le partite hardcoded
+  // Utility Methods
   getMatchDay(date: Date): string {
     return date.toLocaleDateString('it-IT', { weekday: 'long' });
   }
@@ -384,7 +446,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.squadService.getAllSquadsSmall()
     .subscribe(teams => {
       this.teams = teams;
-      console.log('✅ Squadre caricate:', this.teams);
     });
   }
 }

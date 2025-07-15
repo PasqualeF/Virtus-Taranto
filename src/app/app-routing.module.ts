@@ -23,51 +23,66 @@ import { YouthTeamsComponent } from './features/squad/mini/youth-teams.component
 import { ShopComponent } from './features/shop/shop.component';
 import { MediaComponent } from './features/media/media-gallery.component';
 import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
-
+import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
+  // Tutte le route sono ora accessibili liberamente
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
+  
+  // PRIVACY POLICY - Accessibile sempre
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  
+  // SQUADRE
   { path: 'squadra/basket/:id', component: SquadComponent },
   { path: 'squadra/basket-maschile/:id', component: SquadComponent },
   { path: 'squadra/basket-femminile/:id', component: SquadComponent },
   { path: 'squadra/pallavolo/:id', component: SquadComponent },
   { path: 'squadra/mini/:id', component: YouthTeamsComponent },
   { path: 'squadra/mini/minibasket', component: YouthTeamsComponent },
-  /*news*/
+
+  // NEWS
   { path: 'news/orari-allenamenti', component: OrariAllenamentiComponent },
   { path: 'news/ultimissime', component: UltimissimeComponent },
   { path: 'news/comunicazioni', component: ComunicazioniComponent },
   { path: 'news/social', component: SocialFeedComponent },
 
+  // MEDIA
   { path: 'media/foto', component: MediaComponent },
-    /*fine news*/
-   /*who-else*/
+
+  // WHO-ELSE
   { path: 'who-else/storia', component: StoriaComponent },
   { path: 'who-else/organigramma', component: OrganigrammaComponent },
   { path: 'who-else/palestre', component: PalestreComponent },
   { path: 'who-else/partner', component: PartnerComponent },
   { path: 'who-else/contatti', component: ContattiComponent },
-   { path: 'who-else/achivements', component: AchievementsComponent },
-  /*fine who-else*/
-  /*eventi*/
+  { path: 'who-else/achivements', component: AchievementsComponent },
+
+  // EVENTI
   { path: 'eventi/calendario', component: CalendarioComponent },
   { path: 'eventi/tornei', component: TorneiComponent },
   { path: 'eventi/eventiSpeciali', component: EventiSpecialiComponent },
-  /*fine eventi*/
+
+  // SERVIZI
   { path: 'servizi/visitaMedica', component: VisitaMedicaComponent }, 
   { path: 'servizi/iscrizioni', component: IscrizioniGiovaniliComponent }, 
   { path: 'servizi/codiceEtico', component: CodiceEticoComponent },
   { path: 'servizi/assicurazione', component: AperturaInfortuniComponent },
 
+  // SHOP E CALENDARIO
   { path: 'shop', component: ShopComponent },
+  { path: 'calendario', component: CalendarComponent },
 
-
-  { path: 'calendario', component: CalendarComponent }
+  // REDIRECT PER ROUTE NON TROVATE
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    enableTracing: false,
+    scrollPositionRestoration: 'top',
+    onSameUrlNavigation: 'reload'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

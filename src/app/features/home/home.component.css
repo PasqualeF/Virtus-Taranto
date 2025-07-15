@@ -2,6 +2,8 @@
 :host {
   display: block;
   min-height: 100vh;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
 }
 
 .home-container {
@@ -20,7 +22,7 @@
   transition: width 0.1s ease-out;
 }
 
-/* Loading Screen Migliorata */
+/* Loading Screen */
 .loading-screen {
   position: fixed;
   inset: 0;
@@ -33,9 +35,9 @@
 
 .logos-wrapper {
   display: flex;
-  gap: 3rem;
+  gap: 2.5rem;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .logo-container {
@@ -44,7 +46,6 @@
   height: 120px;
   perspective: 1000px;
 }
-
 
 .loading-logo {
   width: 100%;
@@ -81,11 +82,9 @@
   gap: 3rem;
 }
 
-
 .loading-progress-container {
   width: 300px;
 }
-
 
 .loading-bar {
   width: 100%;
@@ -108,13 +107,11 @@
   font-weight: 500;
 }
 
-
 /* Hero Section Base */
 .hero-section {
   height: 100vh;
   width: 100%;
   position: relative;
-  background: url('/assets/basketball-court.jpg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
 }
@@ -129,11 +126,6 @@
   pointer-events: none;
 }
 
-
-
-
-
-
 /* Achievement Section */
 .achievements-section {
   min-height: 100vh;
@@ -142,7 +134,6 @@
   position: relative;
   overflow: hidden;
 }
-
 
 .achievements-content {
   max-width: 1200px;
@@ -159,8 +150,9 @@
   margin-bottom: 4rem;
   position: relative;
 }
+
 .section-title::before {
-  content: 'ACHIVEMENTES';
+  content: 'ACHIEVEMENTS';
   position: absolute;
   top: -20px;
   left: 50%;
@@ -247,7 +239,6 @@
   background-color: #002b49a0;
   position: relative;
   background-size: cover;
-
 }
 
 .sponsors-section::before {
@@ -291,33 +282,26 @@
   100% { transform: translateX(-100%); }
 }
 
-/* Aggiungi questa animazione alle altre */
-
 .content-wrapper {
   position: relative;
   z-index: 2;
   height: 100%;
   display: grid;
-  grid-template-columns: 400px 1fr; /* Aumentato spazio per i loghi */
+  grid-template-columns: 400px 1fr;
   gap: 4rem;
   padding: 2rem 8%;
   align-items: center;
 }
 
-/* Logo Styles */
+/* NUOVO: Logo Styles - Sistema di posizionamento controllato */
 .logos-container {
-  height: 80vh;
+  width: 100%;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 4rem; /* Spazio verticale tra i loghi */
+  padding: 2rem 0;
 }
 
-
 .logo-wrapper {
-  position: relative; /* Cambiato da absolute a relative */
+  position: relative; /* Default per mobile/tablet */
   width: 180px;
   height: 180px;
   transform-style: preserve-3d;
@@ -325,6 +309,7 @@
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.5s ease-out;
+  margin: 1.5rem 0;
 }
 
 .logo-3d {
@@ -343,11 +328,10 @@
   transform: rotateY(10deg) rotateX(10deg);
 }
 
-.logo-3d.appear {
+.logo-wrapper.appear {
   opacity: 1;
-  animation: floatAnimation 6s ease-in-out infinite;
+  transform: translateY(0);
 }
-
 
 .floating-logo {
   width: 100%;
@@ -357,26 +341,14 @@
   transition: all 0.3s ease;
 }
 
-.logo-glow {
-  position: absolute;
-  inset: -20px;
-  background: radial-gradient(circle at center,
-    rgba(59, 130, 246, 0.3),
-    transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .logo-3d:hover .logo-glow {
   opacity: 1;
 }
-
 
 .main-title.appear {
   opacity: 1;
   transform: translateY(0);
 }
-
 
 /* Typewriter Effect */
 .typewriter-container {
@@ -430,6 +402,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
 }
+
 .cta-button::before {
   content: '';
   position: absolute;
@@ -440,10 +413,10 @@
   z-index: -1;
 }
 
-
 .cta-button:hover::before {
   opacity: 1;
 }
+
 .cta-button:hover {
   border-color: #3b82f6;
   transform: translateY(-2px);
@@ -517,129 +490,124 @@
   opacity: 1;
 }
 
-/* Animations */
-@keyframes loading {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-@keyframes floatAnimation {
-  0%, 100% {
-    transform: translateY(0) rotateX(0) rotateY(0);
-  }
-  25% {
-    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
-  }
-  75% {
-    transform: translateY(10px) rotateX(-5deg) rotateY(-5deg);
-  }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Responsive Design Migliorato */
-@media (max-width: 1200px) {
+/* Desktop Logo Positioning - SISTEMA FISSO MA RESPONSIVE */
+@media (min-width: 1201px) {
   .content-wrapper {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 4rem 2rem;
-    text-align: center;
+    grid-template-columns: 400px 1fr;
+    gap: 4rem;
+    padding: 1rem 3%;
+    align-items: normal;
   }
 
   .logos-container {
-    height: auto;
-    flex-direction: row;
-    justify-content: center;
-    gap: 3rem;
-    margin-bottom: 2rem;
+    width: 350px;
+    height: 80vh; /* Altezza fissa più gestibile */
+    position: relative;
+    display: block; /* Torniamo al block */
   }
 
-  .text-content {
-    padding-left: 0;
-    border-left: none;
-    margin: 0 auto;
+  .logo-wrapper {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    margin: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Centra orizzontalmente */
   }
 
-  .hero-stats {
-    justify-content: center;
+  /* Posizionamento percentuale per adattarsi a diverse altezze */
+  .logo-wrapper:nth-child(1) {
+    top: 5%; /* Primo logo in alto */
+  }
+  
+  .logo-wrapper:nth-child(2) {
+    top: 40%; /* Secondo logo al centro */
+  }
+  
+  .logo-wrapper:nth-child(3) {
+    top: 75%; /* Terzo logo in basso */
   }
 }
 
+/* Per schermi desktop molto grandi */
+@media (min-width: 1600px) {
+  .logos-container {
+    height: 70vh; /* Riduce leggermente l'altezza su schermi molto grandi */
+  }
 
-/* Loading Screen Logos */
-.loading-screen .loading-content {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  .logo-wrapper:nth-child(1) {
+    top: 10%;
+  }
+  
+  .logo-wrapper:nth-child(2) {
+    top: 45%;
+  }
+  
+  .logo-wrapper:nth-child(3) {
+    top: 80%;
+  }
 }
 
-.loading-screen .logo-wrapper {
-  display: flex;
-  gap: 3rem;  /* Aumentato lo spazio tra i loghi */
-  justify-content: center;
-  margin-bottom: 2rem;
+/* Per schermi desktop più piccoli */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  .logos-container {
+    height: 75vh;
+  }
+
+  .logo-wrapper {
+    width: 180px;
+    height: 180px;
+  }
+
+  .logo-wrapper:nth-child(1) {
+    top: 8%;
+  }
+  
+  .logo-wrapper:nth-child(2) {
+    top: 42%;
+  }
+  
+  .logo-wrapper:nth-child(3) {
+    top: 76%;
+  }
 }
 
-.loading-screen .animated-logo {
-  width: 120px;
-  height: 120px;
+/* Desktop Slogan */
+.desktop-slogan {
+  color: #e2e8f0;
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  max-width: 85%;
+  font-style: italic;
   opacity: 0;
-  transform: translateX(-100%);
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
 }
 
-/* Main Content Logos */
-.logos-container {
-  height: 600px;  /* Aumentata l'altezza del container */
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.logo-wrapper {
-  position: absolute;
-  width: 220px;  /* Aumentata la dimensione dei loghi */
-  height: 220px;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
-
-/* Posizionamento specifico dei loghi */
-.logo-wrapper:nth-child(1) { top: 20px; left: 0; }
-.logo-wrapper:nth-child(2) { top: 250px; left: 0; }  /* Aumentata la distanza verticale */
-.logo-wrapper:nth-child(3) { top: 450px; left: 0; }
-
-
-.logo-wrapper:nth-child(1) { transition-delay: 0.2s; }
-.logo-wrapper:nth-child(2) { transition-delay: 0.4s; }
-.logo-wrapper:nth-child(3) { transition-delay: 0.6s; }
-
-.logo-wrapper.appear {
+.desktop-slogan.appear {
   opacity: 1;
   transform: translateY(0);
 }
+
 /* Text Content */
 .text-content {
-  max-width: 800px;
+  max-width: 900px;
   padding-left: 2rem;
   border-left: 4px solid rgba(59, 130, 246, 0.3);
 }
 
-
 .main-title {
-  font-size: 5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   color: white;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease-out;
   line-height: 1.1;
+  margin-bottom: 1.5rem;
 }
 
 .title-line {
@@ -660,7 +628,97 @@
   -webkit-text-fill-color: transparent;
   letter-spacing: 2px;
 }
-/* Stats Counter Added */
+
+/* Desktop Match Banner */
+.desktop-match-banner {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1.5rem 0;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.desktop-match-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+
+.desktop-match-title {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.desktop-match-teams {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.desktop-match-info {
+  color: #3b82f6;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.desktop-match-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Desktop No matches fallback */
+.desktop-no-matches-banner {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1.5rem 0;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.desktop-no-matches-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.desktop-no-matches-title {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.desktop-no-matches-text {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+/* Stats Counter */
 .hero-stats {
   display: flex;
   gap: 3rem;
@@ -693,9 +751,30 @@
   letter-spacing: 1px;
 }
 
+/* Animations */
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
 
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0) rotateX(0) rotateY(0);
+  }
+  25% {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+  }
+  75% {
+    transform: translateY(10px) rotateX(-5deg) rotateY(-5deg);
+  }
+}
 
-/* Miglioriamo l'effetto di transizione */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @keyframes sectionSlideIn {
   0% {
     opacity: 0;
@@ -717,8 +796,8 @@
     transform: translateY(-50px);
   }
 }
-/* Aggiungere questi stili al file home.component.css */
 
+/* MOBILE VERSION */
 @media (max-width: 768px) {
   .content-wrapper {
     grid-template-columns: 1fr;
@@ -730,7 +809,6 @@
     justify-content: flex-start;
   }
 
-  /* Logo Container per Mobile */
   .logos-container {
     height: auto;
     width: 100%;
@@ -744,7 +822,7 @@
 
   .logo-wrapper {
     position: relative;
-    width: 100px;  /* Dimensione ridotta per mobile */
+    width: 100px;
     height: 100px;
     margin: 0;
     top: unset;
@@ -756,7 +834,6 @@
     height: 100%;
   }
 
-  /* Text Content per Mobile */
   .text-content {
     padding-left: 0;
     border-left: none;
@@ -765,13 +842,13 @@
   }
 
   .main-title {
-    font-size: 3.2rem;  /* Aumentato da 2.5rem */
+    font-size: 3.2rem;
     margin-bottom: 1.5rem;
     line-height: 1.2;
   }
 
   .title-line {
-    font-size: 1.2rem;  /* Aumentato da 0.9rem */
+    font-size: 1.2rem;
     letter-spacing: 3px;
     margin-bottom: 1.2rem;
   }
@@ -782,7 +859,6 @@
     line-height: 1.3;
   }
 
-  /* Stats per Mobile */
   .hero-stats {
     flex-direction: row;
     flex-wrap: wrap;
@@ -804,7 +880,6 @@
     font-size: 0.8rem;
   }
 
-  /* Typewriter Container per Mobile */
   .typewriter-container {
     justify-content: center;
     margin-top: 1.5rem;
@@ -815,7 +890,6 @@
     font-size: 1.5rem;
   }
 
-  /* CTA Container per Mobile */
   .cta-container {
     margin-top: 2rem;
     width: 100%;
@@ -827,7 +901,6 @@
     font-size: 1rem;
   }
 
-  /* Animazioni ottimizzate per mobile */
   @keyframes floatAnimationMobile {
     0%, 100% {
       transform: translateY(0);
@@ -842,7 +915,43 @@
   }
 }
 
-/* Stili specifici per schermi molto piccoli */
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .logos-container {
+    height: auto;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .logo-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0;
+    top: unset;
+    left: unset;
+  }
+
+  .text-content {
+    padding-left: 0;
+    border-left: none;
+    margin: 0 auto;
+  }
+
+  .hero-stats {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 375px) {
   .logos-container {
     gap: 0.5rem;
@@ -866,48 +975,6 @@
   }
 }
 
-/* Aggiunta di una media query per tablet */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    padding: 2rem;
-  }
-
-  .logos-container {
-    height: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  .logo-wrapper {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0;
-    top: unset;
-    left: unset;
-  }
-
-  .text-content {
-    text-align: center;
-    padding-left: 0;
-    border-left: none;
-  }
-
-  .main-title {
-    font-size: 3.5rem;
-  }
-
-  .hero-stats {
-    justify-content: center;
-  }
-}
-
-/* Miglioramento del loading screen per mobile */
 @media (max-width: 768px) {
   .loading-screen .logos-wrapper {
     flex-direction: row;
@@ -926,111 +993,7 @@
   }
 }
 
-/* Logo positioning for desktop */
-@media (min-width: 1201px) {
-  .logos-container {
-    height: 600px;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .logo-wrapper {
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-  }
-
-  .logo-wrapper:nth-child(1) { 
-    top: 20px; 
-    left: 0; 
-  }
-  
-  .logo-wrapper:nth-child(2) { 
-    top: 250px; 
-    left: 0; 
-  }
-  
-  .logo-wrapper:nth-child(3) { 
-    top: 450px; 
-    left: 0; 
-  }
-}
-
-/* Logo positioning for tablet */
-@media (min-width: 769px) and (max-width: 1200px) {
-  .logos-container {
-    height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 2rem;
-    margin: 2rem 0;
-  }
-
-  .logo-wrapper {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    top: unset !important;
-    left: unset !important;
-  }
-}
-
-/* Logo positioning for mobile */
-@media (max-width: 768px) {
-  .logos-container {
-    height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding: 0 1rem;
-  }
-
-  .logo-wrapper {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    top: unset !important;
-    left: unset !important;
-    margin: 0;
-  }
-
-  /* Manteniamo le animazioni ma le rendiamo più leggere per mobile */
-  .logo-3d.appear {
-    animation: floatAnimationMobile 4s ease-in-out infinite;
-  }
-
-  @keyframes floatAnimationMobile {
-    0%, 100% {
-      transform: translateY(0) rotateX(0) rotateY(0);
-    }
-    50% {
-      transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
-    }
-  }
-}
-
-/* Extra small devices */
-@media (max-width: 375px) {
-  .logos-container {
-    gap: 0.5rem;
-  }
-
-  .logo-wrapper {
-    width: 80px;
-    height: 80px;
-  }
-}
-/* Mobile Version CSS - Completely Redesigned */
-/* Mobile Version CSS - Completely Redesigned */
+/* Mobile Version CSS - Basketball Theme */
 .mobile-view {
   width: 100%;
   min-height: 100vh;
@@ -1039,7 +1002,7 @@
   position: relative;
   padding: 0;
   margin: 0;
-  z-index: 1; /* Assicura che sia in primo piano */
+  z-index: 1;
 }
 
 .mobile-content {
@@ -1048,10 +1011,9 @@
   min-height: 100vh;
   height: auto;
   padding: 0;
-  z-index: 2; /* Superiore rispetto al container */
+  z-index: 2;
 }
 
-/* Top Logo Styling - riduzione spazio */
 .top-logo-container {
   display: flex;
   justify-content: center;
@@ -1067,73 +1029,149 @@
   width: auto;
 }
 
-/* Main Content Styling - meno spazio sopra */
 .mobile-text-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Allineamento in alto invece che al centro */
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
   padding: 1rem 1.5rem;
+  padding-top: 2rem;
   z-index: 3;
 }
 
 .mobile-title {
-  margin: 0 0 0.5rem 0;
+  margin: 1.5rem 0 1rem 0;
   padding: 0;
+  position: relative;
 }
 
-/* Virtus Taranto ingrandito */
 .virtus-text {
-  color: #3b82f6;
-  font-size: 3rem; /* Aumentato da 2.2rem */
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
   text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, #2563eb, #3b82f6, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: inline-block;
   line-height: 1.1;
 }
 
+.virtus-text::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #2563eb, #3b82f6, #60a5fa);
+  z-index: -1;
+  filter: blur(6px);
+  opacity: 0.2;
+}
+
+.virtus-text::after {
+  content: '🏀';
+  position: absolute;
+  top: -15px;
+  right: -25px;
+  font-size: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
 .mobile-slogan {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 500;
-  line-height: 1.3;
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.4;
   margin: 0.5rem 0 1.5rem;
   padding: 0;
   max-width: 90%;
+  font-style: italic;
 }
 
-/* Novità: Prossima partita in evidenza */
 .next-match-banner {
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  padding: 0.8rem 1rem;
-  margin: 0.5rem 0 1rem;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0.5rem 0 1.5rem;
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.next-match-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6b35, #f7931e, #ffcc02);
 }
 
 .next-match-title {
   color: #94a3b8;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 .next-match-teams {
   color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
 }
 
 .next-match-info {
-  color: #fde68a;
+  color: #f7931e;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.no-matches-banner {
+  width: 100%;
+  background: rgba(255, 255,255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0.5rem 0 1.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  text-align: center;
+}
+
+.no-matches-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-matches-title {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.no-matches-text {
+  color: #64748b;
   font-size: 0.8rem;
+  font-style: italic;
 }
 
 /* Stats Row Styling */
@@ -1141,22 +1179,36 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin: 0.8rem 0;
+  margin: 1rem 0;
+  gap: 0.5rem;
 }
 
 .mobile-stat {
   flex: 1;
   text-align: center;
-  padding: 0.5rem;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.08);
-  margin: 0 0.3rem;
+  padding: 0.8rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6b35, #f7931e);
 }
 
 .stat-number {
   color: white;
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
 }
 
 .stat-label {
@@ -1164,79 +1216,123 @@
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 /* Typewriter Styling */
 .mobile-typewriter {
-  margin: 0.8rem 0;
-  color: #fde68a;
-  font-size: 1.1rem;
-  font-weight: 500;
+  margin: 1rem 0;
+  color: #f7931e;
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .typewriter-prefix {
-  color: #fde68a;
+  color: #f7931e;
 }
 
 /* CTA Button Styling */
 .mobile-cta-btn {
-  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
   color: white;
   border: none;
-  border-radius: 25px;
-  padding: 0.75rem 2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0.8rem 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 30px;
+  padding: 0.9rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
   letter-spacing: 0.5px;
   cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobile-cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
 }
 
 .mobile-cta-btn:active {
   transform: scale(0.98);
 }
 
-/* Newsletter Subscribe Area */
-.newsletter-area {
+.mobile-cta-btn:hover::before {
+  left: 100%;
+}
+
+/* NEW: Social Connect Area (replacing newsletter) */
+.social-connect-area {
   width: 100%;
-  margin: 0.8rem 0;
-  padding: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
   text-align: center;
 }
 
-.newsletter-title {
+.social-connect-title {
   color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.newsletter-form {
+.social-buttons {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.newsletter-input {
-  flex: 1;
-  max-width: 70%;
-  padding: 0.5rem 0.8rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 0.8rem;
-}
-
-.newsletter-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+.social-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   border: none;
-  background: linear-gradient(90deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
   color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.social-btn.instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.social-btn.facebook {
+  background: #1877f2;
+}
+
+.social-btn.youtube {
+  background: #ff0000;
+}
+
+.social-btn.tiktok {
+  background: linear-gradient(45deg, #ff0050, #00f2ea);
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Bottom Logos Styling */
@@ -1244,22 +1340,54 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 0 0.7rem;
+  padding: 0.8rem 0;
   gap: 1.5rem;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  margin-top: auto; /* Spinge i loghi in fondo */
+  margin-top: auto;
 }
 
 .bottom-logo {
   width: 35px;
   height: 35px;
   object-fit: contain;
+  filter: brightness(0.8);
+  transition: all 0.3s ease;
 }
 
-/* Fix per la section successiva */
+.bottom-logo:hover {
+  filter: brightness(1);
+  transform: scale(1.1);
+}
+
+/* Fix for next section */
 .section.sponsors-section {
   margin-top: 0 !important;
   z-index: 5;
 }
 
+
+.social-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 24px;
+  color: #444;
+  transition: color 0.3s;
+}
+
+.social-btn.instagram:hover { color: #E1306C; }
+.social-btn.facebook:hover { color: #1877F2; }
+.social-btn.youtube:hover { color: #FF0000; }
+.social-btn.tiktok:hover { color: #000000; }
+
+.social-btn svg {
+  width: 24px;
+  height: 24px;
+}

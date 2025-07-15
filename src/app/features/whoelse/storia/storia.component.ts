@@ -40,7 +40,8 @@ export class StoriaComponent implements OnInit {
   societaOptions: SocietaSelector[] = [
     { nome: 'Virtus Taranto', logo: 'assets/logo-virtus-taranto.svg' },
     { nome: 'Polisportiva 74020', logo: 'assets/poliLogo.png' },
-    { nome: 'Support_O', logo: 'assets/support_o2022 (1).png' }
+    { nome: 'Support_O', logo: 'assets/support_o2022 (1).png' },
+    { nome: 'A.s.h. Baskin', logo: 'assets/baskin22.png' }
   ];
 
   // Dati completi delle società (dal translate service)
@@ -82,7 +83,6 @@ export class StoriaComponent implements OnInit {
     // Trova i dati completi della società selezionata
     this.selectedSocieta = this.societa.find(s => s.nome === societaOption.nome) || null;
     
-    console.log('Società selezionata:', this.selectedSocieta);
   }
 
   // Metodo per verificare se una società è attiva (per il CSS)

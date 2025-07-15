@@ -1,95 +1,173 @@
 <div class="youth-container">
-    <!-- Header Section -->
-    <div class="header-section" [@fadeIn]>
-      <h1 class="titolo">Settore Giovanile
-        <span class="sottotitolo">Crescere insieme, vincere nel futuro</span>
+  <!-- Hero Section con Valori Emotivi -->
+  <div class="hero-section" [@fadeIn]>
+    <div class="hero-content">
+      <h1 class="main-title">
+        <span class="title-line">Settore Giovanile</span>
+        <span class="subtitle-line">Dove i sogni diventano realtà</span>
       </h1>
-      <p class="descrizione-generale">
-        Il nostro settore giovanile è il cuore pulsante della Virtus Taranto. 
-        Qui formiamo non solo atleti, ma persone complete attraverso sport, 
-        divertimento e valori.
+      
+      <p class="hero-description">
+        Nel nostro settore giovanile, ogni bambino è una stella che aspetta di brillare. 
+        Qui non solo insegniamo sport, ma coltiviamo valori, amicizie e sogni che dureranno per sempre.
       </p>
     </div>
-  
-    <!-- Categories Navigation -->
-    <div class="category-nav" [@fadeIn]>
-      <button class="category-btn" 
-              [class.active]="selectedCategory === 'all'"
-              (click)="filterTeams('all')">
-        Tutte le Squadre
-      </button>
-      <button class="category-btn" 
-              [class.active]="selectedCategory === 'basket'"
-              (click)="filterTeams('basket')">
-        Minibasket
-      </button>
-      <button class="category-btn" 
-              [class.active]="selectedCategory === 'volley'"
-              (click)="filterTeams('volley')">
-        Minivolley
-      </button>
-    </div>
-  
-    <!-- Teams Grid -->
-    <div class="teams-grid">
-      <div class="team-card" *ngFor="let team of youthTeams" 
-           [@expandCard]="isExpanded(team.category) ? 'expanded' : 'collapsed'"
-           [@fadeIn]>
-        <!-- Card Header -->
-        <div class="card-header">
-          <span class="team-mascot">{{ team.mascot }}</span>
-          <div class="team-info">
-            <h2 class="team-name">{{ team.category | titlecase }}</h2>
-            <span class="age-range">{{ team.ageRange }}</span>
-          </div>
+    
+    <!-- Valori Emotivi -->
+    <div class="values-grid" [@slideIn]>
+      <div class="value-card" 
+           *ngFor="let value of emotionalValues; let i = index"
+           [@scaleIn]
+           [style.animation-delay]="i * 100 + 'ms'"
+           [style.border-color]="value.color">
+        <div class="value-icon" [style.background]="value.color + '20'">
+          {{ value.icon }}
         </div>
-  
-        <!-- Card Content -->
-        <div class="card-content" [class.expanded]="isExpanded(team.category)">
-          <p class="team-description">{{ team.description }}</p>
-          
-          <!-- Skills Section -->
-          <div class="skills-section">
-            <h3>Competenze Sviluppate</h3>
-            <div class="skills-grid">
-              <div class="skill-item" *ngFor="let skill of team.skills">
-                {{ skill }}
-              </div>
-            </div>
-          </div>
-  
-          <!-- Activities Section -->
-          <div class="activities-section">
-            <h3>Attività</h3>
-            <ul class="activities-list">
-              <li *ngFor="let activity of team.activities">{{ activity }}</li>
-            </ul>
-          </div>
-        </div>
-  
-        <!-- Expand Button -->
-        <button class="expand-btn" (click)="toggleCard(team.category)">
-          <span>{{ isExpanded(team.category) ? 'Mostra meno' : 'Scopri di più' }}</span>
-          <i class="material-icons" [@rotateIcon]="isExpanded(team.category) ? 'expanded' : 'collapsed'">
-            expand_more
-          </i>
-        </button>
-      </div>
-    </div>
-  
-    <!-- Call to Action -->
-    <div class="cta-section" [@fadeIn]>
-      <h2>Unisciti alla Nostra Famiglia</h2>
-      <p>Scopri il percorso di crescita ideale per il tuo bambino</p>
-      <div class="cta-buttons">
-        <a href="#" class="cta-btn primary">
-          Prenota una Prova Gratuita
-          <i class="material-icons">sports_basketball</i>
-        </a>
-        <a href="#" class="cta-btn secondary">
-          Contattaci
-          <i class="material-icons">mail</i>
-        </a>
+        <h3 class="value-title" [style.color]="value.color">{{ value.title }}</h3>
+        <p class="value-description">{{ value.description }}</p>
       </div>
     </div>
   </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading" [@fadeIn]>
+    <div class="loading-spinner"></div>
+    <p>Caricamento delle nostre fantastiche squadre...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading" [@fadeIn]>
+    <div class="error-icon">😔</div>
+    <h3>Oops! Qualcosa è andato storto</h3>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadMiniSquads()">Riprova</button>
+  </div>
+
+  <!-- Squadre Section -->
+  <div class="teams-section" *ngIf="!loading && !error">
+    <!-- Filtri Sport -->
+    <div class="sport-filters" [@fadeIn]>
+      <h2 class="section-title">Le Nostre Squadre</h2>
+      <div class="filter-buttons">
+        <button class="filter-btn" 
+                [class.active]="selectedSport === 'all'"
+                (click)="filterSquads('all')">
+          <span class="filter-icon">⭐</span>
+          Tutte le Squadre
+        </button>
+        <button class="filter-btn" 
+                [class.active]="selectedSport === 'basket'"
+                (click)="filterSquads('basket')">
+          <span class="filter-icon">🏀</span>
+          Minibasket
+        </button>
+        <button class="filter-btn" 
+                [class.active]="selectedSport === 'volley'"
+                (click)="filterSquads('volley')">
+          <span class="filter-icon">🏐</span>
+          Minivolley
+        </button>
+      </div>
+    </div>
+
+    <!-- Griglia Squadre -->
+    <div class="teams-grid" *ngIf="filteredSquads.length > 0">
+      <div class="team-card" 
+           *ngFor="let squad of filteredSquads; let i = index"
+           [@scaleIn]
+           [@cardHover]="getCardHoverState(squad.id)"
+           [style.animation-delay]="i * 150 + 'ms'"
+           (mouseenter)="onCardHover(squad.id)"
+           (mouseleave)="onCardHover(null)"
+           (click)="navigateToSquad(squad)">
+        
+        <!-- Card Header con Sport Badge -->
+        <div class="card-header">
+          <div class="sport-badge" [style.background]="squad.primaryColor">
+            {{ getSportIcon(squad.sport) }}
+            <span>{{ getSportLabel(squad.sport) }}</span>
+          </div>
+          <div class="team-mascot" [style.color]="squad.primaryColor">
+            {{ squad.mascot }}
+          </div>
+        </div>
+
+        <!-- Team Image -->
+        <div class="team-image-container" [style.border-color]="squad.primaryColor">
+          <img [src]="squad.photoUrl" 
+               [alt]="squad.name"
+               class="team-image"
+              >
+          <div class="image-overlay" [style.background]="squad.primaryColor + '80'">
+            <span class="overlay-text">Scopri di più</span>
+          </div>
+        </div>
+
+        <!-- Team Info -->
+        <div class="team-info">
+          <h3 class="team-name" [style.color]="squad.primaryColor">
+            {{ squad.name }}
+          </h3>
+          <p class="age-group">{{ squad.ageGroup }}</p>
+          
+          <!-- Features -->
+          <div class="team-features">
+            <div class="feature" [style.background]="squad.secondaryColor">
+              <span class="feature-icon">🌟</span>
+              <span>Crescita</span>
+            </div>
+            <div class="feature" [style.background]="squad.secondaryColor">
+              <span class="feature-icon">🤝</span>
+              <span>Squadra</span>
+            </div>
+            <div class="feature" [style.background]="squad.secondaryColor">
+              <span class="feature-icon">😊</span>
+              <span>Divertimento</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="card-cta">
+          <button class="cta-button" [style.background]="squad.primaryColor">
+            <span>Unisciti a noi</span>
+            <span class="cta-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredSquads.length === 0" [@fadeIn]>
+      <div class="empty-icon">🔍</div>
+      <h3>Nessuna squadra trovata</h3>
+      <p>Non ci sono squadre per il filtro selezionato.</p>
+    </div>
+  </div>
+
+  <!-- Call to Action Finale -->
+  <div class="final-cta" *ngIf="!loading && !error" [@fadeIn]>
+    <div class="cta-content">
+      <h2>Pronto a Iniziare l'Avventura?</h2>
+      <p>Contattaci per una prova gratuita e scopri il mondo magico dello sport giovanile!</p>
+      <div class="cta-buttons">
+        <a href="/servizi/iscrizioni" class="cta-btn primary">
+          <span class="btn-icon">📝</span>
+          Iscriviti Ora
+        </a>
+        <a href="/who-else/contatti" class="cta-btn secondary">
+          <span class="btn-icon">📞</span>
+          Contattaci
+        </a>
+      </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+      <div class="floating-element" [style.animation-delay]="'0s'">🏀</div>
+      <div class="floating-element" [style.animation-delay]="'2s'">⭐</div>
+      <div class="floating-element" [style.animation-delay]="'4s'">🏐</div>
+      <div class="floating-element" [style.animation-delay]="'6s'">🎯</div>
+    </div>
+  </div>
+</div>

@@ -48,6 +48,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MediaComponent } from './features/media/media-gallery.component';
 import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
+import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
+import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
 
 // Factory function per il TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -89,7 +91,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     YouthTeamsComponent,
     ShopComponent,
     MediaComponent,
-    AchievementsComponent
+    AchievementsComponent,
+    CookieBannerComponent,
+    PrivacyPolicyComponent
     ],
   imports: [
     BrowserModule,

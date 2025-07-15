@@ -83,7 +83,6 @@ export class NewsComponent implements OnInit { posts: SocialPost[] = [];
         })
       ).subscribe({
         next: (response) => {
-          console.log('Risposta Facebook:', response); // Per debug
           
           // Gestione sicura dei dati
           let fbPosts: SocialPost[] = [];

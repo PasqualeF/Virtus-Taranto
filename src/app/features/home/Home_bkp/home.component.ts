@@ -354,7 +354,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.squadService.getAllSquadsSmall()
     .subscribe(teams => {
       this.teams = teams // Array di TeamSmall
-      console.log(this.teams)
+  
     });
   }
 }

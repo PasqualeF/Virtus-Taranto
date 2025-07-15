@@ -18,21 +18,21 @@ export class StoryComponent implements OnInit {
     {
       id: 1,
       title: 'Le nostre origini',
-      brief: 'La storia di Virtus Taranto inizia con passione e dedizione...',
+      brief: 'La storia della Virtus Taranto inizia con passione e dedizione...',
       image: 'assets/Story/virtus_1.jpeg',
       link: '/who-else/storia'
     },
     {
       id: 2,
-      title: 'Il nostro supporto',
-      brief: 'I nostri tifosi sono il cuore pulsante della squadra...',
+      title: 'Le nostre Support_o',
+      brief: 'Le nostre ragazze sono passione, impegno e amicizia. Insieme costruiscono un gruppo unito dentro e fuori dal campo.',
       image: 'assets/Story/support_1.jpeg',
       link: '/who-else/storia'
     },
     {
       id: 3,
       title: 'La nostra pallavolo',
-      brief: 'La sezione pallavolo ha raggiunto traguardi importanti...',
+      brief: 'Nel nostro campo si salta, ',
       image: 'assets/Story/pallavolo_2.jpeg',
       link: '/who-else/storia'
     },

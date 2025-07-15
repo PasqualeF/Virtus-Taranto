@@ -1,347 +1,858 @@
-/* calendario.component.css */
 :host {
-    display: block;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
-    color: white;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .calendario-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 1rem;
-  }
-  
-  .titolo {
-    font-size: 3.5rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 3rem;
-    line-height: 1.2;
-    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .sottotitolo {
-    display: block;
-    font-size: 1.75rem;
-    color: #fde68a;
-    margin-top: 0.5rem;
-    opacity: 0.9;
-    -webkit-text-fill-color: #fde68a;
-  }
-  
-  /* Societa Selector */
-  .societa-selector {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 3rem;
-  }
-  
- /* Aggiorna la sezione delle card nel calendario.component.css */
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+  padding: 40px 15px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+
+.calendario-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+/* ===== HEADER SECTION ===== */
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.titolo {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 0%, #60a5fa 50%, #fbbf24 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.sottotitolo {
+  display: block;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: #94a3b8;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* ===== STATISTICS SECTION ===== */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card.upcoming .stat-number { color: #3b82f6; }
+.stat-card.ongoing .stat-number { color: #ef4444; }
+.stat-card.past .stat-number { color: #6b7280; }
+
+/* ===== LOADING & ERROR STATES ===== */
+.loading-section, .error-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-card {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 400px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+/* ===== SOCIETA SELECTOR ===== */
+.societa-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
 
 .societa-tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.societa-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+.societa-tab:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.societa-tab:hover::before {
+  opacity: 0.1;
+}
+
+.societa-tab.active {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3);
+}
+
+.societa-tab.active::before {
+  opacity: 0.15;
+}
+
+.societa-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.societa-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+}
+
+.societa-tab:hover .societa-logo {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+.societa-tab.active .societa-logo {
+  transform: scale(1.15);
+  filter: drop-shadow(0 8px 16px rgba(59, 130, 246, 0.4));
+}
+
+.societa-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.societa-tab.active .societa-name {
+  color: #60a5fa;
+  transform: scale(1.05);
+}
+
+.societa-indicator {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ===== CALENDAR WRAPPER ===== */
+.calendar-wrapper {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 2rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-header {
+  margin-bottom: 2rem;
+}
+
+.calendar-header h2 {
+  color: #60a5fa;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calendar-title {
+  background: linear-gradient(135deg, #60a5fa, #fbbf24);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.refresh-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.125rem;
+}
+
+.refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(180deg);
+}
+
+.instructions {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.instructions p {
+  margin: 0;
+  color: #bfdbfe;
+  font-size: 0.9rem;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+/* ===== FULLCALENDAR CUSTOMIZATION ===== */
+:host ::ng-deep {
+  .fc {
+    background: transparent;
+    border: none;
+  }
+
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
     gap: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 2rem;
+    margin-bottom: 2rem !important;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    width: 300px;
-    height: 250px;
-    justify-content: center;
-    position: relative;
+  }
+
+  .fc .fc-toolbar-title {
+    color: #fbbf24 !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .fc .fc-button-primary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    padding: 0.75rem 1.25rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.75rem !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .fc .fc-button-primary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .fc .fc-button-primary:not(:disabled).fc-button-active,
+  .fc .fc-button-primary:not(:disabled):active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .fc .fc-button-group {
+    border-radius: 0.75rem;
     overflow: hidden;
   }
-  
-  .societa-tab::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 1;
+
+  .fc th {
+    padding: 1rem 0.5rem !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fbbf24 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
   }
-  
-  .societa-tab.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+  .fc td {
+    border-color: rgba(255, 255, 255, 0.1) !important;
   }
-  
-  .societa-tab.active::before {
-    opacity: 0.1;
+
+  .fc .fc-daygrid-day {
+    background: rgba(255, 255, 255, 0.03) !important;
+    transition: all 0.3s ease !important;
+    min-height: 80px !important;
   }
-  
-  .societa-tab:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+  .fc .fc-daygrid-day:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
   }
-  
-  .societa-logo {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+
+  .fc .fc-daygrid-day-number {
+    color: white !important;
+    padding: 0.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
   }
-  
-  .societa-tab:hover .societa-logo {
-    transform: scale(1.1) rotate(5deg);
+
+  .fc .fc-day-today {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: #3b82f6 !important;
   }
-  
-  .societa-tab.active .societa-logo {
-    transform: scale(1.15);
+
+  .fc .fc-day-today .fc-daygrid-day-number {
+    color: #60a5fa !important;
+    font-weight: 800 !important;
   }
-  
-  .societa-tab span {
-    font-size: 1.25rem;
-    font-weight: 600;
-    position: relative;
-    z-index: 2;
-    transition: all 0.3s ease;
+
+  .fc-event {
+    border-radius: 0.5rem !important;
+    padding: 4px 6px !important;
+    margin: 2px 4px !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
   }
-  
-  .societa-tab.active span {
-    color: #fde68a;
-    transform: scale(1.1);
+
+  .fc-event:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+    z-index: 10 !important;
   }
-  
-  .societa-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #3b82f6, #fde68a);
-    animation: shine 2s infinite;
+
+  .fc-event-title {
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
   }
-  
-  @keyframes shine {
-    0% {
-      opacity: 0.5;
-      transform: scaleX(0.95);
-    }
-    50% {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-    100% {
-      opacity: 0.5;
-      transform: scaleX(0.95);
-    }
+
+  /* Eventi mobile-friendly */
+  .fc-event-time {
+    font-weight: 600 !important;
+    opacity: 0.9 !important;
   }
-  
-  /* Mantieni il responsive design */
+
+  /* Responsive calendar */
+  .fc .fc-col-header-cell {
+    padding: 0.5rem 0.25rem !important;
+  }
+
   @media (max-width: 768px) {
-    .societa-tab {
-      width: 250px;
-      height: 200px;
+    .fc .fc-toolbar {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 0.75rem !important;
     }
-  
-    .societa-logo {
-      width: 100px;
-      height: 100px;
+
+    .fc .fc-toolbar-title {
+      font-size: 1.25rem !important;
+      order: -1 !important;
     }
-  
-    .societa-tab span {
-      font-size: 1.1rem;
+
+    .fc .fc-button-primary {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.875rem !important;
+    }
+
+    .fc-event {
+      font-size: 0.7rem !important;
+      padding: 2px 4px !important;
+    }
+
+    .fc .fc-daygrid-day {
+      min-height: 60px !important;
     }
   }
-  
-  .societa-tab.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== LEGENDA ===== */
+.legenda {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 2rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+}
+
+.legenda h3 {
+  color: #fbbf24;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.legenda-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legenda-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.color-dot.partita-futura {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.color-dot.partita-corso {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  animation: pulse 2s infinite;
+}
+
+.color-dot.partita-passata {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.legenda-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.legenda-text strong {
+  color: white;
+  font-size: 0.9rem;
+}
+
+.legenda-text small {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* ===== INFO SECTION ===== */
+.info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-card h4 {
+  color: #60a5fa;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.info-card ol, .info-card ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: #cbd5e1;
+}
+
+.info-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.info-card p {
+  color: #e2e8f0;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+/* ===== FOOTER ACTIONS ===== */
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.action-btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.action-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ===== FLOATING ACTION BUTTON ===== */
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(180deg);
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.6);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .calendario-container {
+    padding: 0.5rem;
   }
-  
-  .societa-tab:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  }
-  
-  .societa-logo {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    transition: all 0.3s ease;
-  }
-  
-  .calendar-wrapper {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    backdrop-filter: blur(10px);
-  }
-  
-  .calendar-header h2 {
-    color: #fde68a;
+
+  .header-section {
     margin-bottom: 1.5rem;
-    font-size: 2rem;
   }
-  
-  /* Legenda */
-  .legenda {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
+
+  .stats-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem auto;
   }
-  
-  .legenda h3 {
-    color: #fde68a;
-    margin-bottom: 1rem;
+
+  .stat-card {
+    padding: 1rem 0.75rem;
+  }
+
+  .stat-number {
     font-size: 1.5rem;
   }
-  
-  .legenda-item {
-    display: flex;
+
+  .societa-selector {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .societa-tab {
+    min-height: 150px;
+    padding: 1.5rem;
+  }
+
+  .societa-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .societa-name {
+    font-size: 1rem;
+  }
+
+  .calendar-wrapper {
+    padding: 1rem;
+    border-radius: 1.5rem;
+  }
+
+  .calendar-header h2 {
+    font-size: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .instructions {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .legenda {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .legenda-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .info-section {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .info-card {
+    padding: 1rem;
+  }
+
+  .footer-actions {
+    flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
+    padding: 1.5rem 1rem;
   }
-  
-  .color-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+
+  .action-btn {
+    width: 100%;
+    max-width: 300px;
   }
-  
-  .color-dot.partita {
-    background: #3b82f6;
+
+  .fab {
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
   }
-  
-  .color-dot.allenamento {
-    background: #10b981;
+}
+
+@media (max-width: 480px) {
+  .societa-logo {
+    width: 50px;
+    height: 50px;
   }
-  
-  .color-dot.evento {
-    background: #f59e0b;
+
+  .stat-card {
+    padding: 0.75rem 0.5rem;
   }
-  
-  /* FullCalendar Custom Styles */
-  :host ::ng-deep {
-    .fc {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-  
-    .fc .fc-toolbar {
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem !important;
-    }
-  
-    .fc .fc-toolbar-title {
-      color: #fde68a;
-      font-size: 1.5rem !important;
-    }
-  
-    .fc .fc-button-primary {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-  
-    .fc .fc-button-primary:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-  
-    .fc .fc-button-primary:not(:disabled).fc-button-active,
-    .fc .fc-button-primary:not(:disabled):active {
-      background: #3b82f6;
-    }
-  
-    .fc th {
-      padding: 1rem 0;
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #fde68a;
-    }
-  
-    .fc td {
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-  
-    .fc .fc-daygrid-day {
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-    }
-  
-    .fc .fc-daygrid-day:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  
-    .fc .fc-daygrid-day-number {
-      color: white;
-      padding: 0.5rem;
-    }
-  
-    .fc .fc-day-today {
-      background: rgba(59, 130, 246, 0.15) !important;
-    }
-  
-    .fc-event {
-      border-radius: 4px;
-      padding: 2px 4px;
-      margin: 1px 0;
-      border: none;
-      transition: all 0.3s ease;
-    }
-  
-    .fc-event:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+
+  .stat-number {
+    font-size: 1.25rem;
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .titolo {
-      font-size: 2.5rem;
-    }
-  
-    .sottotitolo {
-      font-size: 1.25rem;
-    }
-  
-    .societa-selector {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .societa-tab {
-      width: 250px;
-      height: 200px;
-    }
-  
-    .societa-logo {
-      width: 100px;
-      height: 100px;
-    }
-  
-    :host ::ng-deep .fc .fc-toolbar {
-      flex-direction: column;
-      align-items: center;
-    }
+
+  .stat-label {
+    font-size: 0.75rem;
   }
+
+  .calendar-wrapper {
+    padding: 0.75rem;
+  }
+
+  .legenda {
+    padding: 1rem;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  :host {
+    background: linear-gradient(135deg, #0c0a09 0%, #1c1917 50%, #292524 100%);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

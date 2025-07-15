@@ -100,7 +100,6 @@ export class SquadNavigationService {
    * Determina la categoria dal campo tipo basandosi sull'enum di Strapi
    */
   private getCategoryFromTipo(tipo: string): string {
-    console.log(tipo)
     switch (tipo) {
       case 'BASKET - M':
         return 'Basket Maschile';

@@ -83,8 +83,106 @@
   overflow: hidden;
   padding: 1.5rem 0;
   margin-left: calc(-50vw + 50%);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Loading State for Footer */
+.sponsor-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.loading-spinner-footer {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* Error State for Footer */
+.sponsor-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+  max-width: 250px;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+.sponsor-error p {
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.retry-button-footer {
+  background: linear-gradient(90deg, #ff6b00 0%, #ff8c3f 100%);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.retry-button-footer:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+}
+
+/* Empty State for Footer */
+.sponsor-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 2rem;
+}
+
+.empty-icon {
+  font-size: 1.5rem;
+}
+
+.sponsor-empty p {
+  text-align: center;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* Sponsor Carousel */
 .sponsor-carousel-container {
   width: 100%;
   overflow: hidden;
@@ -92,7 +190,7 @@
 
 .sponsor-carousel {
   display: flex;
-  animation: scroll 20s linear infinite;
+  animation: scroll 25s linear infinite;
 }
 
 .sponsor-carousel img {
@@ -102,16 +200,19 @@
   filter: grayscale(100%);
   opacity: 0.8;
   transition: all 0.3s ease;
+  object-fit: contain;
+  max-width: 100px;
 }
 
 .sponsor-carousel img:hover {
   filter: grayscale(0%);
   opacity: 1;
+  transform: scale(1.05);
 }
 
 @keyframes scroll {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .sponsor-carousel:hover {
@@ -288,61 +389,30 @@
     text-align: left;
   }
   
-  .sponsor-title:after {
-    left: 0;
-    transform: none;
-  }
-
-  .sponsor-button {
-    margin-top: 0;
-  }
-
-  .social-section {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-logo {
-    margin-bottom: 0;
-  }
-
-  .sitemap {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  .sitemap-expanded {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .legal-section {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
-
-  .legal-links {
-    margin-bottom: 0;
-  }
-
-  .sponsor-carousel img {
-    height: 50px;
-  }
 }
 
-@media (min-width: 992px) {
-  .footer-content {
-    padding: 0 10%;
-  }
 
-  .sponsor-carousel img {
-    height: 60px;
-  }
+.social-buttons {
+  display: flex;
+  gap: 12px;
 }
 
-@media (min-width: 1200px) {
-  .footer-content {
-    padding: 0 15%;
-  }
+.social-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 24px;
+  color: #444;
+  transition: color 0.3s;
+}
+
+.social-btn.instagram:hover { color: #E1306C; }
+.social-btn.facebook:hover { color: #1877F2; }
+.social-btn.youtube:hover { color: #FF0000; }
+.social-btn.tiktok:hover { color: #000000; }
+
+.social-btn svg {
+  width: 24px;
+  height: 24px;
 }

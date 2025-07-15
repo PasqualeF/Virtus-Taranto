@@ -1,24 +1,12 @@
 <div class="media-container">
-  <!-- Header con selezione società -->
+  <!-- Header -->
   <h1 class="titolo" [@fadeIn]>
     Media Gallery
-    <span class="sottotitolo">Foto, video e articoli della società</span>
+    <span class="sottotitolo">Foto e video</span>
   </h1>
-  
-  <!-- Societa Selector - Aggiornato per allinearlo con organigramma -->
-  <div class="societa-selector">
-    <div *ngFor="let s of societa" 
-         class="societa-tab"
-         [class.active]="selectedSocieta === s.nome"
-         (click)="selectSocieta(s.nome)"
-         [@fadeIn]>
-      <img [src]="s.logo" [alt]="s.nome" class="societa-logo">
-      <span>{{ s.nome }}</span>
-    </div>
-  </div>
 
   <!-- Contenuto principale -->
-  <div class="main-content" *ngIf="selectedSocieta" [@slideIn]>
+  <div class="main-content" [@slideIn]>
     <!-- Tab navigation -->
     <div class="tab-navigation">
       <button class="tab-button" 
@@ -30,11 +18,6 @@
               [class.active]="activeTab === 'video'"
               (click)="setActiveTab('video')">
         Video
-      </button>
-      <button class="tab-button" 
-              [class.active]="activeTab === 'rassegna'"
-              (click)="setActiveTab('rassegna')">
-        Rassegna Stampa
       </button>
     </div>
 
@@ -50,36 +33,25 @@
       <div *ngIf="activeTab === 'foto'" class="content-section" [@fadeIn]>
         <h2>Galleria Fotografica</h2>
         
-        <!-- Filtri per le foto -->
-        <div class="filter-controls">
-          <div class="filter-label">Stagione:</div>
-          <select (change)="onStagioneChange($event)">
-            <option value="all">Tutte le stagioni</option>
-            <option *ngFor="let stagione of stagioni" [value]="stagione">{{ stagione }}</option>
-          </select>
-          
-          <div class="filter-label">Categoria:</div>
-          <select (change)="onCategoriaChange($event)">
-            <option value="all">Tutte le categorie</option>
-            <option *ngFor="let categoria of categorie" [value]="categoria">{{ categoria }}</option>
-          </select>
-        </div>
-        
         <!-- Galleria foto -->
         <div class="foto-gallery">
-          <div class="foto-item" *ngFor="let foto of filteredFoto" (click)="openLightbox(foto)">
+          <div class="foto-item" 
+               *ngFor="let foto of getCurrentPageFoto()" 
+               (click)="openLightbox(foto)">
             <div class="foto-wrapper">
-              <img [src]="foto.url" [alt]="foto.titolo" class="foto-thumbnail">
+              <img [src]="foto.url" 
+                   [alt]="foto.nome" 
+                   class="foto-thumbnail"
+                   (error)="onImageError($event)">
               <div class="foto-overlay">
-                <h3>{{ foto.titolo }}</h3>
-                <p>{{ foto.data | date:'dd/MM/yyyy' }}</p>
+                <h3>{{ foto.nome }}</h3>
               </div>
             </div>
           </div>
           
           <!-- Messaggio se non ci sono foto -->
           <div *ngIf="filteredFoto.length === 0" class="no-content-message">
-            Nessuna foto disponibile con i filtri selezionati
+            Nessuna foto disponibile
           </div>
         </div>
         
@@ -103,27 +75,14 @@
       <div *ngIf="activeTab === 'video'" class="content-section" [@fadeIn]>
         <h2>Video</h2>
         
-        <!-- Filtri per i video -->
-        <div class="filter-controls">
-          <div class="filter-label">Stagione:</div>
-          <select [(ngModel)]="filtroStagione" (change)="filtraMedia()">
-              <option value="all">Tutte le stagioni</option>
-              <option *ngFor="let stagione of stagioni" [value]="stagione">{{ stagione }}</option>
-            </select>
-          
-          <div class="filter-label">Categoria:</div>
-          <select [(ngModel)]="filtroCategoria" (change)="filtraMedia()">
-              <option value="all">Tutte le categorie</option>
-              <option *ngFor="let categoria of categorie" [value]="categoria">{{ categoria }}</option>
-          </select>
-        </div>
-        
         <!-- Galleria video -->
         <div class="video-gallery">
-          <div class="video-item" *ngFor="let video of filteredVideo">
+          <div class="video-item" *ngFor="let video of getCurrentPageVideo()">
             <div class="video-wrapper">
               <div class="video-thumbnail" (click)="playVideo(video)">
-                <img [src]="video.thumbnail" [alt]="video.titolo">
+                <img [src]="video.thumbnail" 
+                     [alt]="video.titolo"
+                     (error)="onImageError($event)">
                 <div class="play-button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
@@ -132,82 +91,18 @@
               </div>
               <div class="video-info">
                 <h3>{{ video.titolo }}</h3>
-                <p>{{ video.data | date:'dd/MM/yyyy' }}</p>
-                <p class="video-description">{{ video.descrizione }}</p>
               </div>
             </div>
           </div>
           
           <!-- Messaggio se non ci sono video -->
           <div *ngIf="filteredVideo.length === 0" class="no-content-message">
-            Nessun video disponibile con i filtri selezionati
+            Nessun video disponibile
           </div>
         </div>
         
         <!-- Paginazione -->
         <div class="pagination" *ngIf="filteredVideo.length > pageSize">
-          <button (click)="changePage('prev')" [disabled]="currentPage === 1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="pagination-icon">
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-            </svg>
-          </button>
-          <span>{{ currentPage }} / {{ totalPages }}</span>
-          <button (click)="changePage('next')" [disabled]="currentPage === totalPages">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="pagination-icon">
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Rassegna Stampa -->
-      <div *ngIf="activeTab === 'rassegna'" class="content-section" [@fadeIn]>
-        <h2>Rassegna Stampa</h2>
-        
-        <!-- Filtri per articoli -->
-        <div class="filter-controls">
-          <div class="filter-label">Anno:</div>
-          <select (change)="onAnnoChange($event)">
-            <option value="all">Tutti gli anni</option>
-            <option *ngFor="let anno of anni" [value]="anno">{{ anno }}</option>
-          </select>
-          
-          <div class="filter-label">Fonte:</div>
-          <select (change)="onFonteChange($event)">
-            <option value="all">Tutte le fonti</option>
-            <option *ngFor="let fonte of fonti" [value]="fonte">{{ fonte }}</option>
-          </select>
-        </div>
-        
-        <!-- Lista articoli -->
-        <div class="articoli-list">
-          <div class="articolo-item" *ngFor="let articolo of filteredArticoli">
-            <div class="articolo-card">
-              <div class="articolo-header">
-                <span class="fonte-badge">{{ articolo.fonte }}</span>
-                <span class="data-pubblicazione">{{ articolo.data | date:'dd/MM/yyyy' }}</span>
-              </div>
-              <h3 class="articolo-titolo">{{ articolo.titolo }}</h3>
-              <p class="articolo-excerpt">{{ articolo.excerpt }}</p>
-              <div class="articolo-footer">
-                <button class="leggi-button" (click)="apriArticolo(articolo)">
-                  Leggi articolo
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="leggi-icon">
-                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Messaggio se non ci sono articoli -->
-          <div *ngIf="filteredArticoli.length === 0" class="no-content-message">
-            Nessun articolo disponibile con i filtri selezionati
-          </div>
-        </div>
-        
-        <!-- Paginazione -->
-        <div class="pagination" *ngIf="filteredArticoli.length > pageSize">
           <button (click)="changePage('prev')" [disabled]="currentPage === 1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="pagination-icon">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -232,11 +127,12 @@
           <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
         </svg>
       </button>
-      <img [src]="currentLightboxItem?.url" [alt]="currentLightboxItem?.titolo" class="lightbox-image">
+      <img [src]="currentLightboxItem?.url" 
+           [alt]="currentLightboxItem?.nome" 
+           class="lightbox-image"
+           (error)="onImageError($event)">
       <div class="lightbox-info">
-        <h3>{{ currentLightboxItem?.titolo }}</h3>
-        <p>{{ currentLightboxItem?.data | date:'dd/MM/yyyy' }}</p>
-        <p>{{ currentLightboxItem?.descrizione }}</p>
+        <h3>{{ currentLightboxItem?.nome }}</h3>
       </div>
       <div class="lightbox-controls">
         <button (click)="prevLightboxItem()" [disabled]="lightboxIndex === 0">
@@ -262,17 +158,10 @@
         </svg>
       </button>
       <div class="video-player-container">
-        <iframe *ngIf="currentVideo" 
-                [src]="sanitizeVideoUrl(currentVideo.url)" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
+        
       </div>
       <div class="video-modal-info">
         <h3>{{ currentVideo?.titolo }}</h3>
-        <p>{{ currentVideo?.data | date:'dd/MM/yyyy' }}</p>
-        <p>{{ currentVideo?.descrizione }}</p>
       </div>
     </div>
   </div>

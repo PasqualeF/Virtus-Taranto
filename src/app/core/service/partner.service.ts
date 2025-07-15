@@ -217,7 +217,6 @@ export class PartnerService extends StrapiBaseService {
     const logoImage = logoArray[0];
     const logoUrl = this.getBestImageUrl(logoImage);
     
-    console.log('Logo URL generato:', logoUrl);
     return logoUrl;
   }
 

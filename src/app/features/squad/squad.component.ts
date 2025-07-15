@@ -24,7 +24,7 @@ export class SquadComponent implements OnInit, OnDestroy {
   
   loading = false;
   selectedSquad: Squad | null = null;
-  selectedView: ViewType = 'results';
+  selectedView: ViewType = 'roster'; // Cambiato da 'results' a 'roster' come default
   showSponsors = true;
   
   mobileView = false;
@@ -32,10 +32,11 @@ export class SquadComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription | null = null;
   private paramSubscription: Subscription | null = null;
 
+  // Riordinati i tab con roster come primo
   tabs: Tab[] = [
+    { label: 'Roster', value: 'roster' },
     { label: 'Risultati', value: 'results' },
-    { label: 'Classifica', value: 'standings' },
-    { label: 'Roster', value: 'roster' }
+    { label: 'Classifica', value: 'standings' }
   ];
   
   error: string | null = null;
@@ -115,13 +116,14 @@ export class SquadComponent implements OnInit, OnDestroy {
     this.error = null;
     this.selectedSquad = null; // Reset squadra precedente
     
-    console.log('Caricamento squadra:', name);
     
     this.squadService.getSquadByName(name).subscribe({
       next: (squad) => {
         if (squad) {
           this.selectedSquad = squad;
-          console.log('Squadra caricata:', squad);
+          
+          // Seleziona automaticamente il tab appropriato dopo il caricamento
+          this.selectBestAvailableTab();
         } else {
           this.error = `Nessuna squadra trovata con il nome: ${name}`;
         }
@@ -133,6 +135,60 @@ export class SquadComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     });
+  }
+
+  /**
+   * Seleziona automaticamente il tab migliore disponibile
+   * Priorità: roster -> results -> standings
+   */
+  private selectBestAvailableTab() {
+    if (!this.selectedSquad) return;
+
+    // Controlla se il roster ha dati
+    if (this.selectedSquad.roster && this.selectedSquad.roster.length > 0) {
+      this.selectedView = 'roster';
+      return;
+    }
+
+    // Se roster è vuoto, prova con i risultati
+    if (this.selectedSquad.results && this.selectedSquad.results.length > 0) {
+      this.selectedView = 'results';
+      return;
+    }
+
+    // Se anche i risultati sono vuoti, usa la classifica
+    if (this.selectedSquad.standings && this.selectedSquad.standings.length > 0) {
+      this.selectedView = 'standings';
+      return;
+    }
+
+    // Se tutto è vuoto, mantieni roster come default
+    this.selectedView = 'roster';
+  }
+
+  /**
+   * Verifica se una sezione ha dati disponibili
+   */
+  hasSectionData(section: ViewType): boolean {
+    if (!this.selectedSquad) return false;
+
+    switch (section) {
+      case 'roster':
+        return !!(this.selectedSquad.roster && this.selectedSquad.roster.length > 0);
+      case 'results':
+        return !!(this.selectedSquad.results && this.selectedSquad.results.length > 0);
+      case 'standings':
+        return !!(this.selectedSquad.standings && this.selectedSquad.standings.length > 0);
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Ottieni i tab disponibili (solo quelli con dati)
+   */
+  getAvailableTabs(): Tab[] {
+    return this.tabs.filter(tab => this.hasSectionData(tab.value));
   }
 
   getDisplayData(): any[] {
@@ -181,10 +237,46 @@ export class SquadComponent implements OnInit, OnDestroy {
       return '';
     }
     
-    // Se è una data, formattala correttamente
-    if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      const date = new Date(value);
-      return date.toLocaleDateString('it-IT', { 
+    // Se è una data in formato ISO o stringa di data
+    if (typeof value === 'string') {
+      // Formato ISO completo (2025-06-03T00:00:00.000Z)
+      if (value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/)) {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleDateString('it-IT', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+          });
+        }
+      }
+      
+      // Formato data semplice (2025-06-03)
+      if (value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          return date.toLocaleDateString('it-IT', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+          });
+        }
+      }
+      
+      // Prova a parsare qualsiasi altra stringa che potrebbe essere una data
+      const parsedDate = new Date(value);
+      if (!isNaN(parsedDate.getTime()) && value.includes('-')) {
+        return parsedDate.toLocaleDateString('it-IT', { 
+          day: '2-digit', 
+          month: '2-digit', 
+          year: 'numeric' 
+        });
+      }
+    }
+    
+    // Se è già un oggetto Date
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return value.toLocaleDateString('it-IT', { 
         day: '2-digit', 
         month: '2-digit', 
         year: 'numeric' 
@@ -195,6 +287,9 @@ export class SquadComponent implements OnInit, OnDestroy {
   }
 
   setView(view: ViewType) {
-    this.selectedView = view;
+    // Verifica se la sezione ha dati prima di permettere il cambio
+    if (this.hasSectionData(view)) {
+      this.selectedView = view;
+    }
   }
 }

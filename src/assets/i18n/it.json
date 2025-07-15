@@ -1,105 +1,173 @@
 {
-    "STORIA": {
-      "TITOLO": "Storia e Valori",
-      "SOTTOTITOLO": "La nostra tradizione, il nostro futuro",
-      "TAB": {
-        "STORIA": "Storia",
-        "VALORI": "Valori",
-        "PALMARES": "Palmares"
+  "STORIA": {
+    "TITOLO": "Storia e Valori",
+    "SOTTOTITOLO": "La nostra tradizione, il nostro futuro",
+    "TAB": {
+      "STORIA": "Storia",
+      "VALORI": "Valori",
+      "PALMARES": "Palmares"
+    },
+    "SEZIONI": {
+      "STORIA_TITOLO": "La Nostra Storia",
+      "VALORI_TITOLO": "I Nostri Valori",
+      "PALMARES_TITOLO": "I Nostri Successi"
+    },
+    "QUICK_LINKS": {
+      "TITOLO": "",
+      "CONTATTI": "I nostri contatti",
+      "PALESTRE": "Le nostre palestre"
+    },
+    "SOCIETA": {
+      "VIRTUS TARANTO": {
+        "nome": "Virtus Taranto",
+        "logo": "assets/virtusLogo.png",
+        "storia": "L’ASD Virtus Pallacanestro Taranto nasce il 28 febbraio 2009 per volere di una coppia di amici appassionati alla Pallacanestro.\n\nLa Asd per statuto svolge attività esclusivamente per minori nella fascia di età compresa fra i 5 e 18 anni.\n\nAzioni e Finalità\n\nSin dalla creazione l’Associazione si è prefigurata il compito di offrire ai ragazzi della provincia jonica la possibilità di svolgere attività sportiva nella migliore condizione possibile prescindendo dalle possibilità economiche delle famiglie e dall’ambiente sociale di provenienza. Tale principio ispiratore trae origine dalla convinzione di dare a tutti, la possibilità di impiegare il proprio tempo libero in palestra ove crescere e formarsi sia dal punto di vista sportivo che umano.\n\nObiettivo primario è dunque quello di collaborare con le famiglie alla formazione dei giovani atleti nel riconoscimento di valori fondamentali quali la solidarietà, la lealtà, il rispetto delle regole e degli altri.\n\nPer ottenere tali risultati tutte le compagini Virtus, sono seguite da tecnici qualificati Fip e partecipano a campionati regionali al fine di consentire un confronto / incontro con coetanei delle altre provincie e di conseguenza favorire la loro crescita sportiva e personale.\n\nLa Virtus è Società satellite del Cus Jonico, società sportiva senior, massima rappresentativa di categoria a Taranto nell’ambito della Pallacanestro, nella quale i nostri atleti, superati i 18 anni hanno la possibilità di giocare.\n\nSuperati i 17 anni, al termine del percorso scolastico, molti nostri ragazzi, inoltre, hanno e hanno avuto la possibilità di continuare gli studi usufruendo delle agevolazioni previste ex legge per gli studenti come giocatori delle rappresentative universitarie o comunque di continuare a giocare in rappresentative delle massime serie in altre città del territorio nazionale.\n\nSempre la ASD svolge, mediante accordi dedicati, attività di inclusione per i ragazzi disabili con la Società Basket in carrozzina Boys Taranto e Baskin ASH Taranto.\n\nTale collaborazione si concretizza nel programmare incontri e allenamenti che vedono la partecipazione simultanea di ragazzi normodotati tesserati Virtus e disabili tesserati con le due Società su menzionate.",
+        "valori": [
+          "Eccellenza sportiva e umana",
+          "Formazione giovanile",
+          "Spirito di squadra",
+          "Legame con il territorio"
+        ],
+                "palmares": [
+          {
+            "anno": "2010",
+            "titolo": "Campione provinciale Aquilotti e Under 13",
+            "descrizione": "Vittoria di entrambe le categorie provinciali"
+          },
+          {
+            "anno": "2011",
+            "titolo": "Campione provinciale Aquilotti e Under 13",
+            "descrizione": "Vittoria di entrambe le categorie provinciali"
+          },
+          {
+            "anno": "2012",
+            "titolo": "Campione provinciale Aquilotti e Under 13",
+            "descrizione": "Vittoria di entrambe le categorie provinciali"
+          },
+          {
+            "anno": "2013",
+            "titolo": "Campione provinciale Aquilotti e Under 13",
+            "descrizione": "Vittoria di entrambe le categorie provinciali"
+          },
+          {
+            "anno": "2014",
+            "titolo": "Campione provinciale Aquilotti e Under 13",
+            "descrizione": "Vittoria di entrambe le categorie provinciali"
+          },
+          {
+            "anno": "2015",
+            "titolo": "Campioni regionali Under 14",
+            "descrizione": "Vittoria nel campionato regionale Under 14"
+          },
+          {
+            "anno": "2015",
+            "titolo": "Secondo classificato campionato regionale Under 18",
+            "descrizione": "Vicecampioni regionali categoria Under 18"
+          },
+          {
+            "anno": "2016",
+            "titolo": "Secondo classificato campionato regionale Under 16",
+            "descrizione": "Vicecampioni regionali categoria Under 16"
+          },
+          {
+            "anno": "2017",
+            "titolo": "Campione Regionale Under 18 Eccellenza",
+            "descrizione": "Vittoria nel campionato Under 18 Eccellenza Puglia"
+          },
+          {
+            "anno": "2017",
+            "titolo": "Quarta classificata Interzona Under 18",
+            "descrizione": "Campionato Interzona (Lazio, Campania, Puglia) Under 18 Eccellenza"
+          },
+          {
+            "anno": "2017",
+            "titolo": "Campioni regionali Under 15 Èlite",
+            "descrizione": "Vittoria nel campionato regionale Under 15 Èlite"
+          }
+        ]
       },
-      "SEZIONI": {
-        "STORIA_TITOLO": "La Nostra Storia",
-        "VALORI_TITOLO": "I Nostri Valori",
-        "PALMARES_TITOLO": "I Nostri Successi"
+      "SUPPORT_O": {
+        "nome": "Support_O",
+        "logo": "assets/support_logo.png",
+        "storia": "Support_o nasce nel 2015 con l'obiettivo di rendere lo sport accessibile a tutti. Un progetto innovativo che unisce l'aspetto agonistico all'inclusione sociale, creando un modello unico nel panorama sportivo locale.",
+        "valori": [
+          "Inclusione sociale",
+          "Innovazione sportiva",
+          "Sostenibilità",
+          "Comunità attiva"
+        ],
+        "palmares": [
+          {
+            "anno": "2018",
+            "titolo": "Premio Innovazione Sociale",
+            "descrizione": "Riconoscimento CONI per il progetto di inclusione sportiva"
+          },
+          {
+            "anno": "2020",
+            "titolo": "Campioni Provinciali U16",
+            "descrizione": "Vittoria del campionato provinciale giovanile"
+          }
+        ]
       },
-      "QUICK_LINKS" : {
-        "TITOLO" : "",
-        "CONTATTI" : "I nostri contatti",
-        "PALESTRE" : "Le nostre palestre"
+      "POLISPORTIVA 74020": {
+        "nome": "Polisportiva 74020",
+        "logo": "assets/poliLogo.png",
+        "storia": "La Polisportiva 74020 nasce nel settembre 2014 da un’idea sbocciata da tre appassionati della pallavolo: l’attuale Presidente Francesco Stola, il coach Massimiliano Chirico ed Enzo Festinante, con il secondo investito, successivamente, delle responsabilità tecnico-organizzative.\n\nTra il gran numero di uomini a cui affidare la panchina come primo allenatore, la scelta è caduta sul coach Dario Pichierri, esperienze in categorie superiori con squadre maschili e femminili ma soprattutto esperto del settore giovanile. A tal proposito è doveroso ricordare il prestigioso traguardo raggiunto con l’under 17 Maschile della Vibrotek con la quale ha preso parte alle fasi finali nazionali di categoria.\n\nA completamento dello staff tecnico, a sostegno del primo allenatore, lo stesso Chirico e il coach in seconda Angela Izzo. Dopo una prima stagione mirata principalmente all’insegnamento del gioco della pallavolo con attività specifiche finalizzate a far assimilare le tecniche fondamentali, con soli gruppi di minivolley e di under 13, con nessuna presenza in tornei o campionati agonistici, ecco l’esordio nella stagione successiva con la partecipazione della squadra under 13 femminile in grado, seppur alla prima esperienza, di conquistare un ottimo quarto posto.\n\nIl buon lavoro dello staff tecnico ha permesso alla Polisportiva di incrementare, man mano, il numero degli iscritti con ragazzi di età compresa tra gli 8 e 10 anni, per il minivolley, e dai 12 ai 17 anni, per i campionati under da disputare in seno alla FIPAV e all’ACSI.\n\nPer quest’anno la Polisportiva 74020 ha già concluso il campionato FIPAV under 14 femminile (terzo posto), nello stesso ambito partiranno i campionati Under 13 femminile e under 12 femminile dai quali ci si aspettano buoni risultati. Inizia invece lunedì 10 l’avventura della Polisportiva 74020 under 16 femminile nel campionato in ambito Associazione Centri Sportivi Italiani al quale seguiranno, l’under 13 femminile, l’under 14 femminile e infine l’under 16 maschile.\n\nLa partecipazione della Polisportiva a tutti questi campionati ha lo scopo di dare modo a tutti gli atleti di essere protagonisti e dimostrare il proprio talento.\n\nLo staff si dedica esclusivamente alla crescita tecnica dei giocatori curando gli aspetti tattici, psicologici e comportamentali di ognuno. In Polisportiva si è venuto a creare un ambiente armonioso nel quale si svolgono anche gli allenamenti più duri e difficili. Il motto dei coach è: “il lavoro paga sempre”, per questo alla Polisportiva 74020 le soddisfazioni non tarderanno ad arrivare.",
+        "valori": [
+          "Multidisciplinarietà",
+          "Crescita personale",
+          "Fair play",
+          "Sviluppo territoriale"
+        ],
+        "palmares": [
+          {
+            "anno": "2010",
+            "titolo": "Centro CONI di Eccellenza",
+            "descrizione": "Riconoscimento come centro di eccellenza formativa"
+          },
+          {
+            "anno": "2019",
+            "titolo": "Coppa Puglia",
+            "descrizione": "Vittoria della Coppa Puglia senior"
+          }
+        ]
       },
-      "SOCIETA": {
-        "VIRTUS TARANTO": {
-          "nome": "Virtus Taranto",
-          "logo": "assets/virtusLogo.png",
-          "storia": "L’ASD Virtus Pallacanestro Taranto nasce il 28 febbraio 2009 per volere di una coppia di amici appassionati alla Pallacanestro./n La Asd per statuto svolge attività esclusivamente per minori nella fascia di età compresa fra i 5 e 18 anni.",
-          "valori": [
-            "Eccellenza sportiva e umana",
-            "Formazione giovanile",
-            "Spirito di squadra",
-            "Legame con il territorio"
-          ],
-          "palmares": [
-            {
-              "anno": "1985",
-              "titolo": "Promozione in Serie B",
-              "descrizione": "Prima storica promozione in Serie B nazionale"
-            },
-            {
-              "anno": "2002",
-              "titolo": "Campioni Regionali U18",
-              "descrizione": "Vittoria del campionato regionale giovanile"
-            }
-          ]
-        },
-        "SUPPORT_O": 
-        {
-          "nome": "Support_o",
-          "logo": "assets/support_logo.png",
-          "storia": "Support_o nasce nel 2015 con l'obiettivo di rendere lo sport accessibile a tutti. Un progetto innovativo che unisce l'aspetto agonistico all'inclusione sociale, creando un modello unico nel panorama sportivo locale.",
-          "valori": [
-            "Inclusione sociale",
-            "Innovazione sportiva",
-            "Sostenibilità",
-            "Comunità attiva"
-          ],
-          "palmares": [
-            {
-              "anno": "2018",
-              "titolo": "Premio Innovazione Sociale",
-              "descrizione": "Riconoscimento CONI per il progetto di inclusione sportiva"
-            },
-            {
-              "anno": "2020",
-              "titolo": "Campioni Provinciali U16",
-              "descrizione": "Vittoria del campionato provinciale giovanile"
-            }
-          ]
-        },
-        "POLISPORTIVA 74020": 
-        {
-          "nome": "Polisportiva 74020",
-          "logo": "assets/poliLogo.png",
-          "storia": "La Polisportiva 74020, attiva dal 1990, rappresenta un punto di riferimento per lo sport tarantino. Una realtà multidisciplinare che ha saputo creare sinergie tra diverse discipline sportive.",
-          "valori": [
-            "Multidisciplinarietà",
-            "Crescita personale",
-            "Fair play",
-            "Sviluppo territoriale"
-          ],
-          "palmares": [
-            {
-              "anno": "2010",
-              "titolo": "Centro CONI di Eccellenza",
-              "descrizione": "Riconoscimento come centro di eccellenza formativa"
-            },
-            {
-              "anno": "2019",
-              "titolo": "Coppa Puglia",
-              "descrizione": "Vittoria della Coppa Puglia senior"
-            }
-          ]
-        }
+      "A.S.H. BASKIN": { 
+        "nome": "A.s.h. Baskin",
+        "logo": "assets/baskin22.png",
+        "storia" :"Ash Taranto nata nel 2011 come associazione sportiva handikap, inizia attività con basket in carrozzina, ha partecipato in 2 campionati nazionali Serie B, dal 2014 effettua una nuova disciplina sportiva Baskin sport che mette insieme normodotati e diversamente abili di qualsiasi patologia medica, campione regionale in carica, 5^ classificata campionati italiani 2019. Presidente Aniello Diana, allenatore Faggianelli Raffaele, e 22 atleti",
+        "valori": [
+          "Multidisciplinarietà",
+          "Crescita personale",
+          "Fair play",
+          "Sviluppo territoriale"
+        ],
+        "palmares": [
+          {
+            "anno": "2010",
+            "titolo": "Centro CONI di Eccellenza",
+            "descrizione": "Riconoscimento come centro di eccellenza formativa"
+          },
+          {
+            "anno": "2019",
+            "titolo": "Coppa Puglia",
+            "descrizione": "Vittoria della Coppa Puglia senior"
+          }
+        ]
       }
     }
+  }
+
+
 ,
  "CONTATTI": {
         "titolo": "Contatti Società",
-        "sottotitolo":"Virtus Taranto, Support_o & Polisportiva 74020",
-        "descrizione": "Trova qui i contatti delle nostre società sportive. Siamo sempre pronti ad ascoltarti e a rispondere alle tue domande.",
+        "sottotitolo":"Trova qui i contatti delle nostre società sportive. Siamo sempre pronti ad ascoltarti e a rispondere alle tue domande.",
+        "descrizione": "",
         "societa": {
         "VIRTUS TARANTO": {
             "nome": "Virtus Taranto",
-            "logo": "assets/virtusLogo.png",
+            "logo": "assets/logo-virtus-taranto.svg",
             "descrizione": "La storica società di basket di Taranto, impegnata nella promozione dello sport e dei valori del fairplay.",
             "indirizzo": "Via delle Palestre, 123 - 74121 Taranto",
             "telefono": "+39 099 1234567",
@@ -109,7 +177,7 @@
           "SUPPORT_O": 
           {
             "nome": "Support_o",
-            "logo": "assets/support_logo.png",
+            "logo": "assets/support_o2022 (1).png",
             "descrizione": "Associazione sportiva dedicata al supporto e all'inclusione attraverso lo sport.",
             "indirizzo": "Viale dello Sport, 45 - 74122 Taranto",
             "telefono": "+39 099 7654321",
@@ -120,6 +188,16 @@
           {
             "nome": "Polisportiva 74020",
             "logo": "assets/poliLogo.png",
+            "descrizione": "Polisportiva che promuove diverse discipline sportive per tutte le età.",
+            "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
+            "telefono": "+39 099 9876543",
+            "email": "info@polisportiva74020.it",
+            "sito": "www.polisportiva74020.it"
+          },
+          "A.S.H. BASKIN": 
+          {
+            "nome": "A.s.h. Baskin",
+            "logo": "assets/baskin22.png",
             "descrizione": "Polisportiva che promuove diverse discipline sportive per tutte le età.",
             "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
             "telefono": "+39 099 9876543",

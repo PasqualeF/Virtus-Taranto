@@ -14,7 +14,6 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/assets/basketball-court.jpg') center center;
   background-size: cover;
   opacity: 0.1;
   z-index: 0;

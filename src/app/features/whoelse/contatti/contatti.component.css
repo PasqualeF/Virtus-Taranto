@@ -1,10 +1,11 @@
 :host {
-    display: block;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
-    color: white;
-    font-family: 'Inter', sans-serif;
-  }
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+  padding: 40px 15px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
   
   .container {
     max-width: 1200px;
@@ -17,32 +18,26 @@
     min-height: 100vh;
   }
   
-  .titolo {
-    font-size: 3.5rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-    background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
-  }
-  
-  .sottotitolo {
-    font-size: 1.25rem;
-    max-width: 800;
-    text-align: center;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-    background: linear-gradient(135deg, #ffffff 0%, #fde68a 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  }
+.titolo {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.sottotitolo {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
   
   .descrizione-generale {
     font-size: 1.25rem;
@@ -108,12 +103,15 @@
   }
   
   .sottotitolo {
-    display: block;
-    font-size: 1.75rem;
-    color: #fde68a;
-    margin-top: 0.5rem;
-    opacity: 0.9;
-  }
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
   
   /* Nuovo stile per l'espansione hover della card */
   .contatti-dettagli {

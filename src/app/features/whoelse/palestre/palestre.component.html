@@ -1,14 +1,81 @@
-<div class="palestre-container">
+<!-- Vista Mappa -->
+  <div class="palestre-container">
+  <!-- Header -->
   <h1 class="titolo" [@fadeIn]>
     Le Nostre Palestre
+    <span class="sottotitolo">Scopri le nostre strutture all'avanguardia</span>
   </h1>
   
-  <p class="descrizione-generale" [@fadeIn]>
-    Scopri le nostre strutture all'avanguardia dove i nostri atleti si allenano e competono ogni giorno.
-  </p>
+  <!-- Statistiche -->
+  <div class="stats-section" *ngIf="palestreStats.totali > 0 && !isLoading" [@fadeIn]>
+    <div class="stat-card">
+      <span class="stat-number">{{ palestreStats.totali }}</span>
+      <span class="stat-label">Palestre</span>
+    </div>
+    <div class="stat-card bookable">
+      <span class="stat-number">{{ palestreStats.prenotabili }}</span>
+      <span class="stat-label">Prenotabili</span>
+    </div>
+    <div class="stat-card services">
+      <span class="stat-number">{{ palestreStats.serviziDisponibili.length }}</span>
+      <span class="stat-label">Servizi</span>
+    </div>
+  </div>
+
+  <!-- Controlli -->
+  <div class="controls-section" *ngIf="!isLoading">
+    <!-- Barra di ricerca -->
+    <div class="search-bar">
+      <input 
+        type="text" 
+        placeholder="Cerca palestre per nome o indirizzo..."
+        #searchInput
+        (keyup.enter)="searchPalestre(searchInput.value)"
+        class="search-input">
+      <button 
+        (click)="searchPalestre(searchInput.value)"
+        class="search-button">
+        🔍
+      </button>
+    </div>
+
+    <!-- Filtri -->
+    <div class="filters-section">
+      <button 
+        (click)="refreshData()"
+        class="filter-button">
+        🔄 Tutte
+      </button>
+      <button 
+        (click)="filterByBookable(true)"
+        class="filter-button bookable">
+        📅 Prenotabili
+      </button>
+      <button 
+        (click)="findNearbyPalestre()"
+        class="filter-button nearby">
+        📍 Vicine a me
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-section" *ngIf="isLoading" [@fadeIn]>
+    <div class="loading-spinner"></div>
+    <p>Caricamento palestre in corso...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-section" *ngIf="errorMessage && !isLoading" [@fadeIn]>
+    <div class="error-card">
+      <span class="error-icon">⚠️</span>
+      <p>{{ errorMessage }}</p>
+      <button class="retry-btn" (click)="refreshData()">🔄 Riprova</button>
+    </div>
+  </div>
 
   <!-- Selettore Vista -->
-  <div class="view-selector">
+  <div class="view-selector" *ngIf="hasPalestre && !isLoading">
     <button 
       [class.active]="activeTab === 0" 
       (click)="changeTab(0)" 
@@ -19,7 +86,7 @@
         <rect x="14" y="14" width="7" height="7"></rect>
         <rect x="3" y="14" width="7" height="7"></rect>
       </svg>
-      Vista Palestre
+      Vista Palestre ({{ palestre.length }})
     </button>
     <button 
       [class.active]="activeTab === 1" 
@@ -34,34 +101,60 @@
   </div>
 
   <!-- Vista Palestre (Griglia) -->
-  <div *ngIf="activeTab === 0" class="palestre-grid">
-    <div *ngFor="let palestra of palestre; let i = index" 
+  <div *ngIf="activeTab === 0 && hasPalestre && !isLoading" class="palestre-grid">
+    <div *ngFor="let palestra of palestre; let i = index; trackBy: trackByPalestra" 
          class="palestra-card"
+         [class.bookable]="palestra.prenotabile"
          [@flipIn]
-         [style.animation-delay]="i * 200 + 'ms'">
+         [style.animation-delay]="i * 100 + 'ms'">
+      
+      <!-- Immagine -->
       <img [src]="palestra.immagine" 
            [alt]="palestra.nome" 
-           class="palestra-image">
+           class="palestra-image"
+           (error)="onImageError($event, palestra)"
+           loading="lazy">
+      
+      <!-- Badge prenotabile -->
+      <div class="booking-badge" *ngIf="palestra.prenotabile">
+        📅 Prenotabile
+      </div>
+      
+      <!-- Contenuto -->
       <h2 class="palestra-nome">{{ palestra.nome }}</h2>
-      <p class="palestra-indirizzo">{{ palestra.indirizzo }}</p>
+      <p class="palestra-indirizzo">📍 {{ palestra.indirizzo }}</p>
+      <p class="palestra-descrizione">{{ palestra.descrizione | slice:0:120 }}{{ palestra.descrizione.length > 120 ? '...' : '' }}</p>
       
       <!-- Tag Servizi -->
-      <div class="palestra-servizi">
-        <span *ngFor="let servizio of palestra.servizi?.slice(0, 2)" class="servizio-tag">
-          {{ servizio }}
+      <div class="palestra-servizi" *ngIf="palestra.servizi.length > 0">
+        <span *ngFor="let servizio of formatServizi(palestra.servizi, 3).visible" 
+              class="servizio-tag">
+          {{ getServiceIcon(servizio) }} {{ servizio }}
         </span>
-        <span *ngIf="palestra.servizi && palestra.servizi.length > 2" class="servizio-tag more">
-          +{{ palestra.servizi.length - 2 }}
+        <span *ngIf="formatServizi(palestra.servizi, 3).extra > 0" 
+              class="servizio-tag more">
+          +{{ formatServizi(palestra.servizi, 3).extra }}
         </span>
       </div>
       
+      <!-- Bottoni -->
       <div class="buttons-container">
-        <button class="mappa-button" (click)="getDirections(palestra); $event.stopPropagation()">
+        <button class="mappa-button" 
+                (click)="getDirections(palestra); $event.stopPropagation()"
+                title="Indicazioni stradali">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4"></path>
           </svg>
           <span class="button-text">Mappa</span>
         </button>
+        
+        <button *ngIf="palestra.prenotabile" 
+                class="book-button"
+                (click)="bookPalestra(palestra); $event.stopPropagation()"
+                title="Prenota questa palestra">
+          📅 <span class="button-text">Prenota</span>
+        </button>
+        
         <button class="dettagli-button" (click)="showDetails(palestra)">
           <span>Scopri di più</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,21 +166,54 @@
   </div>
   
   <!-- Vista Mappa -->
-  <div *ngIf="activeTab === 1" class="map-container">
-    <div #mapElement class="google-map"></div>
+  <div *ngIf="activeTab === 1 && hasPalestre && !isLoading" class="map-container">
+    <!-- Elemento mappa con riferimento corretto -->
+    <div #mapElement class="google-map" id="google-map-container">
+      <!-- Loading mappa -->
+      <div *ngIf="!map && googleMapsLoaded" class="map-loading">
+        <div class="loading-spinner"></div>
+        <p>Inizializzazione mappa...</p>
+      </div>
+      
+      <!-- Errore Google Maps -->
+      <div *ngIf="!googleMapsLoaded" class="map-error">
+        <div class="error-icon">🗺️</div>
+        <p>Caricamento Google Maps...</p>
+      </div>
+    </div>
     
     <!-- Lista palestre vicino alla mappa (solo su desktop) -->
     <div *ngIf="!isMobile" class="map-list">
-      <div *ngFor="let palestra of palestre" 
+      <div class="map-list-title">
+        📍 Palestre ({{ palestre.length }})
+      </div>
+      <div *ngFor="let palestra of palestre; trackBy: trackByPalestra" 
            class="map-list-item"
+           [class.bookable]="palestra.prenotabile"
            (click)="showDetails(palestra)">
-        <img [src]="palestra.immagine" [alt]="palestra.nome" class="map-list-image">
+        <img [src]="palestra.immagine" 
+             [alt]="palestra.nome" 
+             class="map-list-image"
+             (error)="onImageError($event, palestra)"
+             loading="lazy">
         <div class="map-list-content">
           <h3>{{ palestra.nome }}</h3>
           <p>{{ palestra.indirizzo }}</p>
+          <div class="map-list-badges">
+            <span *ngIf="palestra.prenotabile" class="badge bookable">📅</span>
+            <span class="badge services">{{ palestra.servizi.length }} servizi</span>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!hasPalestre && !isLoading && !errorMessage" class="empty-state" [@fadeIn]>
+    <div class="empty-icon">🏢</div>
+    <h3>Nessuna palestra trovata</h3>
+    <p>Non ci sono palestre disponibili al momento.</p>
+    <button class="retry-btn" (click)="refreshData()">🔄 Ricarica</button>
   </div>
 </div>
 
@@ -103,9 +229,13 @@
     <div class="modal-header">
       <img [src]="selectedPalestra.immagine" 
            [alt]="selectedPalestra.nome"
-           class="modal-image">
+           class="modal-image"
+           (error)="onImageError($event, selectedPalestra)">
       <div class="modal-image-overlay">
-        <h2 class="modal-title">{{ selectedPalestra.nome }}</h2>
+        <h2 class="modal-title">
+          {{ selectedPalestra.nome }}
+          <span *ngIf="selectedPalestra.prenotabile" class="modal-booking-badge">📅 Prenotabile</span>
+        </h2>
       </div>
     </div>
     
@@ -115,51 +245,58 @@
         [class.active]="activeTab === 0" 
         (click)="changeTab(0)" 
         class="modal-tab">
-        Info
+        ℹ️ Info
       </button>
       <button 
         [class.active]="activeTab === 1" 
         (click)="changeTab(1)" 
         class="modal-tab">
-        Orari
+        🗺️ Mappa
       </button>
-      <button 
+      <button *ngIf="selectedPalestra.prenotabile"
         [class.active]="activeTab === 2" 
         (click)="changeTab(2)" 
         class="modal-tab">
-        Mappa
+        📅 Prenota
       </button>
     </div>
     
     <!-- Tab Info -->
     <div *ngIf="activeTab === 0" class="modal-tab-content">
-      <p class="palestra-indirizzo">{{ selectedPalestra.indirizzo }}</p>
+      <p class="palestra-indirizzo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        {{ selectedPalestra.indirizzo }}
+      </p>
+      
       <p class="modal-description">{{ selectedPalestra.descrizione }}</p>
       
-      <div class="servizi-section" *ngIf="selectedPalestra.servizi && selectedPalestra.servizi.length > 0">
-        <h3 class="section-title">Servizi disponibili</h3>
+      <!-- Servizi -->
+      <div class="servizi-section" *ngIf="selectedPalestra.servizi.length > 0">
+        <h3 class="section-title">🏷️ Servizi disponibili</h3>
         <div class="servizi-tags">
-          <span *ngFor="let servizio of selectedPalestra.servizi" class="servizio-tag">{{ servizio }}</span>
+          <span *ngFor="let servizio of selectedPalestra.servizi" class="servizio-tag">
+            {{ getServiceIcon(servizio) }} {{ servizio }}
+          </span>
         </div>
       </div>
-    </div>
-    
-    <!-- Tab Orari -->
-    <div *ngIf="activeTab === 1" class="modal-tab-content">
-      <h3 class="section-title">Orari di apertura</h3>
-      <div class="orari-list">
-        <div *ngFor="let orario of selectedPalestra.orari" class="orario-item">
-          <span class="orario-giorno">{{ orario.giorno }}</span>
-          <span class="orario-ore">{{ orario.orario }}</span>
+
+      <!-- Info prenotazione -->
+      <div class="booking-info" *ngIf="selectedPalestra.prenotabile">
+        <div class="info-box booking">
+          <h4>📅 Prenotazione disponibile</h4>
+          <p>Questa palestra può essere prenotata per eventi, allenamenti e manifestazioni sportive.</p>
+          <button class="book-now-button" (click)="bookPalestra(selectedPalestra)">
+            📅 Prenota ora
+          </button>
         </div>
-      </div>
-      <div class="info-box">
-        <p>Gli orari potrebbero variare durante festività o eventi speciali. Contattare la segreteria per informazioni aggiornate.</p>
       </div>
     </div>
     
     <!-- Tab Mappa -->
-    <div *ngIf="activeTab === 2" class="modal-tab-content">
+    <div *ngIf="activeTab === 1" class="modal-tab-content">
       <div class="location-info">
         <p class="location-address">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +308,9 @@
       </div>
       
       <div class="static-map">
-        <img [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&zoom=15&size=600x300&markers=color:red%7C' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&key=YOUR_API_KEY'" alt="Mappa della posizione">
+        <img [src]="'https://maps.googleapis.com/maps/api/staticmap?center=' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&zoom=15&size=600x300&markers=color:red%7C' + selectedPalestra.lat + ',' + selectedPalestra.lng + '&key=YOUR_API_KEY'" 
+             alt="Mappa della posizione"
+             >
       </div>
       
       <button class="directions-button" (click)="getDirections(selectedPalestra)">
@@ -181,5 +320,64 @@
         Indicazioni stradali
       </button>
     </div>
+
+    <!-- Tab Prenotazione -->
+    <div *ngIf="activeTab === 2 && selectedPalestra.prenotabile" class="modal-tab-content">
+      <div class="booking-section">
+        <h3 class="section-title">📅 Prenota {{ selectedPalestra.nome }}</h3>
+        
+        <div class="booking-form">
+          <div class="form-group">
+            <label>📅 Data evento</label>
+            <input type="date" class="form-input" [min]="getMinDate()">
+          </div>
+          
+          <div class="form-group">
+            <label>🕐 Orario</label>
+            <select class="form-input">
+              <option value="">Seleziona orario</option>
+              <option value="09:00">09:00 - 11:00</option>
+              <option value="11:00">11:00 - 13:00</option>
+              <option value="14:00">14:00 - 16:00</option>
+              <option value="16:00">16:00 - 18:00</option>
+              <option value="18:00">18:00 - 20:00</option>
+              <option value="20:00">20:00 - 22:00</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>👥 Tipo evento</label>
+            <select class="form-input">
+              <option value="">Seleziona tipo</option>
+              <option value="allenamento">Allenamento squadra</option>
+              <option value="partita">Partita ufficiale</option>
+              <option value="torneo">Torneo</option>
+              <option value="evento">Evento speciale</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>📝 Note aggiuntive</label>
+            <textarea class="form-input" rows="3" placeholder="Inserisci eventuali richieste speciali..."></textarea>
+          </div>
+          
+          <div class="booking-actions">
+            <button class="book-confirm-button" (click)="bookPalestra(selectedPalestra)">
+              📅 Conferma prenotazione
+            </button>
+            <p class="booking-note">
+              ℹ️ La prenotazione sarà soggetta a conferma da parte della segreteria
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- Floating Action Button -->
+<div class="fab-container" *ngIf="!isLoading">
+  <button class="fab" (click)="refreshData()" title="Aggiorna palestre">
+    🔄
+  </button>
 </div>

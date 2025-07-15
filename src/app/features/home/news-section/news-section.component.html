@@ -34,7 +34,11 @@
 
     <!-- Carousel Notizie Mobile -->
     <div class="news-carousel" *ngIf="isMobile">
-      <div class="carousel-container" #carouselContainer (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+      <div class="carousel-container" 
+           #carouselContainer 
+           (touchstart)="onTouchStart($event)" 
+           (touchmove)="onTouchMove($event)"
+           (touchend)="onTouchEnd($event)">
         <div class="carousel-slide" *ngFor="let news of newsItems" (click)="openNewsDetail(news)">
           <div class="mobile-news-card">
             <div class="mobile-news-image">
@@ -43,7 +47,8 @@
             </div>
             <div class="mobile-news-content">
               <h3 class="mobile-news-title">{{ news.titolo }}</h3>
-              <a class="mobile-read-more">Leggi <i class="fas fa-arrow-right"></i></a>
+              <p class="mobile-news-excerpt" *ngIf="news.excerpt">{{ news.excerpt }}</p>
+              <a class="mobile-read-more">Leggi tutto <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -58,11 +63,11 @@
     </div>
 
     <!-- View All Button -->
-  <div class="view-all-news">
-    <a [routerLink]="['/notizie']" class="view-all-btn">
-      <span *ngIf="!isMobile">Vedi tutte le notizie <i class="fas fa-external-link-alt"></i></span>
-      <span *ngIf="isMobile">Tutte le notizie <i class="fas fa-arrow-right"></i></span>
-    </a>
-  </div>
+    <div class="view-all-news">
+      <a [routerLink]="['/news/ultimissime']" class="view-all-btn">
+        <span *ngIf="!isMobile">Vedi tutte le notizie <i class="fas fa-external-link-alt"></i></span>
+        <span *ngIf="isMobile">Tutte le notizie <i class="fas fa-arrow-right"></i></span>
+      </a>
+    </div>
   </div>
 </section>

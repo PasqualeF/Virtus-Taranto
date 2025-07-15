@@ -20,7 +20,6 @@ export class SocialFeedService {
       }
     }).pipe(
       map(response => {
-        console.log('Risposta grezza da Facebook:', response); // Per debug
         return response;
       }),
       catchError(error => {

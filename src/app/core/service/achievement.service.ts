@@ -19,11 +19,9 @@ export class AchievementService extends StrapiBaseService {
    */
   getAllAchievementsSimple(): Observable<any> {
     const url = `${this.apiUrl}/api/achievements`;
-    console.log('Test chiamata semplice a:', url);
     
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => {
-        console.log('Risposta grezza da Strapi:', response);
         return response;
       }),
       catchError(error => this.handleError(error))
@@ -44,7 +42,6 @@ export class AchievementService extends StrapiBaseService {
       { headers: this.getHeaders(), params }
     ).pipe(
       map(response => {
-        console.log('Risposta completa:', response);
         return this.mapAchievements(response);
       }),
       catchError(error => this.handleError(error))
@@ -66,7 +63,6 @@ export class AchievementService extends StrapiBaseService {
       { headers: this.getHeaders(), params }
     ).pipe(
       map(response => {
-        console.log('Risposta featured:', response);
         return this.mapAchievements(response);
       }),
       catchError(error => this.handleError(error))
@@ -77,7 +73,6 @@ export class AchievementService extends StrapiBaseService {
    * Recupera gli achievements per società
    */
   getAchievementsBySocieta(societa: string): Observable<Achievement[]> {
-    console.log('AchievementService.getAchievementsBySocieta chiamato con:', societa);
     
     const params = this.buildParams({
       'filters[societa][$eq]': societa,
@@ -86,15 +81,12 @@ export class AchievementService extends StrapiBaseService {
     });
 
     const url = `${this.apiUrl}/api/achievements`;
-    console.log('URL chiamato:', url);
-    console.log('Parametri:', params.toString());
 
     return this.http.get<any>(
       url,
       { headers: this.getHeaders(), params }
     ).pipe(
       map(response => {
-        console.log('Risposta completa:', response);
         return this.mapAchievements(response);
       }),
       catchError(error => this.handleError(error))
@@ -105,7 +97,6 @@ export class AchievementService extends StrapiBaseService {
    * Mappa i dati da Strapi al modello Angular
    */
   private mapAchievements(response: any): Achievement[] {
-    console.log('Mappando risposta:', response);
     
     // In Strapi 5, i dati sono direttamente in response.data
     if (response && response.data && Array.isArray(response.data)) {
@@ -117,13 +108,11 @@ export class AchievementService extends StrapiBaseService {
       return response.map(item => this.mapSingleAchievement(item));
     }
     
-    console.warn('Struttura risposta non riconosciuta:', response);
     return [];
   }
 
   private mapSingleAchievement(item: any): Achievement {
     // In Strapi 5, i dati sono direttamente nell'oggetto, non in attributes
-    console.log('Mappando singolo achievement:', item);
     
     return {
       id: item.id,

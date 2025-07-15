@@ -1,8 +1,10 @@
-/* src/app/components/squad/squad.component.css */
 :host {
   display: block;
   min-height: 100vh;
-  background-color: rgb(0, 43, 73);
+  background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
+  padding: 40px 15px;
+  color: white;
+  font-family: 'Inter', sans-serif;
 }
 
 .squad-container {
@@ -93,6 +95,16 @@
   transition: all 0.3s ease;
   position: relative;
   white-space: nowrap; /* Impedisce che il testo vada a capo */
+}
+
+.tabs button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.tabs button:disabled::after {
+  display: none;
 }
 
 .tabs button::after {
@@ -314,6 +326,26 @@ tr:hover {
   background: rgba(220, 53, 69, 0.1);
   border-radius: 8px;
   margin: 1rem 0;
+}
+
+/* Messaggi per mancanza di dati */
+.no-data-message, .no-section-data {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.no-data-message {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin: 1rem;
+}
+
+.no-section-data {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  margin-top: 1rem;
 }
 
 /* Animations */

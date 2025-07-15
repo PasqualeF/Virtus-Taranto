@@ -1,93 +1,156 @@
 <div class="shop-coming-soon">
-    <div class="content-container" [@fadeInUp]>
+  <div class="content-container" [@fadeInUp]>
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="glowing-badge" [@glow]="isGlowing ? 'glow' : 'normal'">
+        Official Store
+      </div>
+      
       <!-- Logo Section -->
       <div class="logo-section">
         <img src="assets/logo-virtus-taranto.svg" alt="Virtus Shop Logo" class="shop-logo">
       </div>
-  
-      <!-- Main Content -->
-      <div class="main-content">
-        <h1 class="title">
-          Shop Virtus Taranto
-          <span class="subtitle">Coming Soon</span>
-        </h1>
-  
-        <div class="message">
-          <p class="description">
-            Stiamo preparando qualcosa di speciale per te. 
-            Presto potrai acquistare il merchandise ufficiale della Virtus Taranto.
-          </p>
+
+      <!-- Main Title -->
+      <h1 class="title">
+        <span class="gradient-text">Shop Virtus Taranto</span>
+        <span class="subtitle" *ngIf="!isLaunched">Coming Soon</span>
+        <span class="subtitle launched" *ngIf="isLaunched">È Finalmente Qui! 🎉</span>
+      </h1>
+
+      <div class="description">
+        <p *ngIf="!isLaunched">
+          Stiamo preparando un'esperienza di shopping rivoluzionaria. 
+          Merchandise esclusivo, design unici e la qualità che meriti. 
+          Il futuro dello shopping sportivo sta per iniziare.
+        </p>
+        <p *ngIf="isLaunched">
+          Il nostro store ufficiale è ora disponibile! 
+          Scopri i prodotti esclusivi della Virtus Taranto.
+        </p>
+      </div>
+    </div>
+
+    <!-- Countdown Section -->
+    <div class="countdown-section" *ngIf="!isLaunched">
+      <h3 class="countdown-title">
+        <span class="emoji">⏰</span>
+        Lancio Ufficiale tra:
+      </h3>
+      
+      <div class="countdown">
+        <div class="countdown-item" [@pulse]="'pulse'">
+          <span class="number">{{ countdown.days }}</span>
+          <span class="label">Giorni</span>
+          <div class="progress-ring">
+            <svg class="progress-ring-svg" width="120" height="120">
+              <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="progress-ring-circle" cx="60" cy="60" r="54" 
+                      [style.stroke-dasharray]="339.292" 
+                      [style.stroke-dashoffset]="339.292 * (1 - countdown.days / 365)"></circle>
+            </svg>
+          </div>
         </div>
-  
-        <!-- Countdown -->
-        <div class="countdown">
-          <div class="countdown-item">
-            <span class="number">{{countdown.days}}</span>
-            <span class="label">Giorni</span>
-          </div>
-          <div class="countdown-item">
-            <span class="number">{{countdown.hours}}</span>
-            <span class="label">Ore</span>
-          </div>
-          <div class="countdown-item">
-            <span class="number">{{countdown.minutes}}</span>
-            <span class="label">Minuti</span>
-          </div>
-          <div class="countdown-item">
-            <span class="number">{{countdown.seconds}}</span>
-            <span class="label">Secondi</span>
+        
+        <div class="countdown-item" [@pulse]="'pulse'">
+          <span class="number">{{ countdown.hours }}</span>
+          <span class="label">Ore</span>
+          <div class="progress-ring">
+            <svg class="progress-ring-svg" width="120" height="120">
+              <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="progress-ring-circle" cx="60" cy="60" r="54" 
+                      [style.stroke-dasharray]="339.292" 
+                      [style.stroke-dashoffset]="339.292 * (1 - countdown.hours / 24)"></circle>
+            </svg>
           </div>
         </div>
-  
-        <!-- Newsletter Signup -->
-        <div class="newsletter-section">
-          <h2>Resta Aggiornato</h2>
-          <p>Iscriviti alla newsletter per essere il primo a sapere quando lo shop sarà online!</p>
-          
-          <form class="signup-form" (ngSubmit)="onSubscribe(emailInput.value)" #shopForm="ngForm">
-            <div class="input-group">
-              <input type="email" 
-                     #emailInput
-                     placeholder="{{emailPlaceholder}}"
-                     required
-                     email
-                     [class.subscribed]="isSubscribed">
-              <button type="submit" 
-                      [disabled]="!shopForm.valid"
-                      (mouseenter)="onMouseEnter()"
-                      (mouseleave)="onMouseLeave()"
-                      [@pulse]="isHovered ? 'pulse' : 'normal'">
-                <span *ngIf="!isSubscribed">Avvisami</span>
-                <span *ngIf="isSubscribed" class="success-message">
-                  <i class="material-icons">check</i> Iscritto!
-                </span>
-              </button>
-            </div>
-          </form>
+        
+        <div class="countdown-item" [@pulse]="'pulse'">
+          <span class="number">{{ countdown.minutes }}</span>
+          <span class="label">Minuti</span>
+          <div class="progress-ring">
+            <svg class="progress-ring-svg" width="120" height="120">
+              <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="progress-ring-circle" cx="60" cy="60" r="54" 
+                      [style.stroke-dasharray]="339.292" 
+                      [style.stroke-dashoffset]="339.292 * (1 - countdown.minutes / 60)"></circle>
+            </svg>
+          </div>
         </div>
-  
-        <!-- Social Links -->
-        <div class="social-links">
-          <p>Seguici sui social per gli ultimi aggiornamenti</p>
-          <div class="social-icons">
-            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
-              <i class="material-icons">facebook</i>
-            </a>
-            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
-              <i class="material-icons">photo_camera</i>
-            </a>
-            <a href="#" class="social-icon" target="_blank" rel="noopener noreferrer">
-              <i class="material-icons">sports_basketball</i>
-            </a>
+        
+        <div class="countdown-item" [@pulse]="'pulse'">
+          <span class="number">{{ countdown.seconds }}</span>
+          <span class="label">Secondi</span>
+          <div class="progress-ring">
+            <svg class="progress-ring-svg" width="120" height="120">
+              <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="progress-ring-circle" cx="60" cy="60" r="54" 
+                      [style.stroke-dasharray]="339.292" 
+                      [style.stroke-dashoffset]="339.292 * (1 - countdown.seconds / 60)"></circle>
+            </svg>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- Decorative Elements -->
-    <div class="decorative-elements">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
+
+    <!-- Launched Section -->
+    <div class="launched-section" *ngIf="isLaunched">
+      <div class="celebration">
+        <h2 class="celebration-title">🛍️ Lo Shop è Ora Disponibile! 🛍️</h2>
+        <p>Esplora la nostra collezione esclusiva di merchandise ufficiale</p>
+        <button class="shop-now-button">
+          <span class="button-icon">🚀</span>
+          Inizia lo Shopping
+        </button>
+      </div>
     </div>
+
+    <!-- Social Section -->
+    <div class="social-section">
+      <h3>Seguici per gli Ultimi Aggiornamenti</h3>
+      <p class="social-description">Resta connesso con noi sui social media per non perdere nessuna novità!</p>
+      <div class="social-icons">
+        <a href="#" class="social-icon facebook" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-facebook-f"></i>
+          <span class="social-label">Facebook</span>
+        </a>
+        <a href="#" class="social-icon instagram" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-instagram"></i>
+          <span class="social-label">Instagram</span>
+        </a>
+        <a href="#" class="social-icon twitter" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+          <span class="social-label">Twitter</span>
+        </a>
+        <a href="#" class="social-icon youtube" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-youtube"></i>
+          <span class="social-label">YouTube</span>
+        </a>
+        <a href="#" class="social-icon tiktok" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-tiktok"></i>
+          <span class="social-label">TikTok</span>
+        </a>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Floating Elements -->
+  <div class="floating-elements">
+    <div class="floating-element basket">🏀</div>
+    <div class="floating-element star">⭐</div>
+    <div class="floating-element shopping">🛍️</div>
+    <div class="floating-element fire">🔥</div>
+    <div class="floating-element trophy">🏆</div>
+    <div class="floating-element shirt">👕</div>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="decorative-elements">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="circle circle-4"></div>
+  </div>
+</div>

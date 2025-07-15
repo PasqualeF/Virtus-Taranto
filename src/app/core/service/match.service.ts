@@ -61,7 +61,6 @@ export class MatchService extends StrapiBaseService {
     // SOLUZIONE: Usa formato data americano per il filtro, poi filtra lato client per orario
     const today = new Date().toISOString().split('T')[0]; // "2025-07-13" formato americano
     
-    console.log(`📅 Filtro partite dalla data: ${today}`);
     
     const params = {
       'filters[data][$gte]': today, // Include partite di oggi e future
@@ -77,16 +76,13 @@ export class MatchService extends StrapiBaseService {
         params: this.buildParams(params)
       }
     ).pipe(
-      map(response => {
-        console.log(`📥 Ricevute ${response.data.length} partite da Strapi`);
-        
+      map(response => {        
         // Mappa le partite
         const allMatches = this.mapStrapiMatchesToAppMatches(response.data);
         
         // FILTRO LATO CLIENT: rimuovi partite già iniziate/finite
         const upcomingMatches = this.filterReallyUpcomingMatches(allMatches);
         
-        console.log(`✅ Filtrate ${upcomingMatches.length} partite future`);
         
         // Limita al numero richiesto
         return upcomingMatches.slice(0, limit);
@@ -110,9 +106,7 @@ export class MatchService extends StrapiBaseService {
       if (isUpcoming) {
         const timeDiff = matchDateTime.getTime() - now.getTime();
         const hoursDiff = Math.round(timeDiff / (1000 * 60 * 60));
-        console.log(`⏰ ${match.homeTeam} vs ${match.awayTeam} - ${match.time} (tra ${hoursDiff}h)`);
       } else {
-        console.log(`❌ Esclusa: ${match.homeTeam} vs ${match.awayTeam} - ${match.time} (già passata)`);
       }
       
       return isUpcoming;
@@ -199,11 +193,6 @@ export class MatchService extends StrapiBaseService {
     const matchDateTime = new Date(strapiMatch.data);
     const time = this.extractTimeFromDate(matchDateTime);
 
-    // Log per debugging
-    console.log(`🕐 Data ISO da Strapi: ${strapiMatch.data}`);
-    console.log(`📅 Data convertita: ${matchDateTime.toLocaleString('it-IT')}`);
-    console.log(`⏰ Orario estratto: ${time}`);
-
     // Estrazione nome squadra da squads
     let league = this.DEFAULT_LEAGUE;
     let squadName: string | undefined;
@@ -213,7 +202,6 @@ export class MatchService extends StrapiBaseService {
       squadName = firstSquad.name;
       league = firstSquad.name;
       
-      console.log(`🏀 Partita: ${homeTeam} vs ${awayTeam} - Squadra: ${squadName} - Orario: ${time}`);
     } else {
       console.warn(`⚠️ Nessuna squadra associata alla partita: ${homeTeam} vs ${awayTeam}`);
     }
@@ -239,7 +227,6 @@ export class MatchService extends StrapiBaseService {
     try {
       // Verifica che la data sia valida
       if (isNaN(date.getTime())) {
-        console.warn('❌ Data non valida, uso orario di default');
         return this.DEFAULT_TIME;
       }
 
@@ -250,11 +237,9 @@ export class MatchService extends StrapiBaseService {
       // Formatta in HH:mm
       const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
       
-      console.log(`✅ Orario estratto con successo: ${formattedTime}`);
       return formattedTime;
 
     } catch (error) {
-      console.error('❌ Errore nell\'estrazione dell\'orario:', error);
       return this.DEFAULT_TIME;
     }
   }
@@ -342,10 +327,6 @@ export class MatchService extends StrapiBaseService {
     
     const isFinished = now > matchEndTime;
     
-    if (isFinished) {
-      console.log(`🏁 Partita conclusa: ${match.homeTeam} vs ${match.awayTeam} (${match.time})`);
-    }
-    
     return isFinished;
   }
 
@@ -360,10 +341,6 @@ export class MatchService extends StrapiBaseService {
     const matchEndTime = new Date(matchDateTime.getTime() + (2 * 60 * 60 * 1000)); // +2 ore
     
     const isInProgress = now >= matchDateTime && now <= matchEndTime;
-    
-    if (isInProgress) {
-      console.log(`🔴 Partita in corso: ${match.homeTeam} vs ${match.awayTeam} (${match.time})`);
-    }
     
     return isInProgress;
   }
@@ -382,7 +359,6 @@ export class MatchService extends StrapiBaseService {
     if (isUpcoming) {
       const timeDiff = matchDateTime.getTime() - now.getTime();
       const hoursDiff = Math.round(timeDiff / (1000 * 60 * 60));
-      console.log(`⏰ Partita futura: ${match.homeTeam} vs ${match.awayTeam} (tra ${hoursDiff}h)`);
     }
     
     return isUpcoming;
@@ -508,4 +484,267 @@ export class MatchService extends StrapiBaseService {
       })
     );
   }
+
+// AGGIUNGI QUESTI METODI AL match.service.ts
+
+/**
+ * NUOVO: Recupera TUTTE le partite per il calendario (passate, presenti e future)
+ * @param limit Numero massimo di partite da recuperare (default: 100)
+ * @returns Observable<Match[]>
+ */
+getAllMatchesForCalendar(limit: number = 100): Observable<Match[]> {
+  
+  const params = {
+    'sort': 'data:desc', // Ordina dalla più recente alla più vecchia
+    'pagination[limit]': limit,
+    'populate': 'squads'
+  };
+
+  return this.http.get<StrapiResponse<StrapiMatch[]>>(
+    `${this.apiUrl}/api/results`,
+    {
+      headers: this.getHeaders(),
+      params: this.buildParams(params)
+    }
+  ).pipe(
+    map(response => {
+      
+      // Mappa tutte le partite senza filtri temporali
+      const allMatches = this.mapStrapiMatchesToAppMatches(response.data);
+      
+      // Ordina per data (dalla più vecchia alla più recente per il calendario)
+      const sortedMatches = allMatches.sort((a, b) => a.date.getTime() - b.date.getTime());
+      
+      
+      // Log delle statistiche
+      const stats = this.categorizeMatchesByStatus(sortedMatches);
+  
+      return sortedMatches;
+    }),
+    catchError(error => {      
+      return this.getUpcomingMatches(50);
+    })
+  );
+}
+
+/**
+ * NUOVO: Recupera partite per il calendario in un range di anni specifico
+ * @param startYear Anno di inizio (default: anno corrente - 1)
+ * @param endYear Anno di fine (default: anno corrente + 1)
+ * @param limit Limite partite (default: 200)
+ * @returns Observable<Match[]>
+ */
+getMatchesForCalendarByYears(
+  startYear: number = new Date().getFullYear() - 1,
+  endYear: number = new Date().getFullYear() + 1,
+  limit: number = 200
+): Observable<Match[]> {
+  
+  const startDate = `${startYear}-01-01`;
+  const endDate = `${endYear}-12-31`;
+  
+
+  const params = {
+    'filters[data][$gte]': startDate,
+    'filters[data][$lte]': endDate,
+    'sort': 'data:asc',
+    'pagination[limit]': limit,
+    'populate': 'squads'
+  };
+
+  return this.http.get<StrapiResponse<StrapiMatch[]>>(
+    `${this.apiUrl}/api/results`,
+    {
+      headers: this.getHeaders(),
+      params: this.buildParams(params)
+    }
+  ).pipe(
+    map(response => {
+      
+      const matches = this.mapStrapiMatchesToAppMatches(response.data);
+      
+      // Log statistiche per anni
+      const stats = this.categorizeMatchesByStatus(matches);
+      return matches;
+    }),
+    catchError(this.handleError)
+  );
+}
+
+/**
+ * NUOVO: Recupera partite per squadra specifica per il calendario
+ * @param squadName Nome della squadra
+ * @param includeAllTimeMatches Se includere tutte le partite o solo future (default: true)
+ * @param limit Limite risultati (default: 100)
+ * @returns Observable<Match[]>
+ */
+getSquadMatchesForCalendar(
+  squadName: string, 
+  includeAllTimeMatches: boolean = true,
+  limit: number = 100
+): Observable<Match[]> {
+  
+  let params: any = {
+    'sort': 'data:asc',
+    'pagination[limit]': limit,
+    'populate': 'squads'
+  };
+
+  // Se non vogliamo tutte le partite, filtra solo future
+  if (!includeAllTimeMatches) {
+    const now = new Date().toISOString();
+    params['filters[data][$gt]'] = now;
+  }
+
+  // Filtra per squadra
+  params['filters[squads][name][$containsi]'] = squadName;
+
+  return this.http.get<StrapiResponse<StrapiMatch[]>>(
+    `${this.apiUrl}/api/results`,
+    {
+      headers: this.getHeaders(),
+      params: this.buildParams(params)
+    }
+  ).pipe(
+    map(response => {      
+      const matches = this.mapStrapiMatchesToAppMatches(response.data);
+      
+      return matches;
+    }),
+    catchError(this.handleError)
+  );
+}
+
+/**
+ * NUOVO: Metodo ottimizzato per il calendario con fallback intelligente
+ * @param preferredLimit Limite preferito (default: 150)
+ * @returns Observable<Match[]>
+ */
+getCalendarMatches(preferredLimit: number = 150): Observable<Match[]> {
+  
+  // Prima strategia: prova a recuperare tutte le partite
+  return this.getAllMatchesForCalendar(preferredLimit).pipe(
+    catchError(error => {
+      console.warn('⚠️ Fallback: tentativo con range di anni...', error);
+      
+      // Seconda strategia: range di anni
+      return this.getMatchesForCalendarByYears(
+        new Date().getFullYear() - 1,
+        new Date().getFullYear() + 1,
+        preferredLimit
+      ).pipe(
+        catchError(secondError => {
+          console.warn('⚠️ Secondo fallback: solo partite future...', secondError);
+          
+          // Terza strategia: almeno le partite future
+          return this.getUpcomingMatches(50).pipe(
+            map(futureMatches => {
+              return futureMatches;
+            })
+          );
+        })
+      );
+    })
+  );
+}
+
+/**
+ * NUOVO: Recupera partite per il calendario con paginazione
+ * @param page Pagina corrente (default: 1)
+ * @param pageSize Dimensione pagina (default: 50)
+ * @returns Observable<{matches: Match[], total: number, hasMore: boolean}>
+ */
+getCalendarMatchesPaginated(page: number = 1, pageSize: number = 50): Observable<{
+  matches: Match[];
+  total: number;
+  hasMore: boolean;
+}> {
+  const start = (page - 1) * pageSize;
+  
+
+  const params = {
+    'sort': 'data:desc',
+    'pagination[start]': start,
+    'pagination[limit]': pageSize,
+    'pagination[withCount]': true,
+    'populate': 'squads'
+  };
+
+  return this.http.get<StrapiResponse<StrapiMatch[]> & { meta: { pagination: { total: number } } }>(
+    `${this.apiUrl}/api/results`,
+    {
+      headers: this.getHeaders(),
+      params: this.buildParams(params)
+    }
+  ).pipe(
+    map(response => {
+      const matches = this.mapStrapiMatchesToAppMatches(response.data);
+      const total = response.meta?.pagination?.total || response.data.length;
+      const hasMore = start + pageSize < total;
+      
+      
+      return {
+        matches: matches.sort((a, b) => a.date.getTime() - b.date.getTime()), // Riordina per data crescente
+        total,
+        hasMore
+      };
+    }),
+    catchError(this.handleError)
+  );
+}
+
+/**
+ * NUOVO: Ottieni tutte le squadre con il conteggio delle partite
+ * @returns Observable<{name: string, matchCount: number, upcomingCount: number}[]>
+ */
+getSquadsWithMatchCounts(): Observable<{name: string, matchCount: number, upcomingCount: number}[]> {
+  return this.getAllMatchesForCalendar(500).pipe(
+    map(matches => {
+      const squadStats = new Map<string, {total: number, upcoming: number}>();
+      
+      matches.forEach(match => {
+        if (match.squadName) {
+          const current = squadStats.get(match.squadName) || {total: 0, upcoming: 0};
+          current.total++;
+          
+          if (this.isMatchUpcoming(match)) {
+            current.upcoming++;
+          }
+          
+          squadStats.set(match.squadName, current);
+        }
+      });
+      
+      return Array.from(squadStats.entries()).map(([name, stats]) => ({
+        name,
+        matchCount: stats.total,
+        upcomingCount: stats.upcoming
+      })).sort((a, b) => b.matchCount - a.matchCount);
+    })
+  );
+}
+
+/**
+ * UTILITÀ: Verifica se i dati del calendario sono aggiornati
+ * @param matches Array di partite
+ * @returns boolean True se i dati sembrano completi e aggiornati
+ */
+isCalendarDataComplete(matches: Match[]): boolean {
+  if (matches.length === 0) return false;
+  
+  const now = new Date();
+  const oneMonthAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+  const oneMonthFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+  
+  // Verifica che ci siano partite nel mese passato E nel mese futuro
+  const hasRecentPast = matches.some(m => m.date >= oneMonthAgo && m.date <= now);
+  const hasNearFuture = matches.some(m => m.date >= now && m.date <= oneMonthFromNow);
+  
+  const isComplete = hasRecentPast && hasNearFuture && matches.length >= 5;
+
+  
+  return isComplete;
+}
+
+
 }

@@ -107,8 +107,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           {
             label: '',
             items: [
-              { name: 'Foto', route: '/media/foto' },
-              { name: 'Video', route: '/news/ultimissime' }
+              { name: 'Media', route: '/media/foto' },
             ]
           },
         ] 
@@ -140,9 +139,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           {
             label: '',
             items: [
-              { name: 'Next-Gen Style', route: '/shop' },
-              { name: 'Game Day Essentials', route: '/servizi/visitaMedica' },
-              { name: 'Urban lifeStyle', route: '/servizi/iscrizioni' }
+              { name: 'Shop', route: '/shop' }
             ]
           },
         ] 

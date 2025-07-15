@@ -108,7 +108,6 @@ export class SocialFeedComponent implements OnInit {
         })
       ).subscribe({
         next: (response) => {
-          console.log('Risposta Facebook:', response); // Per debug
           
           // Gestione sicura dei dati
           let fbPosts: SocialPost[] = [];

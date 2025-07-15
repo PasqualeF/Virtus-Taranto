@@ -104,10 +104,8 @@ export class PartnerComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (partners) => {
           this.partners = partners;
-          console.log('Partner caricati:', partners.length);
         },
         error: (error) => {
-          console.error('Errore nel caricamento dei partner:', error);
           this.partnersError = true;
         }
       });
@@ -128,7 +126,6 @@ export class PartnerComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (benefits) => {
           this.benefits = benefits;
-          console.log('Benefit caricati:', benefits.length);
         },
         error: (error) => {
           console.error('Errore nel caricamento dei benefit:', error);
@@ -151,11 +148,8 @@ export class PartnerComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (categories) => {
           this.categories = categories;
-          console.log('Categorie caricate:', categories);
         },
         error: (error) => {
-          console.error('Errore nel caricamento delle categorie:', error);
-          // Mantieni almeno "Tutti" come categoria di default
           this.categories = ['Tutti'];
         }
       });
@@ -218,12 +212,10 @@ export class PartnerComponent implements OnInit, OnDestroy {
         )
         .subscribe({
           next: (response) => {
-            console.log('Richiesta di collaborazione inviata:', response);
             this.isFormSubmitted = true;
             this.collaborationForm.reset();
           },
           error: (error) => {
-            console.error('Errore nell\'invio della richiesta:', error);
             // Qui potresti mostrare un messaggio di errore all'utente
             alert('Si è verificato un errore nell\'invio della richiesta. Riprova più tardi.');
           }

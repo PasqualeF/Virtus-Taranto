@@ -73,7 +73,6 @@ export class AchievementsComponent implements OnInit {
   };
 
   constructor(private achievementService: AchievementService) {
-    console.log('AchievementsComponent inizializzato');
   }
 
   ngOnInit() {
@@ -82,7 +81,6 @@ export class AchievementsComponent implements OnInit {
     // Test: prima proviamo una chiamata semplice
     this.achievementService.getAllAchievementsSimple().subscribe({
       next: (response) => {
-        console.log('Test chiamata semplice riuscita:', response);
         // Dopo il test, carichiamo con il filtro
         this.loadAchievements(this.selectedSocieta);
       },
@@ -107,11 +105,9 @@ export class AchievementsComponent implements OnInit {
     this.loading = true;
     this.selectedSocieta = societa;
     
-    console.log('Caricamento achievements per:', societa);
     
     this.achievementService.getAchievementsBySocieta(societa).subscribe({
       next: (achievements) => {
-        console.log('Achievements ricevuti:', achievements);
         this.achievements = achievements;
         this.loading = false;
         // Inizializza hover states
@@ -120,7 +116,6 @@ export class AchievementsComponent implements OnInit {
         });
       },
       error: (error) => {
-        console.error('Errore nel caricamento degli achievements:', error);
         this.loading = false;
       }
     });
