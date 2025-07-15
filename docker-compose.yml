@@ -8,12 +8,13 @@ services:
       - frontend
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
+      # Monta i certificati SSL dalla directory del server
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - frontend-dist:/usr/share/nginx/html:ro
     ports:
       - "80:80"
       - "443:443"
+    restart: unless-stopped
 
   frontend:
     build:
@@ -22,14 +23,7 @@ services:
     container_name: virtus-angular
     volumes:
       - frontend-dist:/app/dist
+    restart: unless-stopped
 
-  certbot:
-    image: certbot/certbot
-    container_name: virtus-certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done'"
-  
 volumes:
   frontend-dist:
