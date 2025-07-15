@@ -18,7 +18,7 @@ export interface LibreBookingConfig {
 
 // Configurazione per l'ambiente di sviluppo
 export const LIBREBOOKING_DEV_CONFIG: LibreBookingConfig = {
-  baseUrl: 'http://195.201.238.79:4344/Web/Services/index.php',
+  baseUrl: 'https://virtustaranto.duckdns.org/Services/index.php',
   authEndpoint: '/Authentication/Authenticate',
   reservationsEndpoint: '/Reservations/',
   credentials: {
@@ -35,7 +35,7 @@ export const LIBREBOOKING_DEV_CONFIG: LibreBookingConfig = {
 
 // Configurazione per la produzione (da environment)
 export const LIBREBOOKING_PROD_CONFIG: LibreBookingConfig = {
-  baseUrl: 'http://195.201.238.79:4344/Web/Services/index.php', // TODO: URL produzione
+  baseUrl: 'https://virtustaranto.duckdns.org/Services/index.php', // TODO: URL produzione
   authEndpoint: '/Authentication/Authenticate',
   reservationsEndpoint: '/Reservations/',
   credentials: {
