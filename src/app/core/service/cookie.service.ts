@@ -1,6 +1,5 @@
 // cookie.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface CookiePreferences {
   necessary: boolean;
@@ -13,90 +12,88 @@ export interface CookiePreferences {
   providedIn: 'root'
 })
 export class CookieService {
-  private readonly COOKIE_CONSENT_KEY = 'cookie_preferences';
-  private readonly CONSENT_TIMESTAMP_KEY = 'consent_timestamp';
-  private readonly CONSENT_VERSION = '1.0';
-  
-  private cookiePreferencesSubject = new BehaviorSubject<CookiePreferences | null>(null);
-  public cookiePreferences$ = this.cookiePreferencesSubject.asObservable();
+  private readonly CONSENT_KEY = 'cookie_consent';
+  private readonly PREFERENCES_KEY = 'cookie_preferences';
 
-  constructor() {
-    this.loadPreferences();
-  }
+  constructor() {}
 
-  private loadPreferences(): void {
-    const saved = localStorage.getItem(this.COOKIE_CONSENT_KEY);
-    if (saved) {
-      try {
-        const preferences: CookiePreferences = JSON.parse(saved);
-        this.cookiePreferencesSubject.next(preferences);
-      } catch (error) {
-        console.error('Error parsing cookie preferences:', error);
-        this.cookiePreferencesSubject.next(null);
-      }
-    }
-  }
-
-  public hasConsentGiven(): boolean {
-    return localStorage.getItem(this.COOKIE_CONSENT_KEY) !== null;
-  }
-
-  public savePreferences(preferences: CookiePreferences): void {
-    localStorage.setItem(this.COOKIE_CONSENT_KEY, JSON.stringify(preferences));
-    localStorage.setItem(this.CONSENT_TIMESTAMP_KEY, new Date().toISOString());
-    localStorage.setItem('consent_version', this.CONSENT_VERSION);
+  savePreferences(preferences: CookiePreferences): void {
+    localStorage.setItem(this.PREFERENCES_KEY, JSON.stringify(preferences));
+    localStorage.setItem(this.CONSENT_KEY, 'true');
     
-    this.cookiePreferencesSubject.next(preferences);
-    
-    // Dispatch events for different cookie types
+    // Inizializza i servizi basati sulle preferenze
+    this.initializeServices(preferences);
+  }
+
+  private initializeServices(preferences: CookiePreferences): void {
+    // Inizializza Google Analytics se accettato
     if (preferences.analytics) {
-      window.dispatchEvent(new CustomEvent('analyticsCookiesAccepted'));
-    }
-    if (preferences.marketing) {
-      window.dispatchEvent(new CustomEvent('marketingCookiesAccepted'));
+      this.initializeGoogleAnalytics();
     }
     
-    window.dispatchEvent(new CustomEvent('cookiePreferencesUpdated', { 
-      detail: preferences 
-    }));
+    // Inizializza altri servizi marketing se accettati
+    if (preferences.marketing) {
+      this.initializeMarketingServices();
+    }
   }
 
-  public getPreferences(): CookiePreferences | null {
-    return this.cookiePreferencesSubject.value;
+  private initializeGoogleAnalytics(): void {
+    // Sostituisci 'G-XXXXXXXXXX' con il tuo GA4 Measurement ID
+    const GA_MEASUREMENT_ID = 'G-FD977KZM17';
+    
+    // Carica lo script GA4
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(script);
+
+    // Inizializza gtag
+    script.onload = () => {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      function gtag(...args: any[]) {
+        (window as any).dataLayer.push(args);
+      }
+      (window as any).gtag = gtag;
+      
+      gtag('js', new Date());
+      gtag('config', GA_MEASUREMENT_ID, {
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=Strict;Secure'
+      });
+      
+      console.log('Google Analytics initialized');
+    };
   }
 
-  public canUseAnalytics(): boolean {
-    const preferences = this.getPreferences();
-    return preferences?.analytics || false;
+  private initializeMarketingServices(): void {
+    // Inizializza Facebook Pixel, Google Ads, etc.
+    console.log('Marketing services initialized');
   }
 
-  public canUseMarketing(): boolean {
-    const preferences = this.getPreferences();
-    return preferences?.marketing || false;
+  hasConsentGiven(): boolean {
+    return localStorage.getItem(this.CONSENT_KEY) === 'true';
   }
 
-  public acceptAll(): void {
-    this.savePreferences({
-      necessary: true,
-      analytics: true,
-      marketing: true,
-      preferences: true
+  getPreferences(): CookiePreferences | null {
+    const preferences = localStorage.getItem(this.PREFERENCES_KEY);
+    return preferences ? JSON.parse(preferences) : null;
+  }
+
+  // Metodo per revocare il consenso
+  revokeConsent(): void {
+    localStorage.removeItem(this.CONSENT_KEY);
+    localStorage.removeItem(this.PREFERENCES_KEY);
+    
+    // Rimuovi i cookie di tracking
+    this.removeCookies();
+  }
+
+  private removeCookies(): void {
+    // Rimuovi i cookie di Google Analytics
+    const cookiesToRemove = ['_ga', '_ga_', '_gid', '_gat'];
+    cookiesToRemove.forEach(cookie => {
+      document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}`;
+      document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.${window.location.hostname}`;
     });
-  }
-
-  public acceptNecessaryOnly(): void {
-    this.savePreferences({
-      necessary: true,
-      analytics: false,
-      marketing: false,
-      preferences: false
-    });
-  }
-
-  public clearPreferences(): void {
-    localStorage.removeItem(this.COOKIE_CONSENT_KEY);
-    localStorage.removeItem(this.CONSENT_TIMESTAMP_KEY);
-    localStorage.removeItem('consent_version');
-    this.cookiePreferencesSubject.next(null);
   }
 }

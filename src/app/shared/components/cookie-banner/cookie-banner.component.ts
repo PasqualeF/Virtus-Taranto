@@ -15,7 +15,6 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   showPrivacyPolicy = false;
   private subscriptions: Subscription = new Subscription();
   
-  // Inizializza con tutti i cookie abilitati per default (tranne necessary che è sempre true)
   cookiePreferences: CookiePreferences = {
     necessary: true,
     analytics: true,
@@ -37,6 +36,11 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
     if (existingPreferences) {
       this.cookiePreferences = { ...existingPreferences };
     }
+    
+    // Se l'utente ha già dato il consenso, inizializza i servizi
+    if (this.cookieService.hasConsentGiven() && existingPreferences) {
+      this.initializeAcceptedServices(existingPreferences);
+    }
   }
 
   ngOnDestroy(): void {
@@ -44,26 +48,35 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   }
 
   private checkAndShowBanner(): void {
-    // Mostra sempre il banner se non c'è consenso
     this.showBanner = !this.cookieService.hasConsentGiven();
   }
 
   private setupEventListeners(): void {
-    // Ascolta per eventi custom che forzano la visualizzazione del banner
     const showBannerListener = () => {
       this.checkAndShowBanner();
     };
 
     window.addEventListener('showCookieBanner', showBannerListener);
     
-    // Cleanup subscription per rimuovere l'event listener
     this.subscriptions.add(() => {
       window.removeEventListener('showCookieBanner', showBannerListener);
     });
   }
 
+  private initializeAcceptedServices(preferences: CookiePreferences): void {
+    // Inizializza solo i servizi per cui l'utente ha dato il consenso
+    if (preferences.analytics) {
+      console.log('Initializing analytics services...');
+      // Il CookieService gestisce l'inizializzazione di GA
+    }
+    
+    if (preferences.marketing) {
+      console.log('Initializing marketing services...');
+      // Il CookieService gestisce l'inizializzazione dei servizi marketing
+    }
+  }
+
   acceptAll(): void {
-    // Salva tutte le preferenze come accettate
     const allAcceptedPreferences: CookiePreferences = {
       necessary: true,
       analytics: true,
@@ -86,7 +99,9 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
     this.showPrivacyPolicy = false;
     
     // Dispatch evento per notificare che il consenso è stato dato
-    window.dispatchEvent(new CustomEvent('cookieConsentGiven'));
+    window.dispatchEvent(new CustomEvent('cookieConsentGiven', {
+      detail: this.cookiePreferences
+    }));
   }
 
   toggleDetails(): void {
