@@ -803,7 +803,7 @@
     grid-template-columns: 1fr;
     padding: 1rem;
     gap: 2rem;
-    height: 100vh;
+    height: 200vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -996,7 +996,7 @@
 /* Mobile Version CSS - Basketball Theme */
 .mobile-view {
   width: 100%;
-  min-height: 100vh;
+  min-height: 130vh;
   background: linear-gradient(135deg, #061228 0%, #0c2747 100%);
   overflow: hidden;
   position: relative;
