@@ -1063,6 +1063,16 @@
   line-height: 1.1;
 }
 
+.sottotitolo {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 .virtus-text::before {
   content: '';
   position: absolute;
