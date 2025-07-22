@@ -1,0 +1,708 @@
+<!-- components/booking-form/booking-form.component.html - VERSIONE CON NUOVA LOGICA PRICING -->
+
+<div class="booking-form" @fadeIn>
+
+  <!-- Header with Progress -->
+  <div class="form-header">
+    <div class="header-content">
+      <h1>{{ formTitle }}</h1>
+      <p>{{ formDescription }}</p>
+      
+      <!-- Mostra info prenotazione in modifica -->
+      <div *ngIf="isEditingMode && bookingToEdit" class="edit-info">
+        <small>
+          <span class="material-icons">edit</span>
+          Modifica prenotazione #{{ bookingToEdit.id }} del {{ bookingToEdit.data }}
+        </small>
+      </div>
+    </div>
+    
+    <!-- Progress Bar (solo per nuove prenotazioni) -->
+    <div class="progress-container" *ngIf="!isEditingMode">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step" 
+             [class.step--active]="currentStep >= 1"
+             [class.step--completed]="currentStep > 1">
+          <span class="step-number">1</span>
+          <span class="step-label">Palestra e Data</span>
+        </div>
+        <div class="step" 
+             [class.step--active]="currentStep >= 2"
+             [class.step--completed]="currentStep > 2">
+          <span class="step-number">2</span>
+          <span class="step-label">Orario</span>
+        </div>
+        <div class="step" 
+             [class.step--active]="currentStep >= 3">
+          <span class="step-number">3</span>
+          <span class="step-label">Dettagli</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-banner" *ngIf="error$ | async as error">
+    <span class="material-icons">error_outline</span>
+    <p>{{ error }}</p>
+    <button class="error-close" (click)="setError(null)">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+
+  <!-- Form Content -->
+  <div class="form-content">
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+
+      <!-- STEP 1: Palestra e Data -->
+      <div class="form-step" *ngIf="currentStep === 1" @stepTransition>
+        <div class="step-header">
+          <h2>{{ isEditingMode ? 'Modifica Palestra e Data' : 'Scegli Palestra e Data' }}</h2>
+          <p>{{ isEditingMode ? 'Cambia la palestra o la data della prenotazione' : 'Seleziona la palestra e il giorno per la tua prenotazione' }}</p>
+        </div>
+
+        <div class="form-grid">
+          <!-- Selezione Palestra -->
+          <div class="form-group form-group--large">
+            <label class="form-label" for="palestraId">
+              <span class="material-icons">sports_basketball</span>
+              Palestra
+            </label>
+            
+            <div class="select-wrapper">
+              <select 
+                id="palestraId"
+                formControlName="palestraId" 
+                class="form-select"
+                [class.form-select--error]="isFieldInvalid('palestraId')">
+                <option value="">Seleziona una palestra...</option>
+                <option *ngFor="let palestra of palestre" [value]="palestra.id">
+                  {{ palestra.nome }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="form-error" *ngIf="isFieldInvalid('palestraId')">
+              <span class="material-icons">error</span>
+              {{ getFieldError('palestraId') }}
+            </div>
+            
+            <!-- Info per modalità modifica -->
+            <div *ngIf="isEditingMode" class="edit-notice">
+              <small>
+                <span class="material-icons">info</span>
+                La palestra può essere modificata solo se non ci sono conflitti
+              </small>
+            </div>
+          </div>
+
+          <!-- Selezione Data -->
+          <div class="form-group form-group--large">
+            <label class="form-label" for="date">
+              <span class="material-icons">calendar_today</span>
+              Data
+            </label>
+            <input 
+              id="date"
+              type="date" 
+              formControlName="date"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid('date')"
+              [min]="minDate"
+              [max]="maxDate">
+            <div class="form-error" *ngIf="isFieldInvalid('date')">
+              <span class="material-icons">error</span>
+              {{ getFieldError('date') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Palestra Selezionata Info -->
+        <div class="selected-info" *ngIf="selectedPalestra">
+          <div class="info-card">
+            <div class="info-icon">
+              <span class="material-icons">place</span>
+            </div>
+            <div class="info-content">
+              <h3>{{ selectedPalestra.nome }}</h3>
+              <p>{{ selectedPalestra.indirizzo || 'Indirizzo non disponibile' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Date Info -->
+        <div class="selected-info" *ngIf="formattedSelectedDate">
+          <div class="info-card">
+            <div class="info-icon">
+              <span class="material-icons">event</span>
+            </div>
+            <div class="info-content">
+              <h3>{{ formattedSelectedDate }}</h3>
+              <p>Data {{ isEditingMode ? 'per la modifica' : 'selezionata per la prenotazione' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Selezione Orario con Time Slot Cards -->
+      <div class="form-step" *ngIf="currentStep === 2" @stepTransition>
+        <div class="step-header">
+          <h2>{{ isEditingMode ? 'Modifica l\'Orario' : 'Seleziona l\'Orario' }}</h2>
+          <p>{{ isEditingMode ? 'Cambia l\'orario della tua prenotazione' : 'Scegli uno degli slot disponibili per la tua prenotazione' }}</p>
+        </div>
+
+        <!-- Info sulla palestra e data -->
+        <div class="selected-info" *ngIf="selectedPalestra && formattedSelectedDate">
+          <div class="info-card info-card--booking">
+            <div class="info-icon">
+              <span class="material-icons">info</span>
+            </div>
+            <div class="info-content">
+              <h3>{{ selectedPalestra.nome }} - {{ formattedSelectedDate }}</h3>
+              <p>{{ isEditingMode ? 'Scegli un nuovo orario per la modifica' : 'Scegli uno degli slot disponibili qui sotto' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Pricing Aggiornata -->
+        <div class="pricing-info" *ngIf="!isEditingMode || !selectedTimeSlot">
+          <div class="info-card info-card--pricing">
+            <div class="info-icon">
+              <span class="material-icons">euro</span>
+            </div>
+            <div class="info-content">
+              <h3>Struttura Prezzi</h3>
+              
+              <!-- Costi Fissi -->
+              <div class="pricing-section">
+                <h4>Costi Fissi (sempre applicati)</h4>
+                <div class="pricing-grid">
+                  <div class="pricing-item">
+                    <span class="pricing-time">Spogliatoio</span>
+                    <span class="pricing-cost">€ {{ costiFissi.spogliatoio }}</span>
+                  </div>
+                  <div class="pricing-item">
+                    <span class="pricing-time">Custodia</span>
+                    <span class="pricing-cost">€ {{ costiFissi.custodia }}</span>
+                  </div>
+                  <div class="pricing-item">
+                    <span class="pricing-time">Riscaldamento</span>
+                    <span class="pricing-cost">€ {{ costiFissi.riscaldamento }}</span>
+                  </div>
+                </div>
+                <div class="pricing-total">
+                  <strong>Totale Servizi: €{{ costiFissi.spogliatoio + costiFissi.custodia + costiFissi.riscaldamento }}</strong>
+                </div>
+              </div>
+
+              <!-- Fasce Orarie -->
+              <div class="pricing-section">
+                <h4>Tariffe Orarie</h4>
+                <div class="pricing-grid">
+                  <div *ngFor="let fascia of fasceOrarieDisponibili" class="pricing-item">
+                    <span class="pricing-time">{{ fascia.descrizione }}</span>
+                    <span class="pricing-cost">€{{ fascia.prezzoOrario }}/h</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Esempio calcolo -->
+              <div class="pricing-example">
+                <small>
+                  <strong>Esempio:</strong> 1h dalle 08:00 = €35 (servizi) + €9 (1h) = €44 totali<br>
+                  <strong>Esempio:</strong> 1h30 dalle 08:00 = €35 (servizi) + €9 (1h) + €4.50 (30min) = €48.50 totali
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div class="loading-section" *ngIf="(loading$ | async) && !isEditingMode">
+          <div class="loading-spinner-large">
+            <div class="spinner"></div>
+          </div>
+          <p>Caricamento disponibilità...</p>
+        </div>
+
+        <!-- Time Slots Grid - MATTINA (8:00-15:00) -->
+        <div class="time-slots-section" *ngIf="!(loading$ | async) || isEditingMode">
+          <div class="slots-header">
+            <h3>
+              <span class="material-icons">wb_sunny</span>
+              Mattina/Primo Pomeriggio (8:00 - 15:00)
+            </h3>
+            <p>Slot disponibili per la mattinata - €{{ fasceOrarie[0].prezzoOrario }}/h</p>
+          </div>
+
+          <div class="time-slots-grid">
+            <!-- Slot mattina 1 ora -->
+            <button 
+              type="button"
+              *ngFor="let slot of morningSlots1h" 
+              class="time-slot-card"
+              [class.slot--available]="isSlotAvailable(slot) || isEditingMode"
+              [class.slot--unavailable]="!isSlotAvailable(slot) && !isEditingMode"
+              [class.slot--selected]="isSlotSelected(slot)"
+              [disabled]="!isSlotAvailable(slot) && !isEditingMode"
+              (click)="selectTimeSlot(slot)">
+              
+              <div class="slot-header">
+                <span class="slot-time">{{ slot.timeLabel }}</span>
+                <span class="slot-duration">1h</span>
+              </div>
+              
+              <div class="slot-status">
+                <span class="material-icons" *ngIf="isSlotAvailable(slot) || isEditingMode">check_circle</span>
+                <span class="material-icons" *ngIf="!isSlotAvailable(slot) && !isEditingMode">block</span>
+                <span class="status-text">
+                  {{ (isSlotAvailable(slot) || isEditingMode) ? 'Disponibile' : 'Occupato' }}
+                </span>
+              </div>
+              
+              <!-- Prezzo calcolato -->
+              <div class="slot-pricing" *ngIf="calcolaPrezzoTimeSlot(slot) as prezzo">
+                <small>
+                  Servizi: <strong>€{{ prezzo.costoFisso }}</strong><br>
+                  Orario: <strong>€{{ prezzo.costoOrario }}</strong><br>
+                  <span class="total-price">Totale: <strong>€{{ prezzo.costoTotale }}</strong></span>
+                </small>
+              </div>
+              
+              <!-- Info conflitto se presente -->
+              <div class="slot-conflict" *ngIf="!isSlotAvailable(slot) && slot.conflictInfo && !isEditingMode">
+                <small>{{ slot.conflictInfo }}</small>
+              </div>
+            </button>
+
+            <!-- Slot mattina 1 ora e 30 -->
+            <button 
+              type="button"
+              *ngFor="let slot of morningSlots1h30" 
+              class="time-slot-card slot--extended"
+              [class.slot--available]="isSlotAvailable(slot) || isEditingMode"
+              [class.slot--unavailable]="!isSlotAvailable(slot) && !isEditingMode"
+              [class.slot--selected]="isSlotSelected(slot)"
+              [disabled]="!isSlotAvailable(slot) && !isEditingMode"
+              (click)="selectTimeSlot(slot)">
+              
+              <div class="slot-header">
+                <span class="slot-time">{{ slot.timeLabel }}</span>
+                <span class="slot-duration slot-duration--extended">1h30</span>
+              </div>
+              
+              <div class="slot-status">
+                <span class="material-icons" *ngIf="isSlotAvailable(slot) || isEditingMode">check_circle</span>
+                <span class="material-icons" *ngIf="!isSlotAvailable(slot) && !isEditingMode">block</span>
+                <span class="status-text">
+                  {{ (isSlotAvailable(slot) || isEditingMode) ? 'Disponibile' : 'Occupato' }}
+                </span>
+              </div>
+              
+              <!-- Prezzo calcolato -->
+              <div class="slot-pricing" *ngIf="calcolaPrezzoTimeSlot(slot) as prezzo">
+                <small>
+                  Servizi: <strong>€{{ prezzo.costoFisso }}</strong><br>
+                  {{ prezzo.dettaglioOrario }}<br>
+                  <span class="total-price">Totale: <strong>€{{ prezzo.costoTotale }}</strong></span>
+                </small>
+              </div>
+              
+              <div class="slot-conflict" *ngIf="!isSlotAvailable(slot) && slot.conflictInfo && !isEditingMode">
+                <small>{{ slot.conflictInfo }}</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Time Slots Grid - POMERIGGIO (15:00-17:00) -->
+        <div class="time-slots-section" *ngIf="!(loading$ | async) || isEditingMode">
+          <div class="slots-header">
+            <h3>
+              <span class="material-icons">wb_cloudy</span>
+              Pomeriggio (15:00 - 17:00)
+            </h3>
+            <p>Slot disponibili per il pomeriggio - €{{ fasceOrarie[1].prezzoOrario }}/h</p>
+          </div>
+
+          <div class="time-slots-grid">
+            <!-- Slot pomeriggio 1 ora -->
+            <button 
+              type="button"
+              *ngFor="let slot of eveningSlots1h" 
+              class="time-slot-card"
+              [class.slot--available]="isSlotAvailable(slot) || isEditingMode"
+              [class.slot--unavailable]="!isSlotAvailable(slot) && !isEditingMode"
+              [class.slot--selected]="isSlotSelected(slot)"
+              [disabled]="!isSlotAvailable(slot) && !isEditingMode"
+              (click)="selectTimeSlot(slot)">
+              
+              <div class="slot-header">
+                <span class="slot-time">{{ slot.timeLabel }}</span>
+                <span class="slot-duration">1h</span>
+              </div>
+              
+              <div class="slot-status">
+                <span class="material-icons" *ngIf="isSlotAvailable(slot) || isEditingMode">check_circle</span>
+                <span class="material-icons" *ngIf="!isSlotAvailable(slot) && !isEditingMode">block</span>
+                <span class="status-text">
+                  {{ (isSlotAvailable(slot) || isEditingMode) ? 'Disponibile' : 'Occupato' }}
+                </span>
+              </div>
+              
+              <!-- Prezzo calcolato -->
+              <div class="slot-pricing" *ngIf="calcolaPrezzoTimeSlot(slot) as prezzo">
+                <small>
+                  Servizi: <strong>€{{ prezzo.costoFisso }}</strong><br>
+                  Orario: <strong>€{{ prezzo.costoOrario }}</strong><br>
+                  <span class="total-price">Totale: <strong>€{{ prezzo.costoTotale }}</strong></span>
+                </small>
+              </div>
+              
+              <div class="slot-conflict" *ngIf="!isSlotAvailable(slot) && slot.conflictInfo && !isEditingMode">
+                <small>{{ slot.conflictInfo }}</small>
+              </div>
+            </button>
+
+            <!-- Slot pomeriggio 1 ora e 30 -->
+            <button 
+              type="button"
+              *ngFor="let slot of eveningSlots1h30" 
+              class="time-slot-card slot--extended"
+              [class.slot--available]="isSlotAvailable(slot) || isEditingMode"
+              [class.slot--unavailable]="!isSlotAvailable(slot) && !isEditingMode"
+              [class.slot--selected]="isSlotSelected(slot)"
+              [disabled]="!isSlotAvailable(slot) && !isEditingMode"
+              (click)="selectTimeSlot(slot)">
+              
+              <div class="slot-header">
+                <span class="slot-time">{{ slot.timeLabel }}</span>
+                <span class="slot-duration slot-duration--extended">1h30</span>
+              </div>
+              
+              <div class="slot-status">
+                <span class="material-icons" *ngIf="isSlotAvailable(slot) || isEditingMode">check_circle</span>
+                <span class="material-icons" *ngIf="!isSlotAvailable(slot) && !isEditingMode">block</span>
+                <span class="status-text">
+                  {{ (isSlotAvailable(slot) || isEditingMode) ? 'Disponibile' : 'Occupato' }}
+                </span>
+              </div>
+              
+              <!-- Prezzo calcolato -->
+              <div class="slot-pricing" *ngIf="calcolaPrezzoTimeSlot(slot) as prezzo">
+                <small>
+                  Servizi: <strong>€{{ prezzo.costoFisso }}</strong><br>
+                  {{ prezzo.dettaglioOrario }}<br>
+                  <span class="total-price">Totale: <strong>€{{ prezzo.costoTotale }}</strong></span>
+                </small>
+              </div>
+              
+              <div class="slot-conflict" *ngIf="!isSlotAvailable(slot) && slot.conflictInfo && !isEditingMode">
+                <small>{{ slot.conflictInfo }}</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messaggio fascia non disponibile 17:00-21:00 -->
+        <div class="unavailable-period" *ngIf="!(loading$ | async) || isEditingMode">
+          <div class="info-card info-card--warning">
+            <div class="info-icon">
+              <span class="material-icons">schedule</span>
+            </div>
+            <div class="info-content">
+              <h3>Fascia 17:00 - 21:00</h3>
+              <p><strong>Non disponibile</strong> - Palestra già occupata per attività fisse</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Slots Grid - TARDA SERA (21:00-23:30) -->
+        <div class="time-slots-section" *ngIf="(!(loading$ | async) || isEditingMode) && eveningSlots1h.length > 0">
+          <div class="slots-header">
+            <h3>
+              <span class="material-icons">nights_stay</span>
+              Tarda Sera (21:00 - 23:30)
+            </h3>
+            <p>Slot disponibili per la tarda sera - €{{ fasceOrarie[3].prezzoOrario }}/h</p>
+          </div>
+
+          <!-- Nota: i slot della tarda sera saranno generati automaticamente se esistono -->
+        </div>
+
+        <!-- No slots available message -->
+        <div class="no-slots" *ngIf="!(loading$ | async) && allSlotsEmpty && !isEditingMode">
+          <span class="material-icons">event_busy</span>
+          <p>Nessuno slot disponibile per questa data</p>
+          <small>Prova a selezionare un'altra data nel primo step</small>
+        </div>
+
+        <!-- Selected Time Info -->
+        <div class="selected-info" *ngIf="selectedTimeSlot">
+          <div class="info-card info-card--selected">
+            <div class="info-icon">
+              <span class="material-icons">check_circle</span>
+            </div>
+            <div class="info-content" *ngIf="getDettaglioPrezzo() as dettaglio">
+              <h3>{{ selectedTimeSlot.timeLabel }} ({{ selectedTimeSlot.duration }})</h3>
+              <p>
+                {{ isEditingMode ? 'Nuovo orario selezionato' : 'Orario selezionato per la prenotazione' }}<br>
+                <strong>Prezzo: {{ getPrezzoPrenotazione() }}</strong><br>
+                <small>
+                  Servizi fissi: €{{ dettaglio.costoFisso }} + 
+                  Orario ({{ dettaglio.dettaglioOrario }}): €{{ dettaglio.costoOrario }}
+                </small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Dettagli -->
+      <div class="form-step" *ngIf="currentStep === 3" @stepTransition>
+        <div class="step-header">
+          <h2>{{ isEditingMode ? 'Modifica Dettagli' : 'Dettagli Prenotazione' }}</h2>
+          <p>{{ isEditingMode ? 'Aggiorna le informazioni della prenotazione' : 'Aggiungi le informazioni finali per completare la prenotazione' }}</p>
+        </div>
+
+        <!-- Riepilogo -->
+        <div class="booking-summary">
+          <h3>{{ isEditingMode ? 'Riepilogo Modifiche' : 'Riepilogo Prenotazione' }}</h3>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="material-icons">place</span>
+              <div>
+                <strong>Palestra</strong>
+                <p>{{ selectedPalestraName }}</p>
+              </div>
+            </div>
+            <div class="summary-item">
+              <span class="material-icons">event</span>
+              <div>
+                <strong>Data</strong>
+                <p>{{ formattedSelectedDate }}</p>
+              </div>
+            </div>
+            <div class="summary-item">
+              <span class="material-icons">schedule</span>
+              <div>
+                <strong>Orario</strong>
+                <p>{{ selectedTimeSlot?.timeLabel }} ({{ selectedTimeSlot?.duration }})</p>
+              </div>
+            </div>
+            <div class="summary-item summary-item--price">
+              <span class="material-icons">euro</span>
+              <div>
+                <strong>Prezzo Totale</strong>
+                <p class="price-amount">{{ getPrezzoPrenotazione() }}</p>
+                <small *ngIf="getDettaglioPrezzo() as dettaglio">
+                  Servizi: €{{ dettaglio.costoFisso }} + Orario: €{{ dettaglio.costoOrario }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="form-grid">
+          <div class="form-group form-group--large">
+            <label class="form-label" for="title">
+              <span class="material-icons">category</span>
+              Tipo di Prenotazione
+            </label>
+            
+            <div class="select-wrapper">
+              <select 
+                id="title"
+                formControlName="title"
+                class="form-select"
+                [class.form-select--error]="isFieldInvalid('title')">
+                <option value="">Seleziona il tipo di prenotazione...</option>
+                <option *ngFor="let tipo of tipiPrenotazione" [value]="tipo.value">
+                  {{ tipo.label }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="form-error" *ngIf="isFieldInvalid('title')">
+              <span class="material-icons">error</span>
+              {{ getFieldError('title') }}
+            </div>
+          </div>
+
+          <div class="form-group form-group--large">
+            <label class="form-label" for="description">
+              <span class="material-icons">description</span>
+              Descrizione (opzionale)
+            </label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              class="form-textarea"
+              rows="3"
+              placeholder="Aggiungi dettagli aggiuntivi sulla prenotazione..."></textarea>
+          </div>
+        </div>
+
+        <!-- Terms (solo per nuove prenotazioni) -->
+        <div class="form-group form-group--checkbox" *ngIf="!isEditingMode">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              formControlName="acceptTerms"
+              class="checkbox-input">
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">
+              Accetto i <a href="#" class="terms-link">termini e condizioni</a> per l'utilizzo delle palestre
+            </span>
+          </label>
+          <div class="form-error" *ngIf="isFieldInvalid('acceptTerms')">
+            <span class="material-icons">error</span>
+            {{ getFieldError('acceptTerms') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="form-navigation">
+        <!-- Pulsante Annulla per modalità modifica -->
+        <button 
+          type="button" 
+          class="btn btn--secondary"
+          *ngIf="isEditingMode"
+          (click)="cancelEdit()">
+          <span class="material-icons">close</span>
+          Annulla
+        </button>
+
+        <!-- Pulsante Indietro -->
+        <button 
+          type="button" 
+          class="btn btn--secondary"
+          *ngIf="currentStep > 1 && !isEditingMode"
+          (click)="previousStep()">
+          <span class="material-icons">arrow_back</span>
+          Indietro
+        </button>
+
+        <div class="nav-spacer" *ngIf="!isEditingMode"></div>
+
+        <!-- Pulsante Avanti -->
+        <button 
+          type="button" 
+          class="btn btn--primary"
+          *ngIf="currentStep < totalSteps"
+          (click)="nextStep()"
+          [disabled]="!canProceedToNextStep">
+          Avanti
+          <span class="material-icons">arrow_forward</span>
+        </button>
+
+        <!-- Pulsante Submit -->
+        <button 
+          type="submit" 
+          class="btn"
+          [class.btn--success]="!isEditingMode"
+          [class.btn--primary]="isEditingMode"
+          *ngIf="currentStep === totalSteps"
+          [disabled]="(loading$ | async) || !bookingForm.valid">
+          
+          <span *ngIf="!(loading$ | async)" class="btn-content">
+            <span class="material-icons">{{ isEditingMode ? 'save' : 'check' }}</span>
+            {{ isEditingMode ? 'Salva Modifiche' : 'Conferma Prenotazione' }}
+          </span>
+          
+          <span *ngIf="loading$ | async" class="btn-loading">
+            <div class="spinner"></div>
+            {{ isEditingMode ? 'Salvataggio...' : 'Creazione in corso...' }}
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+<!-- Success Modal (solo per nuove prenotazioni) -->
+<div class="modal-overlay" *ngIf="showSuccessModal && !isEditingMode" (click)="closeSuccessModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()" @fadeIn>
+    
+    <div class="success-header">
+      <div class="success-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <h2>Prenotazione Confermata!</h2>
+      <p>La tua prenotazione è stata creata con successo</p>
+    </div>
+
+    <div class="success-details" *ngIf="reservationCreated">
+      <div class="detail-item">
+        <span class="material-icons">confirmation_number</span>
+        <div>
+          <strong>ID Prenotazione</strong>
+          <p>{{ reservationCreated.referenceNumber || '#' + reservationCreated.id }}</p>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <span class="material-icons">place</span>
+        <div>
+          <strong>Palestra</strong>
+          <p>{{ selectedPalestraName }}</p>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <span class="material-icons">event</span>
+        <div>
+          <strong>Data e Orario</strong>
+          <p>{{ formattedSelectedDate }} • {{ selectedTimeSlot?.timeLabel }} ({{ selectedTimeSlot?.duration }})</p>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <span class="material-icons">category</span>
+        <div>
+          <strong>Tipo</strong>
+          <p>{{ getSelectedTipoLabel() }}</p>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <span class="material-icons">euro</span>
+        <div>
+          <strong>Prezzo Totale</strong>
+          <p>{{ getPrezzoPrenotazione() }}</p>
+          <small *ngIf="getDettaglioPrezzo() as dettaglio">
+            Servizi fissi: €{{ dettaglio.costoFisso }} + Orario: €{{ dettaglio.costoOrario }}
+          </small>
+        </div>
+      </div>
+
+      <div class="detail-item" *ngIf="reservationCreated.isPendingApproval">
+        <span class="material-icons">pending</span>
+        <div>
+          <strong>Stato</strong>
+          <p>In attesa di approvazione</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <button class="btn btn--secondary" (click)="closeSuccessModal()">
+        <span class="material-icons">add</span>
+        Nuova Prenotazione
+      </button>
+      
+      <button class="btn btn--primary" (click)="closeSuccessModal()">
+        <span class="material-icons">list</span>
+        Vedi Le Mie Prenotazioni
+      </button>
+    </div>
+
+  </div>
+</div>

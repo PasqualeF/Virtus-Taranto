@@ -1,9 +1,6 @@
 <div class="titolo-1">Orari Allenamenti</div>
 
 <div class="orari-container" [@fadeIn]>
- 
-
-  <!-- Loading State -->
   <div class="loading-container" *ngIf="isLoading">
     <div class="loader">
       <i class="fas fa-spinner fa-spin"></i>
@@ -11,7 +8,6 @@
     <p>Caricamento orari allenamenti...</p>
   </div>
 
-  <!-- Main Content -->
   <div *ngIf="!isLoading">
     <div class="orari-header">
       <div class="header-actions">
@@ -25,7 +21,6 @@
         </button>
       </div>
 
-      <!-- Statistiche Header -->
       <div class="header-stats" *ngIf="orariAllenamenti.length > 0">
         <div class="stat-item">
           <i class="fas fa-calendar-alt stat-icon"></i>
@@ -72,10 +67,8 @@
       </div>
     </div>
     
-    <!-- Vista desktop - Tabella orari allenamenti -->
     <div class="desktop-view" *ngIf="!isMobile && orariAllenamenti.length > 0">
       <table mat-table [dataSource]="dataSource" class="orari-table">
-        <!-- Colonna Gruppi -->
         <ng-container matColumnDef="gruppo">
           <th mat-header-cell *matHeaderCellDef>
             <i class="fas fa-users"></i> Squadra
@@ -85,7 +78,6 @@
           </td>
         </ng-container>
         
-        <!-- Colonne Giorni -->
         <ng-container *ngFor="let giorno of giorni" [matColumnDef]="giorno">
           <th mat-header-cell *matHeaderCellDef>
             <i class="fas fa-calendar-day"></i> {{ giorno }}
@@ -117,10 +109,9 @@
                   {{ allenamento.description | slice:0:50 }}<span *ngIf="allenamento.description.length > 50">...</span>
                 </div>
 
-                <!-- Indicatore di connessione per ogni card -->
                 <div class="connection-indicator" 
-                     [class.disconnected]="!isConnectedToLibreBooking"
-                     [title]="isConnectedToLibreBooking ? 'Dati live da LibreBooking' : 'Dati locali'">
+                     [class.disconnected]="!isConnectedToBackend"
+                     [title]="isConnectedToBackend ? 'Dati live dal backend' : 'Dati locali/fallback'">
                 </div>
               </div>
             </div>
@@ -132,13 +123,11 @@
           </td>
         </ng-container>
         
-        <!-- Costruzione tabella -->
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
     
-    <!-- Vista mobile -->
     <div class="mobile-view" *ngIf="isMobile && orariAllenamenti.length > 0">
       <div class="days-selector-container">
         <div class="days-selector">
@@ -161,7 +150,8 @@
             <div class="mobile-allenamenti-container">
               <div class="mobile-allenamento-card" 
                    *ngFor="let allenamento of squadra.allenamenti"
-                   [attr.data-reference]="allenamento.referenceNumber">
+                   [attr.data-reference]="allenamento.referenceNumber"
+                   (click)="onAllenamentoClick(allenamento)">
                 <div class="mobile-allenamento-time">
                   <i class="fas fa-clock"></i> {{ allenamento.orario }}
                   <span class="recurring-badge" *ngIf="allenamento.isRecurring">
@@ -171,8 +161,11 @@
                 <div class="mobile-allenamento-place">
                   <i class="fas fa-map-marker-alt"></i> {{ allenamento.palestra }}
                 </div>
-                <div class="mobile-allenamento-title" *ngIf="allenamento.title">
+                <div class="mobile-allenamento-title" *ngIf="allenamento.title && allenamento.title.trim()">
                   <i class="fas fa-tag"></i> {{ allenamento.title }}
+                </div>
+                <div class="mobile-allenamento-description" *ngIf="allenamento.description && allenamento.description.trim()">
+                  <i class="fas fa-info-circle"></i> {{ allenamento.description | slice:0:100 }}<span *ngIf="allenamento.description.length > 100">...</span>
                 </div>
               </div>
             </div>
@@ -186,7 +179,6 @@
       </div>
     </div>
 
-    <!-- Messaggio quando non ci sono dati -->
     <div class="no-data-message" *ngIf="orariAllenamenti.length === 0 && !isLoading">
       <div class="no-data-icon">
         <i class="fas fa-calendar-times"></i>
@@ -204,13 +196,24 @@
         </button>
       </div>
     </div>
+
+    <div class="error-message" *ngIf="error && !isLoading">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h4>Attenzione</h4>
+      <p>{{ error }}</p>
+      <div class="error-actions">
+        <button class="action-btn primary" (click)="refreshData()">
+          <i class="fas fa-sync-alt"></i>
+          Riprova
+        </button>
+        <button class="action-btn secondary" (click)="useFallbackData()">
+          <i class="fas fa-database"></i>
+          Usa dati locali
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Debug Info (visibile solo in development) -->
-  <div class="debug-info" *ngIf="!isConnectedToLibreBooking && orariAllenamenti.length > 0">
-    <details>
-      <summary>ℹ️ Informazioni Debug</summary>
-      <pre>{{ getDebugInfo() }}</pre>
-    </details>
-  </div>
 </div>

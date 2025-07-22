@@ -2,6 +2,7 @@
 :host {
   display: block;
   min-height: 100vh;
+    padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;
@@ -23,6 +24,7 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 3rem;
+  padding-top: 9vh;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 2px;

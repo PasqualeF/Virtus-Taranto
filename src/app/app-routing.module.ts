@@ -1,3 +1,4 @@
+// app-routing.module.ts - VERSIONE AGGIORNATA
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
@@ -26,7 +27,7 @@ import { AchievementsComponent } from './features/whoelse/achivements/achievemen
 import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
-  // Tutte le route sono ora accessibili liberamente
+  // HOME
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   
@@ -63,7 +64,7 @@ export const routes: Routes = [
   { path: 'eventi/tornei', component: TorneiComponent },
   { path: 'eventi/eventiSpeciali', component: EventiSpecialiComponent },
 
-  // SERVIZI
+  // SERVIZI (non prenotazioni)
   { path: 'servizi/visitaMedica', component: VisitaMedicaComponent }, 
   { path: 'servizi/iscrizioni', component: IscrizioniGiovaniliComponent }, 
   { path: 'servizi/codiceEtico', component: CodiceEticoComponent },
@@ -72,6 +73,40 @@ export const routes: Routes = [
   // SHOP E CALENDARIO
   { path: 'shop', component: ShopComponent },
   { path: 'calendario', component: CalendarComponent },
+
+  // ===== SISTEMA PRENOTAZIONI (MODULO ISOLATO) =====
+  {
+    path: 'servizi/prenotazioni',
+    loadChildren: () => import('./features/servizi/prenotazioni/prenotazioni.module')
+      .then(m => m.PrenotazioniModule),
+    data: { 
+      title: 'Sistema Prenotazioni',
+      description: 'Gestione prenotazioni palestre - Area riservata',
+    }
+  },
+
+  // ===== REDIRECT PER COMPATIBILITÀ =====
+  // Redirect delle vecchie route verso il nuovo sistema
+  { 
+    path: 'servizi/login', 
+    redirectTo: 'servizi/prenotazioni', 
+    pathMatch: 'full' 
+  },
+  { 
+    path: 'servizi/register', 
+    redirectTo: 'servizi/prenotazioni', 
+    pathMatch: 'full' 
+  },
+  { 
+    path: 'servizi/profile', 
+    redirectTo: 'servizi/prenotazioni', 
+    pathMatch: 'full' 
+  },
+  { 
+    path: 'servizi/book', 
+    redirectTo: 'servizi/prenotazioni', 
+    pathMatch: 'full' 
+  },
 
   // REDIRECT PER ROUTE NON TROVATE
   { path: '**', redirectTo: '/home' }

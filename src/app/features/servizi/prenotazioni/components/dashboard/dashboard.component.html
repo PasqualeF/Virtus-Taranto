@@ -1,0 +1,379 @@
+<!-- components/dashboard/dashboard.component.html - AGGIORNATO CON BACKEND -->
+
+<div class="dashboard" @fadeInUp>
+  
+  <!-- Welcome Header -->
+  <div class="welcome-header" @slideIn>
+    <div class="welcome-content">
+      <div class="welcome-text">
+        <h1>{{ getGreeting() }}, {{ getUserName() }}! 👋</h1>
+        <p>{{ getCurrentDateFormatted() }} • {{ getCurrentTimeFormatted() }}</p>
+      </div>
+      
+      <div class="welcome-actions">
+        <button class="btn btn--primary" (click)="createNewBooking()">
+          <span class="material-icons">add</span>
+          Nuova Prenotazione
+        </button>
+        
+        <button class="btn btn--secondary" (click)="refreshData()" [disabled]="isLoading">
+          <span class="material-icons" [class.rotating]="isLoading">refresh</span>
+          {{ isLoading ? 'Caricamento...' : 'Aggiorna' }}
+        </button>
+      </div>
+    </div>
+    
+    <!-- Quick Stats Bar -->
+    <div class="quick-stats" *ngIf="stats$ | async as stats; else loadingStats">
+      <div class="stat-item">
+        <span class="stat-number">{{ stats.activeBookings }}</span>
+        <span class="stat-label">Prenotazioni Attive</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">{{ formatNumber(stats.totalHours, 'h') }}</span>
+        <span class="stat-label">Ore Totali</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">{{ stats.gymsUsed }}</span>
+        <span class="stat-label">Palestre Utilizzate</span>
+      </div>
+    </div>
+
+    <ng-template #loadingStats>
+      <div class="quick-stats">
+        <div class="stat-item">
+          <span class="stat-number">—</span>
+          <span class="stat-label">Caricamento...</span>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="hasError && !isLoading" class="error-banner" @slideIn>
+    <div class="error-content">
+      <span class="material-icons">error_outline</span>
+      <div class="error-text">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div class="error-actions">
+        <button class="btn btn--outline" (click)="retryLoading()">
+          <span class="material-icons">refresh</span>
+          Riprova
+        </button>
+        <button class="action-btn" (click)="closeError()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <div class="loading-grid">
+      <div class="loading-card" *ngFor="let item of [1,2,3,4]"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="dashboard-content">
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid" @slideIn>
+      <div class="stat-card stat-card--primary" *ngIf="stats$ | async as stats">
+        <div class="stat-card__icon">
+          <span class="material-icons">event_available</span>
+        </div>
+        <div class="stat-card__content">
+          <h3>{{ stats.activeBookings }}</h3>
+          <p>Prenotazioni Attive</p>
+          <span class="stat-card__trend stat-card__trend--{{ getTrendForStat('active').type }}">
+            {{ getTrendForStat('active').text }}
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--success" *ngIf="stats$ | async as stats">
+        <div class="stat-card__icon">
+          <span class="material-icons">schedule</span>
+        </div>
+        <div class="stat-card__content">
+          <h3>{{ formatNumber(stats.totalHours, 'h') }}</h3>
+          <p>Ore Prenotate</p>
+          <span class="stat-card__trend stat-card__trend--{{ getTrendForStat('hours').type }}">
+            {{ getTrendForStat('hours').text }}
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--info" *ngIf="stats$ | async as stats">
+        <div class="stat-card__icon">
+          <span class="material-icons">sports_basketball</span>
+        </div>
+        <div class="stat-card__content">
+          <h3>{{ stats.gymsUsed }}</h3>
+          <p>Palestre Diverse</p>
+          <span class="stat-card__trend stat-card__trend--{{ getTrendForStat('gyms').type }}">
+            {{ getTrendForStat('gyms').text }}
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--warning" *ngIf="stats$ | async as stats">
+        <div class="stat-card__icon">
+          <span class="material-icons">upcoming</span>
+        </div>
+        <div class="stat-card__content">
+          <h3>{{ stats.upcomingBookings }}</h3>
+          <p>Prossime Prenotazioni</p>
+          <span class="stat-card__trend stat-card__trend--{{ getTrendForStat('upcoming').type }}">
+            {{ getTrendForStat('upcoming').text }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Schedule -->
+    <div class="today-schedule" @slideIn>
+      <div class="section-header">
+        <div>
+          <h2>Programma di Oggi</h2>
+          <p>Le tue prenotazioni per oggi</p>
+        </div>
+      </div>
+
+      <!-- Mostra programma se presente -->
+      <div class="schedule-content" *ngIf="hasBookingsToday(); else noBookingsToday">
+        <div class="schedule-card" *ngIf="getNextTodayBooking() as booking" (click)="onBookingClick(booking)">
+          <div class="schedule-card__time">
+            <span class="time">{{ booking.orario }}</span>
+            <span class="status status--{{ getStatusColor(booking.stato) }}">
+              {{ getStatusLabel(booking.stato) }}
+            </span>
+          </div>
+          <div class="schedule-card__content">
+            <h3>{{ booking.palestra }}</h3>
+            <p>{{ booking.tipo }}</p>
+          </div>
+          <div class="schedule-card__actions">
+            <button class="btn btn--small btn--outline" (click)="onBookingClick(booking); $event.stopPropagation()">
+              Dettagli
+            </button>
+            <button 
+              class="btn btn--small btn--outline" 
+              (click)="modifyBooking(booking); $event.stopPropagation()"
+              [disabled]="!booking.canModify">
+              Modifica
+            </button>
+          </div>
+        </div>
+
+        <!-- Mostra riepilogo se ci sono più prenotazioni oggi -->
+        <div class="today-summary" *ngIf="todaySchedule$ | async as schedule">
+          <p *ngIf="schedule.totalBookings > 1">
+            <strong>{{ schedule.totalBookings }}</strong> prenotazioni oggi • 
+            <strong>{{ schedule.completedBookings }}</strong> completate
+          </p>
+        </div>
+      </div>
+
+      <ng-template #noBookingsToday>
+        <div class="empty-state">
+          <span class="material-icons">event_busy</span>
+          <h3>Nessuna prenotazione oggi</h3>
+          <p>Approfitta del tempo libero o prenota una nuova sessione!</p>
+          <button class="btn btn--primary" (click)="createNewBooking()">
+            Prenota Ora
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Upcoming Bookings -->
+    <div class="upcoming-bookings" @slideIn>
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Prossime Prenotazioni</h2>
+          <p>I tuoi impegni della settimana</p>
+        </div>
+        <button class="btn btn--outline" (click)="viewMyBookings()">
+          Vedi Tutte
+          <span class="material-icons">arrow_forward</span>
+        </button>
+      </div>
+
+      <!-- Lista prenotazioni -->
+      <div class="bookings-list" *ngIf="upcomingBookings$ | async as bookings; else loadingBookings">
+        <div 
+          class="booking-card" 
+          *ngFor="let booking of bookings; trackBy: trackByBookingId"
+          (click)="onBookingClick(booking)"
+          @slideIn>
+          
+          <div class="booking-card__date">
+            <span class="day">{{ booking.data }}</span>
+            <span class="time">{{ booking.orario }}</span>
+          </div>
+          
+          <div class="booking-card__content">
+            <h3>{{ booking.palestra }}</h3>
+            <p>{{ booking.tipo }}</p>
+            <span class="status status--{{ getStatusColor(booking.stato) }}">
+              {{ getStatusLabel(booking.stato) }}
+            </span>
+          </div>
+          
+          <div class="booking-card__actions">
+            <button 
+              class="action-btn" 
+              title="Visualizza dettagli"
+              (click)="onBookingClick(booking); $event.stopPropagation()">
+              <span class="material-icons">visibility</span>
+            </button>
+            <button 
+              class="action-btn" 
+              title="Modifica prenotazione"
+              [disabled]="!booking.canModify"
+              (click)="modifyBooking(booking); $event.stopPropagation()">
+              <span class="material-icons">edit</span>
+            </button>
+            <button 
+              class="action-btn action-btn--danger" 
+              title="Cancella prenotazione"
+              [disabled]="!booking.canCancel"
+              (click)="cancelBooking(booking); $event.stopPropagation()">
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messaggio se non ci sono prenotazioni future -->
+        <div class="empty-state" *ngIf="bookings.length === 0">
+          <span class="material-icons">event_note</span>
+          <h3>Nessuna prenotazione futura</h3>
+          <p>Inizia a pianificare i tuoi allenamenti!</p>
+          <button class="btn btn--primary" (click)="createNewBooking()">
+            Crea Prenotazione
+          </button>
+        </div>
+      </div>
+
+      <ng-template #loadingBookings>
+        <div class="bookings-list">
+          <div class="loading-card" *ngFor="let item of [1,2,3]"></div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" @slideIn>
+      <div class="section-header">
+        <div>
+          <h2>Azioni Rapide</h2>
+          <p>Operazioni frequenti</p>
+        </div>
+      </div>
+
+      <div class="actions-grid">
+        <button class="action-card" (click)="createNewBooking()">
+          <div class="action-card__icon action-card__icon--primary">
+            <span class="material-icons">add_circle</span>
+          </div>
+          <h3>Nuova Prenotazione</h3>
+          <p>Prenota una palestra per i tuoi allenamenti</p>
+        </button>
+
+        <button class="action-card" (click)="viewMyBookings()">
+          <div class="action-card__icon action-card__icon--success">
+            <span class="material-icons">event_note</span>
+          </div>
+          <h3>Le Mie Prenotazioni</h3>
+          <p>Gestisci e modifica le tue prenotazioni</p>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/who-else/palestre')">
+          <div class="action-card__icon action-card__icon--info">
+            <span class="material-icons">sports_basketball</span>
+          </div>
+          <h3>Palestre Disponibili</h3>
+          <p>Esplora tutte le palestre disponibili</p>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/who-else/contatti')">
+          <div class="action-card__icon action-card__icon--warning">
+            <span class="material-icons">support</span>
+          </div>
+          <h3>Supporto</h3>
+          <p>Hai bisogno di aiuto? Contattaci</p>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Aggiungi questo dialog alla fine del file dashboard.component.html -->
+
+<div *ngIf="showDeleteConfirm" class="dialog-overlay" (click)="closeDeleteConfirm()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h3>Conferma Cancellazione</h3>
+      <button class="dialog-close" (click)="closeDeleteConfirm()" [disabled]="isDeleting">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <div class="dialog-body">
+      <p>Sei sicuro di voler cancellare questa prenotazione?</p>
+      
+      <div class="booking-summary" *ngIf="selectedBookingForDelete">
+        <div class="summary-icon">
+          <span class="material-icons">event</span>
+        </div>
+        <div class="summary-details">
+          <strong>{{ selectedBookingForDelete.palestra }}</strong>
+          <p>{{ selectedBookingForDelete.data }} • {{ selectedBookingForDelete.orario }}</p>
+          <p class="booking-type">{{ selectedBookingForDelete.tipo }}</p>
+        </div>
+      </div>
+      
+      <div class="warning-message">
+        <span class="material-icons">warning</span>
+        <p>Questa azione non può essere annullata.</p>
+      </div>
+      
+      <!-- Error message -->
+      <div *ngIf="deleteError" class="error-message">
+        <span class="material-icons">error</span>
+        <p>{{ deleteError }}</p>
+      </div>
+    </div>
+    
+    <div class="dialog-actions">
+      <button 
+        class="btn btn--secondary" 
+        (click)="closeDeleteConfirm()"
+        [disabled]="isDeleting">
+        Annulla
+      </button>
+      <button 
+        class="btn btn--danger" 
+        (click)="confirmCancellation()"
+        [disabled]="isDeleting">
+        <span class="material-icons" *ngIf="!isDeleting">delete</span>
+        <span class="material-icons rotating" *ngIf="isDeleting">refresh</span>
+        {{ isDeleting ? 'Cancellazione...' : 'Cancella Prenotazione' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Message (Toast style) -->
+<div class="toast-container" *ngIf="showSuccessMessage">
+  <div class="toast toast--success" @slideIn>
+    <span class="material-icons">check_circle</span>
+    <p>{{ successMessage }}</p>
+  </div>
+</div>

@@ -9,6 +9,7 @@
 /* Titolo */
 .titolo {
   text-align: center;
+  padding-top: 9vh;
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 3rem;

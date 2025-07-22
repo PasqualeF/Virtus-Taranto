@@ -33,14 +33,12 @@ export class OrariAllenamentiComponent implements OnInit {
   filtroOrario: string = '';
   filtroPalestra: string = '';
 
-  // Vista mobile
   isMobile: boolean = false;
   selectedDayIndex: number = 0;
 
-  // Stato del componente
   isLoading: boolean = false;
   error: string | null = null;
-  isConnectedToLibreBooking: boolean = false;
+  isConnectedToBackend: boolean = false;
 
   dataSource: MatTableDataSource<TabellaOrari>;
   displayedColumns: string[] = ['gruppo', ...this.giorni];
@@ -56,9 +54,8 @@ export class OrariAllenamentiComponent implements OnInit {
   }
 
   impostaGiornoCorrente() {
-    // Imposta il giorno corrente come default per la vista mobile
-    const oggi = new Date().getDay(); // 0 = domenica, 1 = lunedì, ...
-    this.selectedDayIndex = oggi === 0 ? 6 : oggi - 1; // Aggiusta per il nostro array (0 = lunedì)
+    const oggi = new Date().getDay();
+    this.selectedDayIndex = oggi === 0 ? 6 : oggi - 1;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -74,24 +71,18 @@ export class OrariAllenamentiComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
-    
     this.orariAllenamentiService.getOrariAllenamenti().subscribe({
       next: (data: OrarioAllenamento[]) => {
         this.orariAllenamenti = data;
-        this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
+        this.isConnectedToBackend = this.orariAllenamentiService.isAuthenticated();
         this.estraiValoriUnici();
         this.filtraOrari();
         this.isLoading = false;
-        
-
       },
       error: (error) => {
-        console.error('❌ Errore nel caricamento degli orari allenamenti:', error);
-        this.error = 'Errore nel caricamento dei dati. Verifica la connessione.';
+        this.error = 'Errore nel caricamento dei dati. Utilizzando dati di fallback.';
         this.isLoading = false;
-        this.isConnectedToLibreBooking = false;
-        
-        // Carica dati di fallback
+        this.isConnectedToBackend = false;
         this.caricaDatiFallback();
       }
     });
@@ -103,15 +94,14 @@ export class OrariAllenamentiComponent implements OnInit {
         this.orariAllenamenti = data;
         this.estraiValoriUnici();
         this.filtraOrari();
+        this.isConnectedToBackend = false;
       },
       error: (error) => {
+        // Gestione errore silente per fallback
       }
     });
   }
 
-  /**
-   * Forza il refresh dei dati da LibreBooking
-   */
   refreshData() {
     this.isLoading = true;
     this.error = null;
@@ -119,7 +109,7 @@ export class OrariAllenamentiComponent implements OnInit {
     this.orariAllenamentiService.refreshData().subscribe({
       next: (data: OrarioAllenamento[]) => {
         this.orariAllenamenti = data;
-        this.isConnectedToLibreBooking = this.orariAllenamentiService.isAuthenticated();
+        this.isConnectedToBackend = this.orariAllenamentiService.isAuthenticated();
         this.estraiValoriUnici();
         this.filtraOrari();
         this.isLoading = false;
@@ -127,25 +117,20 @@ export class OrariAllenamentiComponent implements OnInit {
       error: (error) => {
         this.error = 'Errore nell\'aggiornamento dei dati.';
         this.isLoading = false;
-        this.isConnectedToLibreBooking = false;
+        this.isConnectedToBackend = false;
       }
     });
   }
 
-  /**
-   * Passa ai dati di fallback manualmente
-   */
   useFallbackData() {
     this.caricaDatiFallback();
     this.error = null;
-    this.isConnectedToLibreBooking = false;
   }
 
   estraiValoriUnici() {
     this.gruppiUnici = [...new Set(this.orariAllenamenti.map(o => o.gruppo))].sort();
     this.orariUnici = [...new Set(this.orariAllenamenti.map(o => o.orario))].sort();
     this.palestreUniche = [...new Set(this.orariAllenamenti.map(o => o.palestra))].sort();
-    
   }
 
   filtraOrari() {
@@ -166,7 +151,6 @@ export class OrariAllenamentiComponent implements OnInit {
       });
 
     this.dataSource.data = tabellaOrari;
-    
   }
 
   selectDay(index: number) {
@@ -174,7 +158,6 @@ export class OrariAllenamentiComponent implements OnInit {
   }
 
   getSquadreForDay(giorno: string): SquadraGiorno[] {
-    // Filtra gli allenamenti per il giorno selezionato
     const allenamentiFiltrati = this.orariAllenamenti.filter(orario => 
       orario.giorno === giorno &&
       (this.filtroGruppo ? orario.gruppo === this.filtroGruppo : true) &&
@@ -182,7 +165,6 @@ export class OrariAllenamentiComponent implements OnInit {
       (this.filtroPalestra ? orario.palestra === this.filtroPalestra : true)
     );
 
-    // Raggruppa per squadra
     const squadreMap = new Map<string, OrarioAllenamento[]>();
     
     allenamentiFiltrati.forEach(allenamento => {
@@ -192,7 +174,6 @@ export class OrariAllenamentiComponent implements OnInit {
       squadreMap.get(allenamento.gruppo)?.push(allenamento);
     });
 
-    // Converti la mappa in array per il template
     const squadre: SquadraGiorno[] = [];
     squadreMap.forEach((allenamenti, gruppo) => {
       squadre.push({ gruppo, allenamenti });
@@ -201,9 +182,6 @@ export class OrariAllenamentiComponent implements OnInit {
     return squadre.sort((a, b) => a.gruppo.localeCompare(b.gruppo));
   }
 
-  /**
-   * Pulisce i filtri
-   */
   clearFilters() {
     this.filtroGruppo = '';
     this.filtroOrario = '';
@@ -211,25 +189,20 @@ export class OrariAllenamentiComponent implements OnInit {
     this.filtraOrari();
   }
 
-  /**
-   * Ottiene informazioni di debug
-   */
   getDebugInfo(): string {
     const serviceStatus = this.orariAllenamentiService.getServiceStatus();
     return `
-      Connesso a LibreBooking: ${this.isConnectedToLibreBooking}
+      Connesso al backend: ${this.isConnectedToBackend}
       Prenotazioni caricate: ${this.orariAllenamenti.length}
       Gruppi unici: ${this.gruppiUnici.length}
-      Autenticato: ${serviceStatus.isAuthenticated}
+      Dati aggiornati: ${serviceStatus.isAuthenticated}
       Cache timeout: ${Math.round(serviceStatus.cacheTimeoutMs / 1000 / 60)} minuti
-      Ultima auth: ${serviceStatus.lastAuthTime ? new Date(serviceStatus.lastAuthTime).toLocaleTimeString('it-IT') : 'Mai'}
-      Base URL: ${serviceStatus.config.baseUrl}
+      Ultimo aggiornamento: ${serviceStatus.lastFetchTime ? new Date(serviceStatus.lastFetchTime).toLocaleTimeString('it-IT') : 'Mai'}
+      Endpoint: ${serviceStatus.config.baseUrl}
+      Items in cache: ${serviceStatus.cachedItemsCount}
     `;
   }
 
-  /**
-   * Genera testo tooltip per le card allenamento
-   */
   getTooltipText(allenamento: OrarioAllenamento): string {
     let tooltip = `${allenamento.gruppo}\n`;
     tooltip += `📅 ${allenamento.giorno}\n`;
@@ -255,37 +228,20 @@ export class OrariAllenamentiComponent implements OnInit {
     return tooltip;
   }
 
-  /**
-   * Gestisce il click su una card allenamento
-   */
   onAllenamentoClick(allenamento: OrarioAllenamento) {
-    
-    // Esempio di azioni possibili:
     if (allenamento.referenceNumber) {
-      // Qui potresti aprire un modal con i dettagli
       this.showAllenamentoDetails(allenamento);
     }
   }
 
-  /**
-   * Mostra i dettagli di un allenamento (esempio)
-   */
   private showAllenamentoDetails(allenamento: OrarioAllenamento) {
-    
-    
-    // Qui potresti aprire un modal, navigare a una pagina di dettaglio, etc.
+    // Implementazione dettagli allenamento
   }
 
-  /**
-   * Verifica se ci sono filtri attivi
-   */
   hasActiveFilters(): boolean {
     return !!(this.filtroGruppo || this.filtroOrario || this.filtroPalestra);
   }
 
-  /**
-   * Ottiene il numero di risultati dopo i filtri
-   */
   getFilteredResultsCount(): number {
     if (!this.hasActiveFilters()) {
       return this.orariAllenamenti.length;
@@ -298,29 +254,16 @@ export class OrariAllenamentiComponent implements OnInit {
     ).length;
   }
 
-  
-
-  /**
-   * Logout manuale dal servizio
-   */
   logout() {
     this.orariAllenamentiService.logout();
-    this.isConnectedToLibreBooking = false;
-    
-    // Ricarica con dati di fallback
+    this.isConnectedToBackend = false;
     this.useFallbackData();
   }
 
-  /**
-   * Ottiene lo stato dettagliato del servizio
-   */
   getServiceStatus() {
     return this.orariAllenamentiService.getServiceStatus();
   }
 
-  /**
-   * Formatta la data per la visualizzazione
-   */
   formatDate(dateString?: string): string {
     if (!dateString) return 'N/A';
     
@@ -334,23 +277,16 @@ export class OrariAllenamentiComponent implements OnInit {
         minute: '2-digit'
       });
     } catch (error) {
-      console.error('Errore nel parsing della data:', error);
       return 'Data non valida';
     }
   }
 
-  /**
-   * Verifica se un allenamento è oggi
-   */
   isToday(allenamento: OrarioAllenamento): boolean {
     const oggi = new Date();
     const giornoOggi = this.getGiornoSettimana(oggi);
     return allenamento.giorno === giornoOggi;
   }
 
-  /**
-   * Converte una data nel giorno della settimana in italiano
-   */
   private getGiornoSettimana(date: Date): string {
     const giorni = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
     return giorni[date.getDay()];

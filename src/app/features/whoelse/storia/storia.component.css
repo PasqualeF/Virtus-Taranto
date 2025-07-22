@@ -1,6 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
+    padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;
@@ -9,6 +10,7 @@
 
 .titolo {
   font-size: 3.5rem;
+  padding-top: 9vh;
   font-weight: 800;
   text-align: center;
   margin-bottom: 3rem;
@@ -27,6 +29,7 @@
 }
 
 .storia-valori-container {
+  
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1rem;

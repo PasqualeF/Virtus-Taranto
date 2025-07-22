@@ -1,0 +1,414 @@
+<div class="page-container" [@fadeIn]>
+  <!-- Header con breadcrumb -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <button (click)="navigateBack()" class="breadcrumb-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H6m0 0l6 6m-6-6l6-6"/>
+        </svg>
+        Home
+      </button>
+      <span class="breadcrumb-separator">•</span>
+      <span class="breadcrumb-current">Il mio Profilo</span>
+    </div>
+    
+    <div class="page-title">
+      <h1>👤 Il mio Profilo</h1>
+      <p>Gestisci i tuoi dati personali e le impostazioni dell'account</p>
+    </div>
+  </div>
+
+  <!-- User Header -->
+  <div class="user-header">
+    <div class="user-avatar">
+      <span>{{ getUserInitials() }}</span>
+    </div>
+    <div class="user-info">
+      <h2>{{ (user$ | async)?.firstName }} {{ (user$ | async)?.lastName }}</h2>
+      <p>{{ (user$ | async)?.position | titlecase }} - {{ (user$ | async)?.organization }}</p>
+      <span class="user-status">✅ Account Attivo</span>
+    </div>
+    <div class="user-actions">
+      <button class="btn btn-danger" (click)="logout()">
+        <span class="material-icons">logout</span>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Messages -->
+  <div *ngIf="profileUpdateSuccess" class="alert alert-success">
+    <span class="alert-icon">✅</span>
+    <span>Profilo aggiornato con successo!</span>
+  </div>
+
+  <div *ngIf="passwordUpdateSuccess" class="alert alert-success">
+    <span class="alert-icon">✅</span>
+    <span>Password aggiornata con successo!</span>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error$ | async as error" class="alert alert-error">
+    <span class="alert-icon">⚠️</span>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <!-- Tabs Navigation -->
+    <div class="tabs-nav">
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'profile'"
+        (click)="switchTab('profile')">
+        <span class="material-icons">person</span>
+        Profilo
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'security'"
+        (click)="switchTab('security')">
+        <span class="material-icons">security</span>
+        Sicurezza
+      </button>
+    </div>
+
+    <!-- Profile Tab -->
+    <div *ngIf="activeTab === 'profile'" class="tab-content">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>
+            <span class="material-icons">badge</span>
+            Informazioni Personali
+          </h3>
+          <p>Aggiorna i tuoi dati personali e le preferenze</p>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-form">
+          <!-- Dati Personali -->
+          <div class="form-section">
+            <h4>
+              <span class="material-icons">person</span>
+              Dati Personali
+            </h4>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">
+                  <span class="material-icons">person</span>
+                  Nome *
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  formControlName="firstName"
+                  [class.error]="isFieldInvalid(profileForm, 'firstName')"
+                  placeholder="Il tuo nome">
+                <div *ngIf="isFieldInvalid(profileForm, 'firstName')" class="field-error">
+                  {{ getFieldError(profileForm, 'firstName') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">
+                  <span class="material-icons">person</span>
+                  Cognome *
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  formControlName="lastName"
+                  [class.error]="isFieldInvalid(profileForm, 'lastName')"
+                  placeholder="Il tuo cognome">
+                <div *ngIf="isFieldInvalid(profileForm, 'lastName')" class="field-error">
+                  {{ getFieldError(profileForm, 'lastName') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="emailAddress">
+                <span class="material-icons">email</span>
+                Email *
+              </label>
+              <input
+                id="emailAddress"
+                type="email"
+                formControlName="emailAddress"
+                [class.error]="isFieldInvalid(profileForm, 'emailAddress')"
+                placeholder="La tua email">
+              <div *ngIf="isFieldInvalid(profileForm, 'emailAddress')" class="field-error">
+                {{ getFieldError(profileForm, 'emailAddress') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">
+                <span class="material-icons">phone</span>
+                Telefono
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                [class.error]="isFieldInvalid(profileForm, 'phone')"
+                placeholder="Es. +39 123 456 7890">
+              <div *ngIf="isFieldInvalid(profileForm, 'phone')" class="field-error">
+                {{ getFieldError(profileForm, 'phone') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="form-section">
+            <h4>
+              <span class="material-icons">account_circle</span>
+              Account
+            </h4>
+            
+            <div class="form-group">
+              <label for="userName">
+                <span class="material-icons">alternate_email</span>
+                Username *
+              </label>
+              <input
+                id="userName"
+                type="text"
+                formControlName="userName"
+                [class.error]="isFieldInvalid(profileForm, 'userName')"
+                placeholder="Il tuo username">
+              <div *ngIf="isFieldInvalid(profileForm, 'userName')" class="field-error">
+                {{ getFieldError(profileForm, 'userName') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Organizzazione -->
+          <div class="form-section">
+            <h4>
+              <span class="material-icons">business</span>
+              Organizzazione
+            </h4>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="organization">
+                  <span class="material-icons">business</span>
+                  Organizzazione *
+                </label>
+                <input
+                  id="organization"
+                  type="text"
+                  formControlName="organization"
+                  [class.error]="isFieldInvalid(profileForm, 'organization')"
+                  placeholder="Es. Palestra XYZ o 'Privato'">
+                <div *ngIf="isFieldInvalid(profileForm, 'organization')" class="field-error">
+                  {{ getFieldError(profileForm, 'organization') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="position">
+                  <span class="material-icons">work</span>
+                  Ruolo *
+                </label>
+                <select
+                  id="position"
+                  formControlName="position"
+                  [class.error]="isFieldInvalid(profileForm, 'position')">
+                  <option value="">Seleziona il tuo ruolo</option>
+                  <option *ngFor="let pos of positions" [value]="pos">{{ pos | titlecase }}</option>
+                </select>
+                <div *ngIf="isFieldInvalid(profileForm, 'position')" class="field-error">
+                  {{ getFieldError(profileForm, 'position') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferenze 
+          <div class="form-section">
+            <h4>
+              <span class="material-icons">settings</span>
+              Preferenze
+            </h4>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="language">
+                  <span class="material-icons">language</span>
+                  Lingua
+                </label>
+                <select id="language" formControlName="language">
+                  <option *ngFor="let lang of languages" [value]="lang.code">
+                    {{ lang.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="timezone">
+                  <span class="material-icons">schedule</span>
+                  Fuso Orario
+                </label>
+                <select id="timezone" formControlName="timezone">
+                  <option *ngFor="let tz of timezones" [value]="tz">
+                    {{ tz }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div> -->
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="(isLoading$ | async) || !profileForm.valid">
+              <span *ngIf="isLoading$ | async" class="loading-spinner"></span>
+              <span *ngIf="!(isLoading$ | async)" class="material-icons">save</span>
+              <span>{{ (isLoading$ | async) ? 'Aggiornamento...' : 'Aggiorna Profilo' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div *ngIf="activeTab === 'security'" class="tab-content">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>
+            <span class="material-icons">shield</span>
+            Sicurezza Account
+          </h3>
+          <p>Modifica la tua password e gestisci la sicurezza del tuo account</p>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()" class="password-form">
+          <div class="form-section">
+            <h4>
+              <span class="material-icons">key</span>
+              Modifica Password
+            </h4>
+            
+            <div class="form-group">
+              <label for="currentPassword">
+                <span class="material-icons">lock</span>
+                Password Attuale *
+              </label>
+              <div class="input-wrapper">
+                <input
+                  id="currentPassword"
+                  [type]="showCurrentPassword ? 'text' : 'password'"
+                  formControlName="currentPassword"
+                  placeholder="Inserisci la password attuale"
+                  [class.error]="isFieldInvalid(passwordForm, 'currentPassword')">
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility('current')"
+                  [attr.aria-label]="showCurrentPassword ? 'Nascondi password' : 'Mostra password'"
+                  tabindex="-1">
+                  <span class="material-icons">
+                    {{ showCurrentPassword ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </button>
+              </div>
+              <div *ngIf="isFieldInvalid(passwordForm, 'currentPassword')" class="field-error">
+                {{ getFieldError(passwordForm, 'currentPassword') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">
+                <span class="material-icons">lock</span>
+                Nuova Password *
+              </label>
+              <div class="input-wrapper">
+                <input
+                  id="newPassword"
+                  [type]="showNewPassword ? 'text' : 'password'"
+                  formControlName="newPassword"
+                  placeholder="Inserisci la nuova password"
+                  [class.error]="isFieldInvalid(passwordForm, 'newPassword')">
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility('new')"
+                  [attr.aria-label]="showNewPassword ? 'Nascondi password' : 'Mostra password'"
+                  tabindex="-1">
+                  <span class="material-icons">
+                    {{ showNewPassword ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </button>
+              </div>
+              <div class="password-hint">
+                <small>Almeno 8 caratteri, una maiuscola, una minuscola e un numero</small>
+              </div>
+              <div *ngIf="isFieldInvalid(passwordForm, 'newPassword')" class="field-error">
+                {{ getFieldError(passwordForm, 'newPassword') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">
+                <span class="material-icons">lock</span>
+                Conferma Nuova Password *
+              </label>
+              <div class="input-wrapper">
+                <input
+                  id="confirmPassword"
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  placeholder="Conferma la nuova password"
+                  [class.error]="isFieldInvalid(passwordForm, 'confirmPassword')">
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility('confirm')"
+                  [attr.aria-label]="showConfirmPassword ? 'Nascondi password' : 'Mostra password'"
+                  tabindex="-1">
+                  <span class="material-icons">
+                    {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </button>
+              </div>
+              <div *ngIf="isFieldInvalid(passwordForm, 'confirmPassword')" class="field-error">
+                {{ getFieldError(passwordForm, 'confirmPassword') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="(isLoading$ | async) || !passwordForm.valid">
+              <span *ngIf="isLoading$ | async" class="loading-spinner"></span>
+              <span *ngIf="!(isLoading$ | async)" class="material-icons">security</span>
+              <span>{{ (isLoading$ | async) ? 'Aggiornamento...' : 'Aggiorna Password' }}</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Security Tips -->
+        <div class="security-tips">
+          <h4>
+            <span class="material-icons">lightbulb</span>
+            Consigli per la Sicurezza
+          </h4>
+          <ul>
+            <li>Usa una password unica per questo account</li>
+            <li>Non condividere mai le tue credenziali</li>
+            <li>Cambia regolarmente la tua password</li>
+            <li>Disconnettiti sempre dai dispositivi pubblici</li>
+            <li>Controlla regolarmente l'attività del tuo account</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

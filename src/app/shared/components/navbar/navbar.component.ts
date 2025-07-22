@@ -165,7 +165,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
               { name: 'Consulenza Legale e Assicurativa', route: '/servizi/assicurazione' },
               { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
               { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
-              { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' }
+              { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' },
+              { name: 'Prenota un campo', route: '/servizi/book' } 
             ]
           },
         ] 

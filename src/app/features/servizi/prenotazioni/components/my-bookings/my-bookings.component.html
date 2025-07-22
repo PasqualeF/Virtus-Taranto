@@ -1,0 +1,344 @@
+<!-- components/my-bookings/my-bookings.component.html - CON MODIFICA PRENOTAZIONE -->
+
+<div class="my-bookings" @fadeInUp>
+
+  <!-- Header Section -->
+  <div class="bookings-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Le Mie Prenotazioni</h1>
+        <p>Gestisci e monitora tutte le tue prenotazioni</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn--secondary" (click)="refreshBookings()">
+          <span class="material-icons">refresh</span>
+          Aggiorna
+        </button>
+        
+        <div class="view-toggle">
+          <button 
+            class="view-btn"
+            [class.view-btn--active]="viewMode === 'grid'"
+            (click)="setViewMode('grid')"
+            title="Vista griglia">
+            <span class="material-icons">grid_view</span>
+          </button>
+          <button 
+            class="view-btn"
+            [class.view-btn--active]="viewMode === 'list'"
+            (click)="setViewMode('list')"
+            title="Vista lista">
+            <span class="material-icons">view_list</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Bar -->
+    <div class="stats-bar" *ngIf="filteredBookings$ | async as bookings"> 
+      <div class="stat-item">
+        <span class="stat-number">{{ bookings.length }}</span>
+        <span class="stat-label">Totali</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">{{ getConfirmedCount(bookings) }}</span>
+        <span class="stat-label">Confermate</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">{{ getUpcomingCount(bookings) }}</span>
+        <span class="stat-label">Prossime</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <form [formGroup]="filterForm" class="filters-form">
+      
+      <!-- Search -->
+      <div class="filter-group filter-group--search">
+        <div class="search-input-wrapper">
+          <span class="material-icons search-icon">search</span>
+          <input
+            type="text"
+            formControlName="searchText"
+            class="search-input"
+            placeholder="Cerca per palestra, tipo o descrizione...">
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Stato</label>
+        <select formControlName="status" class="filter-select">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Date Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Periodo</label>
+        <select formControlName="dateRange" class="filter-select">
+          <option *ngFor="let option of dateOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Sort -->
+      <div class="filter-group">
+        <label class="filter-label">Ordina per</label>
+        <select formControlName="sortBy" class="filter-select">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Error Banner -->
+  <div *ngIf="showError && !isLoading" class="error-banner" @slideIn>
+    <div class="error-content">
+      <span class="material-icons">error_outline</span>
+      <div class="error-text">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div class="error-actions">
+        <button class="btn btn--outline" (click)="retryLoading()">
+          <span class="material-icons">refresh</span>
+          Riprova
+        </button>
+        <button class="action-btn" (click)="closeError()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <div class="loading-grid" [class.loading-grid--list]="viewMode === 'list'">
+      <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6]"></div>
+    </div>
+  </div>
+
+  <!-- Bookings Content -->
+  <div *ngIf="!isLoading" class="bookings-content">
+    
+    <!-- Empty State -->
+    <div *ngIf="filteredBookings$ | async as bookings; else loadingTemplate" 
+         class="bookings-container">
+      
+      <div *ngIf="bookings.length === 0" class="empty-state">
+        <span class="material-icons">{{ getEmptyIcon() }}</span>
+        <h3>{{ hasBookings() ? 'Nessun risultato' : 'Nessuna prenotazione' }}</h3>
+        <p>{{ getEmptyMessage() }}</p>
+        <button *ngIf="hasBookings()" class="btn btn--primary" (click)="filterForm.reset()">
+          Rimuovi Filtri
+        </button>
+      </div>
+
+      <!-- Bookings Grid/List -->
+      <div *ngIf="bookings.length > 0" 
+           class="bookings-list"
+           [class.bookings-list--grid]="viewMode === 'grid'"
+           [class.bookings-list--list]="viewMode === 'list'"
+           @listAnimation>
+
+        <div *ngFor="let booking of getPaginatedBookings(); trackBy: trackByBookingId"
+             class="booking-card"
+             [class.booking-card--today]="isToday(booking)"
+             [class.booking-card--upcoming]="isUpcoming(booking)">
+
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="card-date">
+              <span class="date-text">{{ formatDate(booking) }}</span>
+              <span class="time-text">{{ booking.orarioInizio }} - {{ booking.orarioFine }}</span>
+            </div>
+            
+            <div class="card-status">
+              <span class="status-badge status-badge--{{ getStatusColor(booking.stato) }}">
+                <span class="material-icons">{{ getStatusIcon(booking.stato) }}</span>
+                {{ booking.stato | titlecase }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="card-content">
+            <h3 class="card-title">{{ booking.palestra }}</h3>
+            <p class="card-type">{{ booking.tipo }}</p>
+            <p class="card-description" *ngIf="booking.descrizione">
+              {{ booking.descrizione }}
+            </p>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="card-actions" *ngIf="booking.canModify || booking.canCancel">
+            <button 
+              *ngIf="booking.canModify"
+              class="action-btn action-btn--secondary"
+              (click)="modifyBooking(booking)"
+              title="Modifica prenotazione">
+              <span class="material-icons">edit</span>
+              <span class="action-text">Modifica</span>
+            </button>
+            
+            <button 
+              *ngIf="booking.canCancel"
+              class="action-btn action-btn--danger"
+              (click)="cancelBooking(booking)"
+              title="Cancella prenotazione">
+              <span class="material-icons">cancel</span>
+              <span class="action-text">Cancella</span>
+            </button>
+          </div>
+
+          <!-- Special Indicators -->
+          <div class="card-indicators">
+            <div *ngIf="isToday(booking)" class="indicator indicator--today">
+              <span class="material-icons">today</span>
+              <span>Oggi</span>
+            </div>
+            <div *ngIf="isUpcoming(booking) && !isToday(booking)" class="indicator indicator--upcoming">
+              <span class="material-icons">schedule</span>
+              <span>Prossima</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="getTotalPages() > 1" class="pagination">
+        <button 
+          class="pagination-btn"
+          [disabled]="currentPage === 1"
+          (click)="changePage(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+
+        <div class="pagination-numbers">
+          <button 
+            *ngFor="let page of getPaginationArray()"
+            class="pagination-number"
+            [class.pagination-number--active]="page === currentPage"
+            (click)="changePage(page)">
+            {{ page }}
+          </button>
+        </div>
+
+        <button 
+          class="pagination-btn"
+          [disabled]="currentPage === getTotalPages()"
+          (click)="changePage(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+    </div>
+
+    <ng-template #loadingTemplate>
+      <div class="loading-section">
+        <div class="loading-text">Caricamento prenotazioni...</div>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>
+
+<!-- Edit Modal -->
+<div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
+  <div class="modal-content modal-content--large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <span class="material-icons">edit</span>
+        Modifica Prenotazione
+      </h3>
+      <button class="modal-close" (click)="closeEditModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Embed BookingForm Component in Edit Mode -->
+      <app-booking-form
+        [user]="user"
+        [bookingToEdit]="bookingToEdit"
+        [isEditMode]="isEditMode"
+        (editSuccess)="onEditSuccess($event)"
+        (cancelled)="onEditCancelled()">
+      </app-booking-form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Dialog -->
+<div *ngIf="showConfirmDialog" class="dialog-overlay" (click)="closeConfirmDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h3>Conferma Cancellazione</h3>
+      <button class="dialog-close" (click)="closeConfirmDialog()" [disabled]="isDeleting">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <div class="dialog-body">
+      <p>Sei sicuro di voler cancellare questa prenotazione?</p>
+      <div class="booking-summary" *ngIf="selectedBooking">
+        <div class="summary-icon">
+          <span class="material-icons">event</span>
+        </div>
+        <div class="summary-details">
+          <strong>{{ selectedBooking.palestra }}</strong>
+          <p>{{ formatDate(selectedBooking) }} • {{ selectedBooking.orarioInizio }} - {{ selectedBooking.orarioFine }}</p>
+          <p class="booking-type">{{ selectedBooking.tipo }}</p>
+          <p *ngIf="selectedBooking.descrizione">{{ selectedBooking.descrizione }}</p>
+        </div>
+      </div>
+      <div class="warning-message">
+        <span class="material-icons">warning</span>
+        <p>Questa azione non può essere annullata.</p>
+      </div>
+      
+      <!-- Error message -->
+      <div *ngIf="deleteError" class="error-message">
+        <span class="material-icons">error</span>
+        <p>{{ deleteError }}</p>
+      </div>
+    </div>
+    
+    <div class="dialog-actions">
+      <button 
+        class="btn btn--secondary" 
+        (click)="closeConfirmDialog()"
+        [disabled]="isDeleting">
+        Annulla
+      </button>
+      <button 
+        class="btn btn--danger" 
+        (click)="confirmAction()"
+        [disabled]="isDeleting">
+        <span class="material-icons" *ngIf="!isDeleting">delete</span>
+        <span class="material-icons rotating" *ngIf="isDeleting">refresh</span>
+        {{ isDeleting ? 'Cancellazione in corso...' : 'Cancella Prenotazione' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast -->
+<div class="toast-container" *ngIf="showSuccessMessage">
+  <div class="toast toast--success" @slideIn>
+    <span class="material-icons">check_circle</span>
+    <span>{{ successMessage }}</span>
+  </div>
+</div>

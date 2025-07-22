@@ -1,0 +1,167 @@
+<!-- prenotazioni.component.html -->
+
+<!-- Loading State -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p>Caricamento...</p>
+  </div>
+</div>
+
+<!-- Login Component (quando non autenticato) -->
+<app-login 
+  *ngIf="!isLoading && !isAuthenticated"
+  (loginSuccess)="onLoginSuccess()"
+  @fadeIn>
+</app-login>
+
+<!-- Dashboard principale (quando autenticato) -->
+<div *ngIf="!isLoading && isAuthenticated" class="dashboard-container" >
+  
+  <!-- Mobile Overlay -->
+  <div 
+    *ngIf="sidebarOpen && isMobile" 
+    class="mobile-overlay"
+    (click)="onOverlayClick()"
+    @fadeIn>
+  </div>
+
+  <!-- Sidebar -->
+  <aside 
+    class="sidebar"
+    [class.sidebar--open]="sidebarOpen"
+    [@sidebarState]="sidebarOpen ? 'open' : 'closed'">
+    
+    <!-- Sidebar Header -->
+    <div class="sidebar__header">
+      <div class="sidebar__brand">
+        <div class="brand-icon">
+          <span class="material-icons">sports_basketball</span>
+        </div>
+        <div class="brand-text">
+          <h1>Prenotazioni</h1>
+          <p>Virtus Taranto</p>
+        </div>
+      </div>
+      
+      <!-- Close button (mobile) -->
+      <button 
+        *ngIf="isMobile" 
+        class="sidebar__close"
+        (click)="closeSidebar()"
+        aria-label="Chiudi menu">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <!-- User Info -->
+    <div class="sidebar__user">
+      <div class="user-avatar">
+        <span>{{ getUserInitials() }}</span>
+      </div>
+      <div class="user-info">
+        <h3>{{ getFullName() }}</h3>
+        <p>{{ getUserRole() }}</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar__nav">
+      <ul class="nav-list">
+        <li *ngFor="let section of sections" class="nav-item">
+          <button 
+            class="nav-link"
+            [class.nav-link--active]="isSectionActive(section.id)"
+            (click)="changeSection(section.id)"
+            [attr.aria-current]="isSectionActive(section.id) ? 'page' : null">
+            
+            <span class="nav-icon material-icons">{{ section.icon }}</span>
+            <span class="nav-text">{{ section.label }}</span>
+            
+            <!-- Active indicator -->
+            <div *ngIf="isSectionActive(section.id)" class="nav-indicator"></div>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar__footer">
+      <button class="btn-logout" (click)="logout()">
+        <span class="material-icons">logout</span>
+        <span>Logout</span>
+      </button>
+      
+      <button class="btn-home" (click)="navigateToHome()">
+        <span class="material-icons">home</span>
+        <span>Torna al Sito</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content" [class.main-content--shifted]="sidebarOpen && !isMobile">
+    
+    <!-- Top Header -->
+    <header class="main-header">
+      <div class="header-left">
+        <button 
+          class="menu-toggle"
+          (click)="toggleSidebar()"
+          [attr.aria-label]="sidebarOpen ? 'Chiudi menu' : 'Apri menu'">
+          <span class="material-icons">{{ sidebarOpen ? 'menu_open' : 'menu' }}</span>
+        </button>
+        
+        <div class="header-title">
+          <h2>{{ getCurrentSection().label }}</h2>
+          <p>{{ getCurrentSection().description }}</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- User info su mobile -->
+        <div class="header-user" *ngIf="isMobile">
+          <div class="user-avatar user-avatar--small">
+            <span>{{ getUserInitials() }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content" @fadeIn>
+      
+      <!-- Dashboard -->
+      <app-dashboard 
+        *ngIf="currentSection === 'dashboard'"
+        [user]="currentUser"
+        (sectionChange)="changeSection($event)">
+      </app-dashboard>
+
+      <!-- Nuova Prenotazione -->
+      <app-booking-form 
+        *ngIf="currentSection === 'nuova-prenotazione'"
+        [user]="currentUser">
+      </app-booking-form>
+
+      <!-- Le Mie Prenotazioni -->
+      <app-my-bookings 
+        *ngIf="currentSection === 'mie-prenotazioni'"
+        [user]="currentUser">
+      </app-my-bookings>
+
+      <!-- Profilo Utente -->
+      <app-user-profile 
+        *ngIf="currentSection === 'profilo'"
+        [user]="currentUser">
+      </app-user-profile>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- Notification Toast (se necessario) -->
+<div class="toast-container" id="toast-container">
+  <!-- I toast verranno inseriti qui dinamicamente -->
+</div>

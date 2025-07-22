@@ -40,7 +40,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { TorneiComponent } from './features/eventi/tornei/tornei.component';
 import { EventiSpecialiComponent } from './features/eventi/eventi-speciali/eventi-speciali.component';
 import { SocialFeedComponent } from './features/news/social-feed/social-feed.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NewsComponent } from './features/home/news-section/news-section.component';
 import { YouthTeamsComponent } from './features/squad/mini/youth-teams.component';
 import { ShopComponent } from './features/shop/shop.component';
@@ -50,6 +50,12 @@ import { MediaComponent } from './features/media/media-gallery.component';
 import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
+import { AuthInterceptor } from './features/servizi/prenotazioni/core/interceptors/auth.interceptor';
+
+// ========================================
+// RIMOSSO: Import dei componenti prenotazioni (ora sono nel loro modulo separato)
+// RIMOSSO: AuthService, AuthGuard, LoggedInGuard, AuthInterceptor (ora sono nel modulo prenotazioni)
+// ========================================
 
 // Factory function per il TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -119,13 +125,19 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled', // abilita il ripristino della posizione dello scroll
-      anchorScrolling: 'enabled', // abilita lo scroll agli anchor
-      scrollOffset: [0, 0], // offset per lo scroll
-      onSameUrlNavigation: 'reload' // ricarica la pagina anche se l'URL è lo stesso
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
+      scrollOffset: [0, 0],
+      onSameUrlNavigation: 'reload'
     })
   ],
-  providers: [],
+  providers: [
+     {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

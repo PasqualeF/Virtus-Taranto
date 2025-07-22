@@ -1,6 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
+  padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;

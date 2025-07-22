@@ -20,6 +20,7 @@
 /* comunicazioni.component.css */
 :host {
     display: block;
+    padding-top: 8vh;
     min-height: 100vh;
     background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
     color: white;

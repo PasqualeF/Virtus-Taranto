@@ -862,7 +862,7 @@ app-orari-allenamenti {
   -webkit-text-fill-color: transparent;
   text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   letter-spacing: -0.5px;
-  padding: 0 1rem;
+  padding: 5rem 1rem;
 }
 
 @media (max-width: 768px) {

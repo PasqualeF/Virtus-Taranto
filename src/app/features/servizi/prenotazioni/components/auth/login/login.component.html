@@ -1,0 +1,377 @@
+<!-- components/auth/login/login.component.html - VERSIONE CON TOGGLE E CAMPI AGGIUNTIVI -->
+
+<div class="login-container" @fadeIn>
+  <!-- Background Pattern (ora più calmo) -->
+  <div class="login-background">
+    <div class="bg-pattern"></div>
+  </div>
+
+  <!-- Login/Register Card -->
+  <div class="login-card" @slideIn>
+    
+    <!-- Header -->
+    <div class="login-header">
+      <div class="brand-logo">
+        <span class="material-icons">sports_basketball</span>
+      </div>
+      <h1>{{ isRegisterMode ? 'Crea Account' : 'Accedi alle Prenotazioni' }}</h1>
+      <p>{{ isRegisterMode ? 'Unisciti alla community' : 'Gestisci le tue prenotazioni palestre' }}</p>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="mode-toggle">
+      <button 
+        type="button"
+        class="toggle-btn"
+        [class.toggle-btn--active]="!isRegisterMode"
+        (click)="isRegisterMode = false">
+        Accedi
+      </button>
+      <button 
+        type="button"
+        class="toggle-btn"
+        [class.toggle-btn--active]="isRegisterMode"
+        (click)="isRegisterMode = true">
+        Registrati
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-banner" *ngIf="error$ | async as error">
+      <span class="material-icons">error_outline</span>
+      <p>{{ error }}</p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div *ngIf="!isRegisterMode" @slideIn>
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" class="auth-form">
+        
+        <!-- Username Field -->
+        <div class="form-group">
+          <label for="username" class="form-label">
+            <span class="material-icons">person</span>
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            class="form-input"
+            [class.form-input--error]="isFieldInvalid(loginForm, 'username')"
+            placeholder="Inserisci il tuo username"
+            autocomplete="username">
+          
+          <div class="form-error" *ngIf="isFieldInvalid(loginForm, 'username')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(loginForm, 'username') }}
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">
+            <span class="material-icons">lock</span>
+            Password
+          </label>
+          <div class="password-input-wrapper">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(loginForm, 'password')"
+              placeholder="Inserisci la tua password"
+              autocomplete="current-password">
+            
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility('login')"
+              [attr.aria-label]="showPassword ? 'Nascondi password' : 'Mostra password'">
+              <span class="material-icons">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+          
+          <div class="form-error" *ngIf="isFieldInvalid(loginForm, 'password')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(loginForm, 'password') }}
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="form-group form-group--checkbox">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="rememberMe"
+              class="checkbox-input">
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">Ricordami</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="(isLoading$ | async) || !loginForm.valid"
+          [class.btn-submit--loading]="isLoading$ | async">
+          
+          <span *ngIf="!(isLoading$ | async)" class="btn-content">
+            <span class="material-icons">login</span>
+            Accedi
+          </span>
+          
+          <span *ngIf="isLoading$ | async" class="btn-loading">
+            <div class="spinner"></div>
+            Accesso in corso...
+          </span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div *ngIf="isRegisterMode" @slideIn>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()" class="auth-form">
+        
+        <!-- Nome e Cognome -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">
+              <span class="material-icons">person</span>
+              Nome
+            </label>
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'firstName')"
+              placeholder="Il tuo nome">
+            
+            <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'firstName')">
+              <span class="material-icons">error</span>
+              {{ getFieldError(registerForm, 'firstName') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">
+              <span class="material-icons">person</span>
+              Cognome
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'lastName')"
+              placeholder="Il tuo cognome">
+            
+            <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'lastName')">
+              <span class="material-icons">error</span>
+              {{ getFieldError(registerForm, 'lastName') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="emailAddress" class="form-label">
+            <span class="material-icons">email</span>
+            Email
+          </label>
+          <input
+            id="emailAddress"
+            type="email"
+            formControlName="emailAddress"
+            class="form-input"
+            [class.form-input--error]="isFieldInvalid(registerForm, 'emailAddress')"
+            placeholder="La tua email">
+          
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'emailAddress')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'emailAddress') }}
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+          <label for="userName" class="form-label">
+            <span class="material-icons">account_circle</span>
+            Username
+          </label>
+          <input
+            id="userName"
+            type="text"
+            formControlName="userName"
+            class="form-input"
+            [class.form-input--error]="isFieldInvalid(registerForm, 'userName')"
+            placeholder="Scegli un username">
+          
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'userName')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'userName') }}
+          </div>
+        </div>
+
+        <!-- Organizzazione e Ruolo -->
+          <div class="form-group">
+            <label for="organization" class="form-label">
+              <span class="material-icons">business</span>
+              Organizzazione
+            </label>
+            <input
+              id="organization"
+              type="text"
+              formControlName="organization"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'organization')"
+              placeholder="Es. Palestra XYZ o 'Privato'">
+            
+            <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'organization')">
+              <span class="material-icons">error</span>
+              {{ getFieldError(registerForm, 'organization') }}
+            </div>
+            
+            <!-- Helper text -->
+            <div class="form-help">
+              <span class="material-icons">info</span>
+              <p>Se non appartieni a un'organizzazione, inserisci "Privato"</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="position" class="form-label">
+              <span class="material-icons">work</span>
+              Ruolo
+            </label>
+            <input
+              id="position"
+              type="text"
+              formControlName="position"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'position')"
+              placeholder="Es. Atleta, Allenatore, Manager">
+            
+            <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'position')">
+              <span class="material-icons">error</span>
+              {{ getFieldError(registerForm, 'position') }}
+            </div>
+          </div>
+
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="registerPassword" class="form-label">
+            <span class="material-icons">lock</span>
+            Password
+          </label>
+          <div class="password-input-wrapper">
+            <input
+              id="registerPassword"
+              [type]="showRegisterPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'password')"
+              placeholder="Crea una password sicura">
+            
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility('register')">
+              <span class="material-icons">
+                {{ showRegisterPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+          
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'password')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'password') }}
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">
+            <span class="material-icons">lock</span>
+            Conferma Password
+          </label>
+          <div class="password-input-wrapper">
+            <input
+              id="confirmPassword"
+              [type]="showRegisterConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              class="form-input"
+              [class.form-input--error]="isFieldInvalid(registerForm, 'confirmPassword')"
+              placeholder="Ripeti la password">
+            
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility('confirm')">
+              <span class="material-icons">
+                {{ showRegisterConfirmPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+          
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'confirmPassword')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'confirmPassword') }}
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <div class="form-group form-group--checkbox">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              formControlName="acceptTermsOfService"
+              class="checkbox-input">
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">
+              Accetto i <a href="#" class="terms-link">termini e condizioni</a>
+            </span>
+          </label>
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'acceptTermsOfService')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'acceptTermsOfService') }}
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="(isLoading$ | async) || !registerForm.valid"
+          [class.btn-submit--loading]="isLoading$ | async">
+          
+          <span *ngIf="!(isLoading$ | async)" class="btn-content">
+            <span class="material-icons">person_add</span>
+            Crea Account
+          </span>
+          
+          <span *ngIf="isLoading$ | async" class="btn-loading">
+            <div class="spinner"></div>
+            Registrazione in corso...
+          </span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Help Link -->
+    <div class="auth-footer">
+      <a href="#" class="help-link">
+        <span class="material-icons">help_outline</span>
+        Hai bisogno di aiuto?
+      </a>
+    </div>
+
+  </div>
+</div>

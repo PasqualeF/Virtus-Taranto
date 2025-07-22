@@ -1,0 +1,291 @@
+<!-- register.component.html - INTEGRATO -->
+<div class="page-container" [@fadeIn]>
+  <!-- Header con breadcrumb -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <button (click)="navigateBack()" class="breadcrumb-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H6m0 0l6 6m-6-6l6-6"/>
+        </svg>
+        Indietro
+      </button>
+      <span class="breadcrumb-separator">•</span>
+      <span class="breadcrumb-current">Registrazione</span>
+    </div>
+    
+    <div class="page-title">
+      <h1>✨ Registrazione</h1>
+      <p>Crea il tuo account per accedere al sistema di prenotazioni</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <div class="auth-card register-card">
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="logo-section">
+          <div class="logo-icon">🏐</div>
+          <div class="logo-text">
+            <h2>Pallavolo Massafra</h2>
+            <span>Unisciti alla nostra community</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+            <span>1</span>
+            <label>Dati Personali</label>
+          </div>
+          <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+            <span>2</span>
+            <label>Account</label>
+          </div>
+          <div class="step" [class.active]="currentStep >= 3">
+            <span>3</span>
+            <label>Organizzazione</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="error$ | async as error" class="alert alert-error">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Registration Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+        
+        <!-- Step 1: Dati Personali -->
+        <div *ngIf="currentStep === 1" class="form-step">
+          <h3>📋 Dati Personali</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">Nome *</label>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                placeholder="Il tuo nome"
+                [class.error]="isFieldInvalid('firstName')">
+              <div *ngIf="isFieldInvalid('firstName')" class="field-error">
+                {{ getFieldError('firstName') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Cognome *</label>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                placeholder="Il tuo cognome"
+                [class.error]="isFieldInvalid('lastName')">
+              <div *ngIf="isFieldInvalid('lastName')" class="field-error">
+                {{ getFieldError('lastName') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="emailAddress">Email *</label>
+            <input
+              id="emailAddress"
+              type="email"
+              formControlName="emailAddress"
+              placeholder="la-tua-email@esempio.com"
+              [class.error]="isFieldInvalid('emailAddress')">
+            <div *ngIf="isFieldInvalid('emailAddress')" class="field-error">
+              {{ getFieldError('emailAddress') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Telefono</label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="+39 123 456 7890"
+              [class.error]="isFieldInvalid('phone')">
+            <div *ngIf="isFieldInvalid('phone')" class="field-error">
+              {{ getFieldError('phone') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Dati Account -->
+        <div *ngIf="currentStep === 2" class="form-step">
+          <h3>🔐 Dati Account</h3>
+          
+          <div class="form-group">
+            <label for="userName">Username *</label>
+            <input
+              id="userName"
+              type="text"
+              formControlName="userName"
+              placeholder="Il tuo username unico"
+              [class.error]="isFieldInvalid('userName')">
+            <div *ngIf="isFieldInvalid('userName')" class="field-error">
+              {{ getFieldError('userName') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <div class="input-wrapper">
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Crea una password sicura"
+                [class.error]="isFieldInvalid('password')">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('password')"
+                tabindex="-1">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+            <div class="password-hint">
+              <small>Almeno 8 caratteri, una maiuscola, una minuscola e un numero</small>
+            </div>
+            <div *ngIf="isFieldInvalid('password')" class="field-error">
+              {{ getFieldError('password') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Conferma Password *</label>
+            <div class="input-wrapper">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Conferma la password"
+                [class.error]="isFieldInvalid('confirmPassword')">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('confirmPassword')"
+                tabindex="-1">
+                {{ showConfirmPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+            <div *ngIf="isFieldInvalid('confirmPassword')" class="field-error">
+              {{ getFieldError('confirmPassword') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Organizzazione -->
+        <div *ngIf="currentStep === 3" class="form-step">
+          <h3>🏢 Organizzazione e Preferenze</h3>
+          
+          <div class="form-group">
+            <label for="organization">Organizzazione *</label>
+            <input
+              id="organization"
+              type="text"
+              formControlName="organization"
+              placeholder="Nome della tua organizzazione"
+              [class.error]="isFieldInvalid('organization')">
+            <div *ngIf="isFieldInvalid('organization')" class="field-error">
+              {{ getFieldError('organization') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="position">Ruolo *</label>
+            <select
+              id="position"
+              formControlName="position"
+              [class.error]="isFieldInvalid('position')">
+              <option value="">Seleziona il tuo ruolo</option>
+              <option *ngFor="let pos of positions" [value]="pos">{{ pos | titlecase }}</option>
+            </select>
+            <div *ngIf="isFieldInvalid('position')" class="field-error">
+              {{ getFieldError('position') }}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="language">Lingua</label>
+              <select id="language" formControlName="language">
+                <option *ngFor="let lang of languages" [value]="lang.code">
+                  {{ lang.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="timezone">Fuso Orario</label>
+              <select id="timezone" formControlName="timezone">
+                <option *ngFor="let tz of timezones" [value]="tz">
+                  {{ tz }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="acceptTermsOfService">
+              <span class="checkmark"></span>
+              <span>Accetto i <a href="/privacy-policy" target="_blank">Termini di Servizio</a> e la <a href="/privacy-policy" target="_blank">Privacy Policy</a> *</span>
+            </label>
+            <div *ngIf="isFieldInvalid('acceptTermsOfService')" class="field-error">
+              È necessario accettare i termini di servizio
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="form-navigation">
+          <button
+            *ngIf="currentStep > 1"
+            type="button"
+            class="btn btn-secondary"
+            (click)="previousStep()">
+            ← Indietro
+          </button>
+
+          <button
+            *ngIf="currentStep < totalSteps"
+            type="button"
+            class="btn btn-primary"
+            (click)="nextStep()">
+            Avanti →
+          </button>
+
+          <button
+            *ngIf="currentStep === totalSteps"
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="(isLoading$ | async) || !registerForm.valid">
+            <span *ngIf="isLoading$ | async" class="loading-spinner"></span>
+            <span>{{ (isLoading$ | async) ? 'Creazione in corso...' : 'Crea Account' }}</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <p>Hai già un account?</p>
+        <button type="button" class="btn btn-link" (click)="navigateToLogin()">
+          Accedi qui
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
