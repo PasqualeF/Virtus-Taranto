@@ -201,12 +201,17 @@ export class BookingFormComponent implements OnInit {
     
     switch(this.currentStep) {
       case 1:
-        const palestraValid = this.bookingForm.get('palestraId')?.valid || false;
+        // Per la palestra, controlla se ha un valore (anche se disabilitata in edit mode)
+        const palestraValue = this.bookingForm.get('palestraId')?.value;
         const dateValid = this.bookingForm.get('date')?.valid || false;
-        return palestraValid && dateValid;
+        return !!palestraValue && dateValid;
       case 2:
         return !!this.selectedTimeSlot && this.selectedTimeSlot.available;
       case 3:
+        // In modalità modifica, non controllare acceptTerms
+        if (this.isEditingMode) {
+          return this.bookingForm.get('title')?.valid || false;
+        }
         return this.bookingForm.valid || false;
       default:
         return false;

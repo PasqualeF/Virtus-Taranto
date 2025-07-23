@@ -67,7 +67,7 @@ export class DashboardService {
   private readonly bookingService = inject(BookingService);
   
   // URL del backend
-  private readonly API_BASE_URL = 'http://localhost:8080/vbe/v1';
+  private readonly API_BASE_URL = this.backendUrl;
 
   /**
    * Carica tutte le statistiche della dashboard

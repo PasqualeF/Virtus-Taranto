@@ -30,7 +30,7 @@ export class AuthService {
   private readonly router = inject(Router);
 
   // Configurazione
-  private readonly API_BASE_URL = 'http://localhost:8080/vbe/v1';
+  private readonly API_BASE_URL = this.backendUrl;
   private readonly TOKEN_KEY = 'booking_auth_token';
   private readonly USER_KEY = 'booking_user_data';
 
