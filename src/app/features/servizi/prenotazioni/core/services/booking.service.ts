@@ -15,6 +15,7 @@ import {
   SlotValidation
 } from 'src/app/core/models/booking.models';
 import { UserReservationsResponse } from '../models/user-reservation.model';
+import { environment } from 'src/environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class BookingService {
   private readonly http = inject(HttpClient);
   
   // URL del tuo backend
-  private readonly API_BASE_URL = 'http://localhost:8080/vbe/v1';
+  private readonly API_BASE_URL = environment.backendUrl;
 
   // Configurazione slot (personalizzabile)
   private readonly SLOT_CONFIG: SlotConfig = {

@@ -3,6 +3,8 @@ import { Observable, of, delay, map } from 'rxjs';
 import { Immagine, OrganigrammaData, StaffMember } from '../models/person.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environments';
+import { environment } from 'src/environments/environments';
+
 export interface Societa {
   nome: string;
   logo: string;

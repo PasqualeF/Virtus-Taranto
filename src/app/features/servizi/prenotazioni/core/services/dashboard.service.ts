@@ -5,6 +5,7 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { BookingService } from './booking.service';
 import { UserReservation } from '../models/user-reservation.model';
+import { environment } from 'src/environments/environments';
 
 export interface DashboardStats {
   activeBookings: number;
@@ -67,7 +68,7 @@ export class DashboardService {
   private readonly bookingService = inject(BookingService);
   
   // URL del backend
-  private readonly API_BASE_URL = this.backendUrl;
+  private readonly API_BASE_URL = environment.backendUrl;
 
   /**
    * Carica tutte le statistiche della dashboard

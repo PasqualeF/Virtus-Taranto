@@ -21,6 +21,7 @@ import {
   AuthState,
   AuthError
 } from '../models/auth.models';
+import { environment } from 'src/environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class AuthService {
   private readonly router = inject(Router);
 
   // Configurazione
-  private readonly API_BASE_URL = this.backendUrl;
+  private readonly API_BASE_URL = environment.backendUrl;
   private readonly TOKEN_KEY = 'booking_auth_token';
   private readonly USER_KEY = 'booking_user_data';
 
