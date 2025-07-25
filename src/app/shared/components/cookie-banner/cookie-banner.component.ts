@@ -25,7 +25,9 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   constructor(
     private cookieService: CookieService,
     private router: Router
-  ) {}
+  ) {
+    // Il servizio viene iniettato qui, quindi il constructor viene chiamato
+  }
 
   ngOnInit(): void {
     this.checkAndShowBanner();
@@ -37,10 +39,6 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
       this.cookiePreferences = { ...existingPreferences };
     }
     
-    // Se l'utente ha già dato il consenso, inizializza i servizi
-    if (this.cookieService.hasConsentGiven() && existingPreferences) {
-      this.initializeAcceptedServices(existingPreferences);
-    }
   }
 
   ngOnDestroy(): void {
@@ -48,7 +46,8 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   }
 
   private checkAndShowBanner(): void {
-    this.showBanner = !this.cookieService.hasConsentGiven();
+    const hasConsent = this.cookieService.hasConsentGiven();
+    this.showBanner = !hasConsent;
   }
 
   private setupEventListeners(): void {
@@ -63,20 +62,7 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initializeAcceptedServices(preferences: CookiePreferences): void {
-    // Inizializza solo i servizi per cui l'utente ha dato il consenso
-    if (preferences.analytics) {
-      console.log('Initializing analytics services...');
-      // Il CookieService gestisce l'inizializzazione di GA
-    }
-    
-    if (preferences.marketing) {
-      console.log('Initializing marketing services...');
-      // Il CookieService gestisce l'inizializzazione dei servizi marketing
-    }
-  }
-
-  acceptAll(): void {
+  acceptAll(): void {    
     const allAcceptedPreferences: CookiePreferences = {
       necessary: true,
       analytics: true,
@@ -84,21 +70,32 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
       preferences: true
     };
     
-    this.cookieService.savePreferences(allAcceptedPreferences);
-    this.closeBanner();
+    this.cookiePreferences = allAcceptedPreferences;
+    this.savePreferencesAndClose();
   }
 
   acceptSelected(): void {
-    this.cookieService.savePreferences(this.cookiePreferences);
-    this.closeBanner();
+    this.savePreferencesAndClose();
+  }
+
+  private savePreferencesAndClose(): void {
+    try {
+      // Salva le preferenze - questo triggererà gli eventi necessari
+      this.cookieService.savePreferences(this.cookiePreferences);      
+      // Chiudi il banner
+      this.closeBanner();
+      
+    } catch (error) {
+    }
   }
 
   private closeBanner(): void {
     this.showBanner = false;
     this.showDetails = false;
     this.showPrivacyPolicy = false;
-    
-    // Dispatch evento per notificare che il consenso è stato dato
+        
+    // Dispatch evento generale per notificare che il consenso è stato dato
+    // (questo è ridondante con quello del CookieService, ma può essere utile)
     window.dispatchEvent(new CustomEvent('cookieConsentGiven', {
       detail: this.cookiePreferences
     }));
@@ -117,7 +114,10 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   onPreferenceChange(type: keyof CookiePreferences, event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target) {
+      const oldValue = this.cookiePreferences[type];
       this.cookiePreferences[type] = target.checked;
     }
   }
+
+  
 }

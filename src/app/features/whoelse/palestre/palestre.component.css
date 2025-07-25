@@ -1,8 +1,8 @@
-/* Eredita tutto il CSS originale + nuovi stili */
+/* Componente Palestre - CSS Pulito senza Google Maps */
 :host {
   display: block;
   min-height: 100vh;
-    padding-top: 8vh;
+  padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;
@@ -353,6 +353,13 @@
   border-color: rgba(59, 130, 246, 0.5);
 }
 
+.servizi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
 /* ===== BOTTONI ===== */
 .buttons-container {
   display: flex;
@@ -361,14 +368,14 @@
   flex-wrap: wrap;
 }
 
-.mappa-button, .book-button {
+.book-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
   border-radius: 0.5rem;
   color: white;
   transition: all 0.3s ease;
@@ -378,19 +385,10 @@
   font-weight: 500;
 }
 
-.mappa-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.book-button {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
 .book-button:hover {
   background: rgba(16, 185, 129, 0.3);
   border-color: rgba(16, 185, 129, 0.6);
+  transform: translateY(-2px);
 }
 
 .dettagli-button {
@@ -508,6 +506,13 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
+}
+
+.modal-description {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-size: 1rem;
 }
 
 /* ===== TABS ===== */
@@ -651,235 +656,6 @@
   font-size: 1.1rem;
 }
 
-/* ===== MAPPA ===== */
-.map-container {
-  display: flex;
-  gap: 1rem;
-  height: 600px;
-  border-radius: 1rem;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-}
-
-.google-map {
-  flex: 1;
-  min-height: 500px;
-  height: 100%;
-  border-radius: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Stati di caricamento mappa */
-.map-loading, .map-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-}
-
-.map-loading .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-.map-error .error-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  opacity: 0.7;
-}
-
-.map-list {
-  width: 350px;
-  overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  backdrop-filter: blur(10px);
-}
-
-.map-list-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fde68a;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.map-list-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.map-list-item:last-child {
-  border-bottom: none;
-}
-
-.map-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
-}
-
-.map-list-item.bookable {
-  border-left: 3px solid #10b981;
-}
-
-.map-list-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  flex-shrink: 0;
-}
-
-.map-list-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.map-list-content h3 {
-  font-size: 1rem;
-  margin: 0;
-  color: #fde68a;
-  font-weight: 600;
-}
-
-.map-list-content p {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0;
-}
-
-.map-list-badges {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.badge.bookable {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.badge.services {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-/* ===== VIEW SELECTOR ===== */
-.view-selector {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.view-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.view-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.view-button.active {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border-color: #3b82f6;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-}
-
-.view-button svg {
-  flex-shrink: 0;
-}
-
-/* ===== STATIC MAP ===== */
-.static-map {
-  width: 100%;
-  height: 300px;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.static-map img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.directions-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-.directions-button:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-}
-
 /* ===== FLOATING ACTION BUTTON ===== */
 .fab-container {
   position: fixed;
@@ -952,18 +728,6 @@
     font-size: 0.8rem;
   }
 
-  .view-selector {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .view-button {
-    width: 100%;
-    max-width: 250px;
-    justify-content: center;
-  }
-
   .palestre-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -983,24 +747,9 @@
     gap: 0.5rem;
   }
 
-  .mappa-button, .book-button {
+  .book-button {
     flex: 1;
     justify-content: center;
-  }
-
-  .map-container {
-    flex-direction: column;
-    height: auto;
-    gap: 1rem;
-  }
-
-  .google-map {
-    height: 300px;
-  }
-
-  .map-list {
-    width: 100%;
-    max-height: 300px;
   }
 
   .modal-content {
@@ -1045,10 +794,6 @@
 
   .form-input {
     padding: 0.75rem;
-  }
-
-  .static-map {
-    height: 200px;
   }
 
   .fab-container {
@@ -1129,8 +874,7 @@
 /* ===== PRINT STYLES ===== */
 @media print {
   .fab-container,
-  .controls-section,
-  .view-selector {
+  .controls-section {
     display: none;
   }
   
