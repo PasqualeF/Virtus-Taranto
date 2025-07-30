@@ -83,7 +83,7 @@ export class AuthService {
         };
       }
     } catch (error) {
-      console.error('❌ [AUTH_SERVICE] Errore caricamento stato iniziale:', error);
+
       this.clearStoredAuth();
       return {
         user: null,
@@ -229,42 +229,24 @@ export class AuthService {
     this.setLoadingState(true);
     this.clearError();
 
-    console.log('📤 [AUTH_SERVICE] Invio richiesta creazione account:', {
-      firstName: accountData.firstName,
-      lastName: accountData.lastName,
-      userName: accountData.userName,
-      emailAddress: accountData.emailAddress,
-      organization: accountData.organization,
-      role: accountData.position
-    });
 
     return this.http.post<AccountCreatedResponse>(`${this.API_BASE_URL}/api/accounts`, accountData)
       .pipe(
         tap(response => {
-          console.log('📥 [AUTH_SERVICE] Risposta backend creazione account:', response);
           
           // Verifica diversi possibili formati di risposta
           if (response && (response.success === true)) {
-            console.log('✅ [AUTH_SERVICE] Creazione account riuscita');
           } else if (response && response.userId) {
             // Alcuni backend potrebbero non avere il campo "success" ma restituire l'userId
-            console.log('✅ [AUTH_SERVICE] Creazione account riuscita (rilevato userId)');
           } else if (response && !response.hasOwnProperty('success')) {
             // Se la risposta non ha il campo "success", potrebbe essere comunque valida
-            console.log('✅ [AUTH_SERVICE] Creazione account presumibilmente riuscita (nessun campo success)');
           } else {
             const errorMessage = response?.message || 'Errore sconosciuto nella creazione account';
-            console.error('❌ [AUTH_SERVICE] Creazione account fallita:', errorMessage);
             throw new AuthError(errorMessage, 'ACCOUNT_CREATION_FAILED');
           }
         }),
         catchError(error => {
-          console.error('💥 [AUTH_SERVICE] Errore HTTP creazione account:', {
-            status: error.status,
-            statusText: error.statusText,
-            error: error.error,
-            message: error.message
-          });
+         
           
           return this.handleCreateAccountError(error);
         }),
@@ -287,7 +269,6 @@ export class AuthService {
     // Controlla se il backend ha effettivamente creato l'account nonostante l'errore
     if (error.status === 201 || error.status === 200) {
       // Status 200/201 potrebbero indicare successo anche se il frontend vede un errore
-      console.log('🤔 [AUTH_SERVICE] Status suggerisce successo, ma c\'è un errore nel parsing');
       
       // Prova a interpretare la risposta come successo
       try {
@@ -299,7 +280,6 @@ export class AuthService {
         
         
       } catch (parseError) {
-        console.error('❌ [AUTH_SERVICE] Errore nel parsing della risposta di successo:', parseError);
       }
     }
 
@@ -318,7 +298,6 @@ export class AuthService {
       errorMessage = 'Impossibile connettersi al server';
     }
 
-    console.error('❌ [AUTH_SERVICE] Errore finale creazione account:', errorMessage);
     this.setError(errorMessage);
     return throwError(() => new AuthError(errorMessage, 'ACCOUNT_CREATION_ERROR', error.status));
   }
@@ -468,7 +447,6 @@ export class AuthService {
       errorMessage = 'Impossibile connettersi al server';
     }
 
-    console.error('❌ [AUTH_SERVICE] Errore auth:', { status: error.status, message: errorMessage });
     this.setError(errorMessage);
     return throwError(() => new AuthError(errorMessage, 'AUTH_ERROR', error.status));
   }
@@ -523,7 +501,6 @@ export class AuthService {
     try {
       return localStorage.getItem(this.TOKEN_KEY);
     } catch (error) {
-      console.error('❌ [AUTH_SERVICE] Errore lettura token:', error);
       return null;
     }
   }
@@ -533,7 +510,6 @@ export class AuthService {
       const userStr = localStorage.getItem(this.USER_KEY);
       return userStr ? JSON.parse(userStr) : null;
     } catch (error) {
-      console.error('❌ [AUTH_SERVICE] Errore lettura utente:', error);
       return null;
     }
   }
@@ -567,7 +543,7 @@ export class AuthService {
         return false;
       }
     } catch (error) {
-      console.error('❌ Errore validazione token:', error);
+
       return false;
     }
   }

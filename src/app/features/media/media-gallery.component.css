@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   padding: 40px 15px;
 }
 
@@ -537,7 +537,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   padding: 40px 15px;
 }
 

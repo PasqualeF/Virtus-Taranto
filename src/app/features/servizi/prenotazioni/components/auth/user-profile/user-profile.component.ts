@@ -118,7 +118,6 @@ export class UserProfileComponent implements OnInit {
   private loadUserData(): void {
     this.user$.subscribe(user => {
       if (user) {
-        console.log('📥 [PROFILE] Caricamento dati utente:', user);
         
         this.profileForm.patchValue({
           firstName: user.firstName || '',
@@ -180,11 +179,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   onUpdateProfile(): void {
-    console.log('📝 [PROFILE] Tentativo aggiornamento profilo...');
-    console.log('📋 [PROFILE] Validità form:', {
-      isValid: this.profileForm.valid,
-      errors: this.getFormErrors(this.profileForm)
-    });
 
     if (this.profileForm.valid) {
       const user = this.authService.getCurrentUser();
@@ -202,11 +196,9 @@ export class UserProfileComponent implements OnInit {
           position: this.profileForm.value.position
         };
 
-        console.log('📤 [PROFILE] Invio dati aggiornamento:', updateData);
 
         this.authService.updateAccount(user.userId, updateData).subscribe({
           next: (response) => {
-            console.log('✅ [PROFILE] Profilo aggiornato:', response);
             if (response && (response.success === true )) {
               this.profileUpdateSuccess = true;
               this.authService.clearError?.();
@@ -218,24 +210,17 @@ export class UserProfileComponent implements OnInit {
             }
           },
           error: (error) => {
-            console.error('❌ [PROFILE] Errore aggiornamento profilo:', error);
           }
         });
       } else {
-        console.error('❌ [PROFILE] UserId non disponibile');
       }
     } else {
-      console.warn('⚠️ [PROFILE] Form non valido');
       this.markFormGroupTouched(this.profileForm);
     }
   }
 
   onUpdatePassword(): void {
-    console.log('🔐 [PROFILE] Tentativo aggiornamento password...');
-    console.log('📋 [PROFILE] Validità form password:', {
-      isValid: this.passwordForm.valid,
-      errors: this.getFormErrors(this.passwordForm)
-    });
+
 
     if (this.passwordForm.valid) {
       const user = this.authService.getCurrentUser();
@@ -245,11 +230,9 @@ export class UserProfileComponent implements OnInit {
           newPassword: this.passwordForm.value.newPassword
         };
 
-        console.log('📤 [PROFILE] Invio richiesta cambio password');
 
         this.authService.updatePassword(user.userId, passwordData).subscribe({
           next: (response) => {
-            console.log('✅ [PROFILE] Password aggiornata:', response);
             if (response && (response.success === true )) {
               this.passwordForm.reset();
               this.passwordUpdateSuccess = true;
@@ -267,14 +250,11 @@ export class UserProfileComponent implements OnInit {
             }
           },
           error: (error) => {
-            console.error('❌ [PROFILE] Errore aggiornamento password:', error);
           }
         });
       } else {
-        console.error('❌ [PROFILE] UserId non disponibile');
       }
     } else {
-      console.warn('⚠️ [PROFILE] Form password non valido');
       this.markFormGroupTouched(this.passwordForm);
     }
   }
@@ -305,7 +285,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   logout(): void {
-    console.log('🚪 [PROFILE] Logout utente...');
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/home']);
     });
@@ -317,7 +296,6 @@ export class UserProfileComponent implements OnInit {
 
   navigateToBookings(): void {
     // TODO: Implementare quando sarà pronto il sistema di prenotazioni
-    console.log('🚧 [PROFILE] Sistema prenotazioni in arrivo...');
     alert('🏀 Sistema prenotazioni in sviluppo!\n\nPresto potrai:\n• Prenotare campi e palestre\n• Gestire le tue prenotazioni\n• Visualizzare calendario disponibilità\n\nResta sintonizzato! 🚀');
   }
 

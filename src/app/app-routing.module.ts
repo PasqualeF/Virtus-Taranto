@@ -43,24 +43,24 @@ export const routes: Routes = [
   { path: 'squadra/mini/minibasket', component: YouthTeamsComponent },
 
   // NEWS
-  { path: 'news/orari-allenamenti', component: OrariAllenamentiComponent },
-  { path: 'news/ultimissime', component: UltimissimeComponent },
-  { path: 'news/comunicazioni', component: ComunicazioniComponent },
+  { path: 'calendario/orari-allenamenti', component: OrariAllenamentiComponent },
+  { path: 'who-else/news', component: UltimissimeComponent },
+  { path: 'who-else/comunicazioni', component: ComunicazioniComponent },
   { path: 'news/social', component: SocialFeedComponent },
 
   // MEDIA
-  { path: 'media/foto', component: MediaComponent },
+  { path: 'who-else/foto', component: MediaComponent },
 
   // WHO-ELSE
   { path: 'who-else/storia', component: StoriaComponent },
   { path: 'who-else/organigramma', component: OrganigrammaComponent },
-  { path: 'who-else/palestre', component: PalestreComponent },
+  { path: 'palestre', component: PalestreComponent },
   { path: 'who-else/partner', component: PartnerComponent },
-  { path: 'who-else/contatti', component: ContattiComponent },
+  { path: 'contatti', component: ContattiComponent },
   { path: 'who-else/achivements', component: AchievementsComponent },
 
   // EVENTI
-  { path: 'eventi/calendario', component: CalendarioComponent },
+  { path: 'calendario/calendario', component: CalendarioComponent },
   { path: 'eventi/tornei', component: TorneiComponent },
   { path: 'eventi/eventiSpeciali', component: EventiSpecialiComponent },
 
@@ -76,7 +76,7 @@ export const routes: Routes = [
 
   // ===== SISTEMA PRENOTAZIONI (MODULO ISOLATO) =====
   {
-    path: 'servizi/prenotazioni',
+    path: 'palestre/book',
     loadChildren: () => import('./features/servizi/prenotazioni/prenotazioni.module')
       .then(m => m.PrenotazioniModule),
     data: { 
@@ -88,22 +88,22 @@ export const routes: Routes = [
   // ===== REDIRECT PER COMPATIBILITÀ =====
   // Redirect delle vecchie route verso il nuovo sistema
   { 
-    path: 'servizi/login', 
+    path: 'palestre/login', 
     redirectTo: 'servizi/prenotazioni', 
     pathMatch: 'full' 
   },
   { 
-    path: 'servizi/register', 
+    path: 'palestre/register', 
     redirectTo: 'servizi/prenotazioni', 
     pathMatch: 'full' 
   },
   { 
-    path: 'servizi/profile', 
+    path: 'palestre/profile', 
     redirectTo: 'servizi/prenotazioni', 
     pathMatch: 'full' 
   },
   { 
-    path: 'servizi/book', 
+    path: 'palestre/book', 
     redirectTo: 'servizi/prenotazioni', 
     pathMatch: 'full' 
   },

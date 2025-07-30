@@ -359,7 +359,7 @@ input, select, textarea {
   transition: var(--transition);
   background: var(--white);
   outline: none;
-  font-family: inherit;
+  font-family: 'fantasy,sans-serif';
 }
 
 input:focus, select:focus, textarea:focus {

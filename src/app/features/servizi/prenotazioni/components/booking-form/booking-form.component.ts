@@ -45,12 +45,15 @@ interface FasciaOraria {
 }
 
 // Interfaccia per i costi fissi
-interface CostiFissi {
+/*interface CostiFissi {
   spogliatoio: number;
   custodia: number;
   riscaldamento: number;
+  servizi: number;
+}*/
+interface CostiFissi {
+  servizi: number;
 }
-
 // Interfaccia per il calcolo del prezzo
 interface CalcoloPrezzoResult {
   costoFisso: number;
@@ -149,10 +152,15 @@ export class BookingFormComponent implements OnInit {
   ];
 
   // ===== COSTI FISSI =====
-  readonly costiFissi: CostiFissi = {
+  /*readonly costiFissi: CostiFissi = {
     spogliatoio: 15,
     custodia: 10,
-    riscaldamento: 10
+    riscaldamento: 10,
+    servizi:20
+  };
+*/
+  readonly costiFissi: CostiFissi = {
+    servizi:20
   };
 
   // ===== FASCE ORARIE AGGIORNATE =====
@@ -178,8 +186,8 @@ export class BookingFormComponent implements OnInit {
       oraFine: 21, 
       prezzoOrario: 16, 
       nome: 'Sera (NON DISPONIBILE)',
-      descrizione: 'dalle 17:00 alle 21:00 - Già occupato',
-      disponibile: false // Non prenotabile
+      descrizione: 'dalle 17:00 alle 21:00',
+      disponibile: true // Non prenotabile
     },
     { 
       oraInizio: 21, 
@@ -288,7 +296,7 @@ export class BookingFormComponent implements OnInit {
     const durataMinutiRimanenti = durataMinutiTotali % 60;
     
     // Costo fisso (sempre lo stesso)
-    const costoFisso = this.costiFissi.spogliatoio + this.costiFissi.custodia + this.costiFissi.riscaldamento;
+    const costoFisso = this.costiFissi.servizi  //this.costiFissi.spogliatoio + this.costiFissi.custodia + this.costiFissi.riscaldamento;
     
     // Calcola costo orario considerando le fasce attraversate
     let costoOrario = 0;

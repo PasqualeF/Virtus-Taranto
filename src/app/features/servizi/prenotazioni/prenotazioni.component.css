@@ -65,7 +65,7 @@
   display: flex;
   min-height: 100vh;
   background-color: var(--gray-50);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'fantasy,sans-serif', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ===== LOADING STATE ===== */

@@ -31,6 +31,7 @@ export interface UpcomingBooking {
   canModify: boolean;
   canCancel: boolean;
   color?: string;
+  descrizione?: string;
 }
 
 export interface TodaySchedule {
@@ -58,6 +59,17 @@ export interface BackendDashboardStats {
   preferredTimeSlot?: string;
   averageSessionDuration?: number;
   lastUpdated?: string;
+}
+// Interfaccia per la prenotazione da modificare (aggiungi se non presente)
+export interface BookingToEdit {
+  id: number;
+  palestraId: number;
+  palestra: string;
+  data: string;
+  orarioInizio: string;
+  orarioFine: string;
+  tipo: string;
+  descrizione?: string;
 }
 
 @Injectable({

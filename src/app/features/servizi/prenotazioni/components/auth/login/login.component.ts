@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       emailAddress: ['', [Validators.required, Validators.email]],
       userName: ['', [Validators.required, Validators.minLength(3)]],
+      phone: ['', [Validators.required, Validators.minLength(6)]],
       organization: ['', [Validators.required, Validators.minLength(2)]],
       position: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, this.passwordValidator]],
@@ -121,6 +122,7 @@ export class LoginComponent implements OnInit {
         lastName: formData.lastName,
         emailAddress: formData.emailAddress,
         userName: formData.userName,
+        phone: formData.phone,
         organization: formData.organization,
         position: formData.position, // Mantieni "role" come campo
         password: formData.password,
@@ -224,6 +226,7 @@ export class LoginComponent implements OnInit {
           case 'firstName': return 'Il nome è obbligatorio';
           case 'lastName': return 'Il cognome è obbligatorio';
           case 'emailAddress': return 'L\'email è obbligatoria';
+          case 'phone': return 'Il numero di telefono è obbligatorio';
           case 'userName': return 'L\'username è obbligatorio';
           case 'organization': return 'L\'organizzazione è obbligatoria';
           case 'position': return 'Il ruolo è obbligatorio';

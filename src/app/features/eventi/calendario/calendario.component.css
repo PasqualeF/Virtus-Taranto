@@ -3,16 +3,16 @@
   min-height: 100vh;
   padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
-  padding: 40px 15px;
+
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif';
 }
 
 
 .calendario-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 5rem;
   min-height: 100vh;
 }
 

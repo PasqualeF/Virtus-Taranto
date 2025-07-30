@@ -89,25 +89,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private initializeStaticMenu() {
     this.navItems = [
       { 
-        label: 'News', 
+        label: 'Calendario', 
         submenuItems: [
           {
             label: '',
             items: [
-              { name: 'Orari Allenamenti', route: '/news/orari-allenamenti' },
-              { name: 'Ultimissime', route: '/news/ultimissime' },
-              { name: 'Comunicazioni', route: '/news/comunicazioni' }
+              { name: 'Orari Allenamenti', route: '/calendario/orari-allenamenti' },
+              { name: 'Calendario Partite', route: '/calendario/calendario' }
             ]
           },
         ] 
       },
       { 
-        label: 'Media', 
+        label: 'Palestre', 
         submenuItems: [
           {
             label: '',
             items: [
-              { name: 'Media', route: '/media/foto' },
+              { name: 'Palestre', route: '/palestre' },
+              { name: 'Prenota un campo', route: '/palestre/book' } 
             ]
           },
         ] 
@@ -122,13 +122,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
           {
             label: '',
             items: [
+              { name: 'News', route: '/who-else/news' },
+              { name: 'Comunicazioni', route: '/who-else/comunicazioni' },
               { name: 'Storia', route: '/who-else/storia' },
               { name: 'Achivements', route: '/who-else/achivements'},
               { name: 'Partner', route: '/who-else/partner' },
-              { name: 'Palestre', route: '/who-else/palestre' },
+ /*             { name: 'Palestre', route: '/who-else/palestre' },*/
               { name: 'Organigramma', route: '/who-else/organigramma' },
-              { name: 'Contatti', route: '/who-else/contatti'}
-              
+              { name: 'Media', route: '/who-else/foto' }
             ]
           },
         ] 
@@ -144,18 +145,31 @@ export class NavbarComponent implements OnInit, OnDestroy {
           },
         ] 
       },
-      { 
+
+{ 
+        label: 'Contatti', 
+        submenuItems: [
+          {
+            label: '',
+            items: [
+              { name: 'Contatti', route: '/contatti' }
+            ]
+          },
+        ] 
+      },
+
+ /*     { 
         label: 'Eventi', 
         submenuItems: [
           {
             label: '',
             items: [
               { name: 'Eventi Speciali', route: '/eventi/eventiSpeciali' },
-              { name: 'Calendario', route: '/eventi/calendario' }
+             
             ]
           },
         ] 
-      },
+      },*/
       { 
         label: 'Servizi', 
         submenuItems: [
@@ -166,7 +180,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
               { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
               { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
               { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' },
-              { name: 'Prenota un campo', route: '/servizi/book' } 
+              
             ]
           },
         ] 

@@ -44,7 +44,7 @@ body, html {
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   background-attachment: fixed;
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif';
 }
 
 .app-orari-allenamenti {

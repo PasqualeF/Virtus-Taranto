@@ -1,4 +1,4 @@
-<!-- components/dashboard/dashboard.component.html - AGGIORNATO CON BACKEND -->
+<!-- components/dashboard/dashboard.component.html - COMPLETO RISCRITTO -->
 
 <div class="dashboard" @fadeInUp>
   
@@ -146,7 +146,7 @@
 
       <!-- Mostra programma se presente -->
       <div class="schedule-content" *ngIf="hasBookingsToday(); else noBookingsToday">
-        <div class="schedule-card" *ngIf="getNextTodayBooking() as booking" (click)="onBookingClick(booking)">
+        <div class="schedule-card" *ngIf="getNextTodayBooking() as booking">
           <div class="schedule-card__time">
             <span class="time">{{ booking.orario }}</span>
             <span class="status status--{{ getStatusColor(booking.stato) }}">
@@ -158,12 +158,9 @@
             <p>{{ booking.tipo }}</p>
           </div>
           <div class="schedule-card__actions">
-            <button class="btn btn--small btn--outline" (click)="onBookingClick(booking); $event.stopPropagation()">
-              Dettagli
-            </button>
             <button 
               class="btn btn--small btn--outline" 
-              (click)="modifyBooking(booking); $event.stopPropagation()"
+              (click)="modifyBooking(booking)"
               [disabled]="!booking.canModify">
               Modifica
             </button>
@@ -209,7 +206,6 @@
         <div 
           class="booking-card" 
           *ngFor="let booking of bookings; trackBy: trackByBookingId"
-          (click)="onBookingClick(booking)"
           @slideIn>
           
           <div class="booking-card__date">
@@ -228,22 +224,16 @@
           <div class="booking-card__actions">
             <button 
               class="action-btn" 
-              title="Visualizza dettagli"
-              (click)="onBookingClick(booking); $event.stopPropagation()">
-              <span class="material-icons">visibility</span>
-            </button>
-            <button 
-              class="action-btn" 
               title="Modifica prenotazione"
               [disabled]="!booking.canModify"
-              (click)="modifyBooking(booking); $event.stopPropagation()">
+              (click)="modifyBooking(booking)">
               <span class="material-icons">edit</span>
             </button>
             <button 
               class="action-btn action-btn--danger" 
               title="Cancella prenotazione"
               [disabled]="!booking.canCancel"
-              (click)="cancelBooking(booking); $event.stopPropagation()">
+              (click)="cancelBooking(booking)">
               <span class="material-icons">delete</span>
             </button>
           </div>
@@ -314,8 +304,7 @@
   </div>
 </div>
 
-<!-- Aggiungi questo dialog alla fine del file dashboard.component.html -->
-
+<!-- Dialog Conferma Cancellazione -->
 <div *ngIf="showDeleteConfirm" class="dialog-overlay" (click)="closeDeleteConfirm()">
   <div class="dialog-content" (click)="$event.stopPropagation()">
     <div class="dialog-header">
@@ -367,13 +356,5 @@
         {{ isDeleting ? 'Cancellazione...' : 'Cancella Prenotazione' }}
       </button>
     </div>
-  </div>
-</div>
-
-<!-- Success Message (Toast style) -->
-<div class="toast-container" *ngIf="showSuccessMessage">
-  <div class="toast toast--success" @slideIn>
-    <span class="material-icons">check_circle</span>
-    <p>{{ successMessage }}</p>
   </div>
 </div>

@@ -1,4 +1,4 @@
-// components/dashboard/dashboard.component.ts - AGGIORNATO CON BACKEND
+// components/dashboard/dashboard.component.ts - COMPLETO RISCRITTO
 import { Component, OnInit, Input, inject, TrackByFunction, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
@@ -11,7 +11,8 @@ import {
   DashboardService, 
   DashboardStats, 
   UpcomingBooking, 
-  TodaySchedule 
+  TodaySchedule,
+  BookingToEdit
 } from '../../core/services/dashboard.service';
 
 @Component({
@@ -53,21 +54,16 @@ export class DashboardComponent implements OnInit {
   errorMessage = '';
   currentTime = new Date();
 
+  // State per cancellazione
   showDeleteConfirm = false;
-selectedBookingForDelete: UpcomingBooking | null = null;
-isDeleting = false;
-deleteError = '';
-successMessage = '';
-showSuccessMessage = false;
+  selectedBookingForDelete: UpcomingBooking | null = null;
+  isDeleting = false;
+  deleteError = '';
 
   // Track by functions
   trackByBookingId: TrackByFunction<UpcomingBooking> = (index, item) => item.id;
 
   ngOnInit(): void {
-
-  this.successMessage = '';
-  this.showDeleteConfirm = false;
-  this.deleteError = '';
     this.navigationService.setBookingArea(true);
     this.loadDashboardData();
     this.setupTimeUpdate();
@@ -89,25 +85,21 @@ showSuccessMessage = false;
       })
     ).subscribe({
       next: (data) => {
-        // Aggiorna tutti i BehaviorSubject
         this.stats$.next(data.stats);
         this.upcomingBookings$.next(data.upcomingBookings);
         this.todaySchedule$.next(data.todaySchedule);
-        
       },
       error: (error) => {
         this.hasError = true;
         
         if (error.message?.includes('401') || error.message?.includes('autenticazione')) {
           this.errorMessage = '🔐 Sessione scaduta. Effettua nuovamente il login.';
-          // TODO: Reindirizza al login se necessario
         } else if (error.message?.includes('403')) {
           this.errorMessage = '🚫 Non hai i permessi per visualizzare la dashboard.';
         } else {
           this.errorMessage = '❌ Errore nel caricamento dei dati. Riprova più tardi.';
         }
         
-        // Imposta valori di fallback
         this.stats$.next(this.getEmptyStats());
         this.upcomingBookings$.next([]);
         this.todaySchedule$.next({ hasBookings: false, totalBookings: 0, completedBookings: 0 });
@@ -121,7 +113,7 @@ showSuccessMessage = false;
   private setupTimeUpdate(): void {
     setInterval(() => {
       this.currentTime = new Date();
-    }, 60000); // Aggiorna ogni minuto
+    }, 60000);
   }
 
   /**
@@ -136,6 +128,13 @@ showSuccessMessage = false;
    */
   viewMyBookings(): void {
     this.sectionChange.emit('mie-prenotazioni');
+  }
+
+  /**
+   * Modifica una prenotazione - VA ALLE MIE PRENOTAZIONI
+   */
+  modifyBooking(booking: UpcomingBooking): void {
+    this.viewMyBookings();
   }
 
   /**
@@ -160,6 +159,65 @@ showSuccessMessage = false;
     this.closeError();
     this.loadDashboardData();
   }
+
+  /**
+   * ===== CANCELLAZIONE PRENOTAZIONE =====
+   */
+
+  /**
+   * Avvia il processo di cancellazione di una prenotazione
+   */
+  cancelBooking(booking: UpcomingBooking): void {
+    if (!booking.canCancel) {
+      return;
+    }
+    
+    this.selectedBookingForDelete = booking;
+    this.showDeleteConfirm = true;
+    this.deleteError = '';
+    this.isDeleting = false;
+  }
+
+  /**
+   * Conferma la cancellazione della prenotazione
+   */
+  confirmCancellation(): void {
+    if (!this.selectedBookingForDelete) return;
+    
+    this.isDeleting = true;
+    this.deleteError = '';
+    
+    this.bookingService.deleteReservation(this.selectedBookingForDelete.id).subscribe({
+      next: (response) => {
+        
+        // SEMPRE chiudi il dialog e ricarica, indipendentemente dalla risposta
+        this.closeDeleteConfirm();
+        this.loadDashboardData();
+        
+      },
+      error: (error) => {
+        
+        // ANCHE in caso di errore, chiudi e ricarica
+        this.closeDeleteConfirm();
+        this.loadDashboardData();
+        
+      }
+    });
+  }
+
+  /**
+   * Chiude il dialog di conferma cancellazione
+   */
+  closeDeleteConfirm(): void {
+    this.showDeleteConfirm = false;
+    this.selectedBookingForDelete = null;
+    this.deleteError = '';
+    this.isDeleting = false;
+  }
+
+  /**
+   * ===== HELPER METHODS =====
+   */
 
   /**
    * Ottieni saluto basato sull'ora
@@ -202,22 +260,22 @@ showSuccessMessage = false;
    */
   getStatusLabel(stato: string): string {
     switch (stato?.toLowerCase()) {
-    case 'confermata': 
-    case 'confirmed': 
-      return 'confermata';
-    case 'in_attesa': 
-      return 'in-attesa';
-    case 'pending': 
-      return 'in-attesa';
-    case 'completata': 
-    case 'completed': 
-      return 'completata';
-    case 'cancellata': 
-    case 'cancelled': 
-      return 'cancellata';
-    default: 
-      return 'confermata';
-  }
+      case 'confermata': 
+      case 'confirmed': 
+        return 'confermata';
+      case 'in_attesa': 
+        return 'in-attesa';
+      case 'pending': 
+        return 'in-attesa';
+      case 'completata': 
+      case 'completed': 
+        return 'completata';
+      case 'cancellata': 
+      case 'cancelled': 
+        return 'cancellata';
+      default: 
+        return 'confermata';
+    }
   }
 
   /**
@@ -259,35 +317,12 @@ showSuccessMessage = false;
   }
 
   /**
-   * Gestisce il click su una prenotazione
-   */
-  onBookingClick(booking: UpcomingBooking): void {
-    console.log('📅 Click su prenotazione:', booking.id);
-    // TODO: Apri dettagli prenotazione o modale
-  }
-
-  /**
-   * Modifica una prenotazione
-   */
-  modifyBooking(booking: UpcomingBooking): void {
-    if (!booking.canModify) {
-      console.warn('⚠️ Prenotazione non modificabile:', booking.id);
-      return;
-    }
-    
-    console.log('✏️ Modifica prenotazione:', booking.id);
-    // TODO: Implementa modifica prenotazione
-  }
-
-
-  /**
    * Calcola la tendenza per le statistiche
    */
   getTrendForStat(statType: string): { type: 'up' | 'down' | 'neutral', text: string } {
     const stats = this.stats$.value;
     if (!stats) return { type: 'neutral', text: 'Nessun dato' };
 
-    // Logica semplificata per mostrare trend
     switch (statType) {
       case 'active':
         return stats.activeBookings > 0 
@@ -331,140 +366,10 @@ showSuccessMessage = false;
     };
   }
 
-
-/**
- * Avvia il processo di cancellazione di una prenotazione
- */
-cancelBooking(booking: UpcomingBooking): void {
-  if (!booking.canCancel) {
-    return;
-  }
-  
-  this.selectedBookingForDelete = booking;
-  this.showDeleteConfirm = true;
-  this.deleteError = '';
-}
-
-/**
- * Conferma la cancellazione della prenotazione
- */
-confirmCancellation(): void {
-  if (!this.selectedBookingForDelete) return;
-  
-  this.isDeleting = true;
-  this.deleteError = '';
-  
-  this.bookingService.deleteReservation(this.selectedBookingForDelete.id).subscribe({
-    next: (response) => {
-      if (response.success) {
-        
-        // Rimuovi la prenotazione dalla lista locale
-        const currentBookings = this.upcomingBookings$.value;
-        const updatedBookings = currentBookings.filter(
-          b => b.id !== this.selectedBookingForDelete!.id
-        );
-        this.upcomingBookings$.next(updatedBookings);
-        
-        // Aggiorna anche le statistiche
-        this.updateStatsAfterDeletion();
-        
-        // Chiudi il dialog
-        this.closeDeleteConfirm();
-        
-        // Mostra messaggio di successo (opzionale)
-        this.showSuccess('Prenotazione cancellata con successo');
-        
-        // Ricarica tutti i dati della dashboard per essere sicuri che tutto sia aggiornato
-        setTimeout(() => {
-          this.loadDashboardData();
-        }, 500);
-      } else {
-        this.deleteError = response.message || 'Errore durante la cancellazione';
-      }
-      this.isDeleting = false;
-    },
-    error: (error) => {
-      this.deleteError = error.message || 'Errore durante la cancellazione della prenotazione';
-      this.isDeleting = false;
-    }
-  });
-}
-private showSuccess(message: string): void {
-  this.successMessage = message;
-  this.showSuccessMessage = true;
-  // Nascondi il messaggio dopo 3 secondi
-  setTimeout(() => {
-    this.successMessage = '';
-    this.showSuccessMessage = false;
-  }, 3000);
-}
-/**
- * Chiude il dialog di conferma cancellazione
- */
-closeDeleteConfirm(): void {
-  this.showDeleteConfirm = false;
-  this.selectedBookingForDelete = null;
-  this.deleteError = '';
-  this.isDeleting = false;
-}
-
-/**
- * Aggiorna le statistiche dopo una cancellazione
- */
-private updateStatsAfterDeletion(): void {
-  const currentStats = this.stats$.value;
-  if (currentStats) {
-    // Decrementa i contatori appropriati
-    currentStats.activeBookings = Math.max(0, currentStats.activeBookings - 1);
-    currentStats.upcomingBookings = Math.max(0, currentStats.upcomingBookings - 1);
-    
-    // Se la prenotazione era confermata, decrementa anche quello
-    if (this.selectedBookingForDelete?.stato === 'confermata') {
-      currentStats.confirmedBookings = Math.max(0, currentStats.confirmedBookings - 1);
-    }
-    
-    this.stats$.next(currentStats);
-  }
-  
-  // Se era una prenotazione di oggi, aggiorna anche il programma giornaliero
-  if (this.selectedBookingForDelete && this.isBookingToday(this.selectedBookingForDelete)) {
-    this.updateTodayScheduleAfterDeletion();
-  }
-}
-
-
-/**
- * Verifica se una prenotazione è per oggi
- */
-private isBookingToday(booking: UpcomingBooking): boolean {
-  const bookingDate = new Date(booking.startDateTime);
-  const today = new Date();
-  return bookingDate.toDateString() === today.toDateString();
-}
-
-/**
- * Aggiorna il programma di oggi dopo una cancellazione
- */
-private updateTodayScheduleAfterDeletion(): void {
-  const currentSchedule = this.todaySchedule$.value;
-  if (currentSchedule && currentSchedule.totalBookings > 0) {
-    currentSchedule.totalBookings--;
-    
-    // Se era la prossima prenotazione, trova la successiva
-    if (currentSchedule.nextBooking?.id === this.selectedBookingForDelete?.id) {
-      const remainingTodayBookings = this.upcomingBookings$.value.filter(
-        b => this.isBookingToday(b) && b.id !== this.selectedBookingForDelete?.id
-      );
-      
-      currentSchedule.nextBooking = remainingTodayBookings[0] || undefined;
-      currentSchedule.hasBookings = remainingTodayBookings.length > 0;
-    }
-    
-    this.todaySchedule$.next(currentSchedule);
-  }
-}
-
- navigateTo(path: string) {
+  /**
+   * Naviga a un path specifico
+   */
+  navigateTo(path: string): void {
     this.router.navigate([path]);
   }
 

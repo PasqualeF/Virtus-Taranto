@@ -836,7 +836,7 @@ app-orari-allenamenti {
   min-height: 100vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   padding: 2rem 1rem;
 }
 
@@ -845,7 +845,7 @@ app-orari-allenamenti {
   min-height: 100vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   padding: 2rem 1rem;
 }
 
@@ -853,7 +853,7 @@ app-orari-allenamenti {
   font-size: 4.5rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 7rem;
+  margin-bottom: 1rem;
   margin-top: 3rem;
   line-height: 1.2;
   background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
@@ -862,7 +862,7 @@ app-orari-allenamenti {
   -webkit-text-fill-color: transparent;
   text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   letter-spacing: -0.5px;
-  padding: 5rem 1rem;
+  padding: 3rem 1rem;
 }
 
 @media (max-width: 768px) {
@@ -879,7 +879,7 @@ app-orari-allenamenti {
 
 /* Stile container principale */
 .orari-container {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   max-width: 100%;
   margin: 2rem auto;
   padding-top: 2rem;

@@ -398,7 +398,7 @@ input, select, textarea {
   transition: var(--transition-fast);
   background: var(--gray-50);
   box-sizing: border-box;
-  font-family: inherit;
+  font-family: 'fantasy,sans-serif';
 }
 
 input:focus, select:focus, textarea:focus {
@@ -500,7 +500,7 @@ input::placeholder {
   cursor: pointer;
   transition: var(--transition-fast);
   text-decoration: none;
-  font-family: inherit;
+  font-family: 'fantasy,sans-serif';
   outline: none;
 }
 

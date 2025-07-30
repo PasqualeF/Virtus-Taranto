@@ -5,7 +5,7 @@
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
 }
 
 .titolo {
@@ -128,7 +128,7 @@
 /* Formattazione Storia con white-space: pre-line */
 .storia-formatted {
   white-space: pre-line; /* Rispetta i line break del JSON */
-  font-family: 'Inter', sans-serif;
+  font-family: 'fantasy,sans-serif', sans-serif;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;

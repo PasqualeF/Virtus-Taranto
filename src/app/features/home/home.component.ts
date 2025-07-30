@@ -75,13 +75,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   // Typewriter Configuration - UPDATED with basketball theme
   private phrases = [
-    'Passione 🏀', 
-    'Tradizione 🏆', 
-    'Eccellenza 👑', 
-    'Dal 1948 📅', 
-    'Who Else? 💪',
-    'Taranto Basket ❤️',
-    'Famiglia 🤝'
+    'Dal 2009', 
+    'Passione', 
+    'Tradizione', 
+    'Eccellenza', 
+
+    'Who Else?',
+    'Famiglia'
   ];
   private currentPhrase = 0;
   private currentChar = 0;
@@ -94,19 +94,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private matchService = inject(MatchService);
   
   // Assets
-  logos = ['assets/logo-virtus-taranto.svg', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
+  logos = ['assets/logo-virtus-taranto.png', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
 
   // Navigation Sections
   sections = [
     { id: 'hero', name: 'Home' },
     { id: 'sponsors', name: 'Sponsor' },
     { id: 'story', name: 'Storia' },
-    { id: 'achievements', name: 'Successi' },
-    { id: 'social', name: 'Social' },
+    { id: 'palestre', name: 'Palestre' }, // ← NUOVO
     { id: 'matches', name: 'Partite' },
-    { id: 'teams', name: 'Squadre' },
-    { id: 'shop', name: 'Shop' }
   ];
+
 
   // Content Data
   upcomingMatches: Match[] = [];
@@ -335,7 +333,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.startTypewriter();
-    }, 2000);
+    }, 1000);
   }
 
   @HostListener('window:scroll', [])
@@ -380,7 +378,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (this.currentChar === phrase.length) {
           this.isDeleting = true;
-          this.typewriterSpeed = 1200;
+          this.typewriterSpeed = 350;
         }
       } else {
         elem.textContent = phrase.substring(0, this.currentChar - 1);

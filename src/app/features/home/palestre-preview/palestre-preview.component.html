@@ -1,0 +1,94 @@
+<section class="palestre-preview-section" [@fadeInUp]>
+  
+  <!-- Header Section -->
+  <div class="section-header">
+    <h2 class="section-title">
+      <span class="title-icon">🏢</span>
+      Le Nostre Palestre
+    </h2>
+    <p class="section-subtitle">
+      Scopri le nostre strutture
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Caricamento palestre...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p class="error-text">Problema nel caricamento, mostriamo le nostre palestre principali</p>
+  </div>
+
+  <!-- Palestre Cards -->
+  <div *ngIf="!isLoading" class="palestre-grid">
+    <div *ngFor="let palestra of palestre; let i = index; trackBy: trackByPalestra" 
+         class="palestra-card"
+         [@cardSlideIn]
+         [style.animation-delay]="(i * 200) + 'ms'"
+         (click)="navigateToPalestra(palestra)">
+      
+      <!-- Card Image -->
+      <div class="card-image-container">
+        <img [src]="palestra.immagine" 
+             [alt]="palestra.nome"
+             class="card-image"
+             (error)="onImageError($event)"
+             loading="lazy">
+        
+        <!-- Prenotabile Badge -->
+        <div *ngIf="palestra.prenotabile" class="booking-badge">
+          {{ getBookableIcon() }} Prenotabile
+        </div>
+        
+        <!-- Image Overlay -->
+        <div class="image-overlay"></div>
+      </div>
+      
+      <!-- Card Content -->
+      <div class="card-content">
+        <h3 class="palestra-name">{{ palestra.nome }}</h3>
+        
+        <p class="palestra-location">
+          <span class="location-icon">{{ getLocationIcon() }}</span>
+          {{ palestra.indirizzo }}
+        </p>
+        
+        <p class="palestra-description">
+          {{ getShortDescription(palestra.descrizione) }}
+        </p>
+        
+        <!-- Quick Info -->
+        <div class="quick-info" *ngIf="palestra.servizi.length > 0">
+          <span class="info-badge" *ngFor="let servizio of palestra.servizi.slice(0, 2)">
+            {{ servizio }}
+          </span>
+          <span *ngIf="palestra.servizi.length > 2" class="more-services">
+            +{{ palestra.servizi.length - 2 }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Hover Effect -->
+      <div class="card-hover-effect">
+        <span class="hover-text">Scopri di più</span>
+        <div class="hover-icon">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div *ngIf="!isLoading" class="cta-section">
+    <button class="view-all-btn" (click)="navigateToAllPalestre()">
+      <span class="btn-text">Scopri Tutte le Palestre</span>
+      <span class="btn-icon">🏢</span>
+    </button>
+    
+    <p class="cta-subtitle">
+    </p>
+  </div>
+
+</section>

@@ -15,7 +15,7 @@
         <span class="material-icons">sports_basketball</span>
       </div>
       <h1>{{ isRegisterMode ? 'Crea Account' : 'Accedi alle Prenotazioni' }}</h1>
-      <p>{{ isRegisterMode ? 'Unisciti alla community' : 'Gestisci le tue prenotazioni palestre' }}</p>
+      <p>{{ isRegisterMode ? 'Registrati per gestire le prenotazioni' : 'Gestisci le tue prenotazioni palestre' }}</p>
     </div>
 
     <!-- Toggle Buttons -->
@@ -195,6 +195,26 @@
           <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'emailAddress')">
             <span class="material-icons">error</span>
             {{ getFieldError(registerForm, 'emailAddress') }}
+          </div>
+        </div>
+
+         <!-- Email -->
+        <div class="form-group">
+          <label for="phone" class="form-label">
+            <span class="material-icons">phone</span>
+            Cellulare
+          </label>
+          <input
+            id="phone"
+            type="text"
+            formControlName="phone"
+            class="form-input"
+            [class.form-input--error]="isFieldInvalid(registerForm, 'phone')"
+            placeholder="Il tuo telefono">
+          
+          <div class="form-error" *ngIf="isFieldInvalid(registerForm, 'phone')">
+            <span class="material-icons">error</span>
+            {{ getFieldError(registerForm, 'phone') }}
           </div>
         </div>
 

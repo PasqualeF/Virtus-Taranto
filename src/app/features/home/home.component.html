@@ -33,8 +33,8 @@
         <!-- Main Content -->
         <div class="mobile-text-content">
           <h1 class="mobile-title">
-            <span class="virtus-text">VIRTUS TARANTO</span>
-            <span class="sottotitolo">Gruppo Support_O VPS</span>
+            <span class="virtus-text">Benvenuti in Casa Orange</span>
+            <span class="sottotitolo">Gruppo Support_O Virtus VPS</span>
           </h1>
           <p class="mobile-slogan">
             Cresciamo insieme, un allenamento alla volta.
@@ -142,8 +142,8 @@
         <!-- Text Content -->
         <div class="text-content">
           <h1 class="main-title" [class.appear]="titleAnimationState">
-            <span class="title-line">Benvenuti nella</span>
-            <span class="title-highlight">Casa del Basket Tarantino</span>
+            <span class="title-highlight">Benvenuti in</span>
+            <span class="title-highlight">Casa Orange</span>
           </h1>
 
           <!-- NEW: Desktop Motivational Slogan -->
@@ -226,7 +226,7 @@
     
     <app-news  id="social"  class="section"  [class.active]="currentSection === 'social'"></app-news>
 
-    <!-- Achievement Section -->
+    <!-- Achievement Section 
     <section id="achievements" class="section achievements-section" [class.active]="currentSection === 'achievements'">
       <div class="achievements-content">
         <h2 class="section-title">I Nostri Successi</h2>
@@ -241,8 +241,11 @@
           </div>
         </div>
       </div>
-    </section>
-
+    </section>-->
+<app-palestre-preview id="palestre" 
+                      class="section" 
+                      [class.active]="currentSection === 'palestre'">
+</app-palestre-preview>
 
     <app-matches-section id="matches" 
                         class="section" 
@@ -250,7 +253,7 @@
                         [upcomingMatches]="upcomingMatches">
     </app-matches-section>
 
-    <app-teams-section id="teams" 
+ <!--   <app-teams-section id="teams" 
                       class="section" 
                       [class.active]="currentSection === 'teams'"
                       [teams]="teams">
@@ -260,7 +263,7 @@
                       class="section" 
                       [class.active]="currentSection === 'shop'">
     </app-shop-preview>
-</div>
+</div>--> 
 
   <!-- Navigation Dots - Only visible on desktop -->
   <div class="navigation-dots" *ngIf="!isMobile">

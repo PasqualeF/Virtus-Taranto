@@ -51,6 +51,7 @@ import { AchievementsComponent } from './features/whoelse/achivements/achievemen
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
 import { AuthInterceptor } from './features/servizi/prenotazioni/core/interceptors/auth.interceptor';
+import { PalestrePreviewComponent } from './features/home/palestre-preview/palestre-preview.component';
 
 // ========================================
 // RIMOSSO: Import dei componenti prenotazioni (ora sono nel loro modulo separato)
@@ -99,7 +100,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MediaComponent,
     AchievementsComponent,
     CookieBannerComponent,
-    PrivacyPolicyComponent
+    PrivacyPolicyComponent,
+    PalestrePreviewComponent
     ],
   imports: [
     BrowserModule,

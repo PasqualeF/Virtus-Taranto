@@ -4,6 +4,7 @@ html, body {
   }
   
   body {
+    font-family: fantasy, sans-serif;
     display: flex;
     flex-direction: column;
   }
@@ -24,6 +25,7 @@ html, body {
 
 /* ===== VARIABILI CSS GLOBALI PER PRENOTAZIONI ===== */
 :root {
+      font-family: fantasy, sans-serif;
   /* Colori principali */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
@@ -99,5 +101,5 @@ html, body {
 .dashboard,
 .my-bookings,
 .login-container {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'fantasy,sans-serif', -apple-system, BlinkMacSystemFont, sans-serif;
 }
