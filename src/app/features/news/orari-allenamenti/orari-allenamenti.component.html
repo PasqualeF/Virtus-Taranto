@@ -40,7 +40,7 @@
         </div>
       </div>
       
-      <div class="filtri-container">
+      <div class="filtri-container" *ngIf="orariAllenamenti.length > 0">
         <mat-form-field appearance="outline" class="filtro">
           <mat-label>Squadra</mat-label>
           <mat-select [(ngModel)]="filtroGruppo" (selectionChange)="filtraOrari()">
@@ -65,6 +65,11 @@
           </mat-select>
         </mat-form-field>
       </div>
+    </div>
+    
+    <!-- NUOVO: Titolo dinamico della settimana sopra la tabella -->
+    <div class="week-title" *ngIf="orariAllenamenti.length > 0">
+      <h2>{{ getWeekTitle() }}</h2>
     </div>
     
     <div class="desktop-view" *ngIf="!isMobile && orariAllenamenti.length > 0">
@@ -111,7 +116,7 @@
 
                 <div class="connection-indicator" 
                      [class.disconnected]="!isConnectedToBackend"
-                     [title]="isConnectedToBackend ? 'Dati live dal backend' : 'Dati locali/fallback'">
+                     [title]="isConnectedToBackend ? 'Dati live dal backend' : 'Connessione al backend non disponibile'">
                 </div>
               </div>
             </div>
@@ -179,38 +184,32 @@
       </div>
     </div>
 
+    <!-- RIMOSSO: bottone "Usa dati esempio" -->
     <div class="no-data-message" *ngIf="orariAllenamenti.length === 0 && !isLoading">
       <div class="no-data-icon">
         <i class="fas fa-calendar-times"></i>
       </div>
       <h3>Nessun orario disponibile</h3>
-      <p>Non sono stati trovati orari di allenamento.</p>
+      <p>Non sono stati trovati orari di allenamento per la settimana {{ getWeekTitle().split(':')[1] }}.</p>
       <div class="no-data-actions">
         <button class="action-btn primary" (click)="refreshData()">
           <i class="fas fa-sync-alt"></i>
           Ricarica dati
         </button>
-        <button class="action-btn secondary" (click)="useFallbackData()">
-          <i class="fas fa-database"></i>
-          Usa dati esempio
-        </button>
       </div>
     </div>
 
+    <!-- AGGIORNATO: Rimosso bottone "Usa dati locali" -->
     <div class="error-message" *ngIf="error && !isLoading">
       <div class="error-icon">
         <i class="fas fa-exclamation-triangle"></i>
       </div>
-      <h4>Attenzione</h4>
+      <h4>Errore di connessione</h4>
       <p>{{ error }}</p>
       <div class="error-actions">
         <button class="action-btn primary" (click)="refreshData()">
           <i class="fas fa-sync-alt"></i>
           Riprova
-        </button>
-        <button class="action-btn secondary" (click)="useFallbackData()">
-          <i class="fas fa-database"></i>
-          Usa dati locali
         </button>
       </div>
     </div>

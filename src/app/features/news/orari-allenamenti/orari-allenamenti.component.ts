@@ -80,24 +80,10 @@ export class OrariAllenamentiComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        this.error = 'Errore nel caricamento dei dati. Utilizzando dati di fallback.';
+        this.error = 'Errore nel caricamento dei dati dal backend.';
         this.isLoading = false;
         this.isConnectedToBackend = false;
-        this.caricaDatiFallback();
-      }
-    });
-  }
-
-  caricaDatiFallback() {
-    this.orariAllenamentiService.getFallbackData().subscribe({
-      next: (data: OrarioAllenamento[]) => {
-        this.orariAllenamenti = data;
-        this.estraiValoriUnici();
-        this.filtraOrari();
-        this.isConnectedToBackend = false;
-      },
-      error: (error) => {
-        // Gestione errore silente per fallback
+        this.orariAllenamenti = []; // Non più dati di fallback
       }
     });
   }
@@ -115,16 +101,64 @@ export class OrariAllenamentiComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        this.error = 'Errore nell\'aggiornamento dei dati.';
+        this.error = 'Errore nell\'aggiornamento dei dati dal backend.';
         this.isLoading = false;
         this.isConnectedToBackend = false;
+        this.orariAllenamenti = [];
       }
     });
   }
 
-  useFallbackData() {
-    this.caricaDatiFallback();
-    this.error = null;
+  /**
+   * Calcola il range della settimana target seguendo la stessa logica del backend
+   * - Se oggi è Domenica dopo le 14:00 -> settimana successiva  
+   * - Altrimenti -> settimana corrente
+   */
+  getWeekRange(): { startDate: Date, endDate: Date, formattedRange: string } {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0 = Domenica, 1 = Lunedì, etc.
+    
+    let targetWeekStart: Date;
+    
+    if (currentDay === 0 && now.getHours() >= 14) {
+      // Domenica dopo le 14:00 -> settimana successiva (da lunedì)
+      targetWeekStart = new Date(now);
+      targetWeekStart.setDate(now.getDate() + 1); // Domani = Lunedì
+    } else {
+      // Tutti gli altri casi -> settimana corrente
+      const daysToSubtract = currentDay === 0 ? 6 : currentDay - 1; // Se domenica, vai al lunedì precedente
+      targetWeekStart = new Date(now);
+      targetWeekStart.setDate(now.getDate() - daysToSubtract);
+    }
+    
+    // Imposta ore, minuti, secondi a 00:00:00
+    targetWeekStart.setHours(0, 0, 0, 0);
+    
+    // Calcola la domenica (fine settimana)
+    const targetWeekEnd = new Date(targetWeekStart);
+    targetWeekEnd.setDate(targetWeekStart.getDate() + 6);
+    targetWeekEnd.setHours(23, 59, 59, 999);
+    
+    // Formatta per il display
+    const startFormatted = targetWeekStart.toLocaleDateString('it-IT', { 
+      day: '2-digit', 
+      month: '2-digit' 
+    });
+    const endFormatted = targetWeekEnd.toLocaleDateString('it-IT', { 
+      day: '2-digit', 
+      month: '2-digit' 
+    });
+    
+    return {
+      startDate: targetWeekStart,
+      endDate: targetWeekEnd,
+      formattedRange: `dal ${startFormatted} al ${endFormatted}`
+    };
+  }
+
+  getWeekTitle(): string {
+    const weekRange = this.getWeekRange();
+    return `Orari per la settimana: ${weekRange.formattedRange}`;
   }
 
   estraiValoriUnici() {
@@ -191,15 +225,16 @@ export class OrariAllenamentiComponent implements OnInit {
 
   getDebugInfo(): string {
     const serviceStatus = this.orariAllenamentiService.getServiceStatus();
+    const weekRange = this.getWeekRange();
+    
     return `
       Connesso al backend: ${this.isConnectedToBackend}
       Prenotazioni caricate: ${this.orariAllenamenti.length}
       Gruppi unici: ${this.gruppiUnici.length}
+      Settimana target: ${weekRange.formattedRange}
       Dati aggiornati: ${serviceStatus.isAuthenticated}
-      Cache timeout: ${Math.round(serviceStatus.cacheTimeoutMs / 1000 / 60)} minuti
       Ultimo aggiornamento: ${serviceStatus.lastFetchTime ? new Date(serviceStatus.lastFetchTime).toLocaleTimeString('it-IT') : 'Mai'}
       Endpoint: ${serviceStatus.config.baseUrl}
-      Items in cache: ${serviceStatus.cachedItemsCount}
     `;
   }
 
@@ -210,7 +245,7 @@ export class OrariAllenamentiComponent implements OnInit {
     tooltip += `📍 ${allenamento.palestra}`;
     
     if (allenamento.title && allenamento.title.trim()) {
-      tooltip += `\n📝 ${allenamento.title}`;
+      tooltip += `\n🏷️ ${allenamento.title}`;
     }
     
     if (allenamento.description && allenamento.description.trim()) {
@@ -236,6 +271,7 @@ export class OrariAllenamentiComponent implements OnInit {
 
   private showAllenamentoDetails(allenamento: OrarioAllenamento) {
     // Implementazione dettagli allenamento
+    console.log('Dettagli allenamento:', allenamento);
   }
 
   hasActiveFilters(): boolean {
@@ -257,7 +293,7 @@ export class OrariAllenamentiComponent implements OnInit {
   logout() {
     this.orariAllenamentiService.logout();
     this.isConnectedToBackend = false;
-    this.useFallbackData();
+    this.orariAllenamenti = [];
   }
 
   getServiceStatus() {
