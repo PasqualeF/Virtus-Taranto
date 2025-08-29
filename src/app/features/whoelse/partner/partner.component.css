@@ -121,11 +121,9 @@
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  filter: grayscale(100%) opacity(0.7);
 }
 
 .marquee-item:hover {
-  filter: grayscale(0%) opacity(1);
   transform: scale(1.1);
 }
 

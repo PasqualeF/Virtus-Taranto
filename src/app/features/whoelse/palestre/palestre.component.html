@@ -3,10 +3,10 @@
   <!-- Header -->
   <h1 class="titolo" [@fadeIn]>
     Le Nostre Palestre
-    <span class="sottotitolo">Scopri le nostre strutture all'avanguardia</span>
+    <span class="sottotitolo">Scopri tutte le nostre strutture</span>
   </h1>
   
-  <!-- Statistiche -->
+  <!-- Statistiche 
   <div class="stats-section" *ngIf="palestreStats.totali > 0 && !isLoading" [@fadeIn]>
     <div class="stat-card">
       <span class="stat-number">{{ palestreStats.totali }}</span>
@@ -20,11 +20,11 @@
       <span class="stat-number">{{ palestreStats.serviziDisponibili.length }}</span>
       <span class="stat-label">Servizi</span>
     </div>
-  </div>
+  </div>-->
 
   <!-- Controlli -->
   <div class="controls-section" *ngIf="!isLoading">
-    <!-- Barra di ricerca -->
+    <!-- Barra di ricerca 
     <div class="search-bar">
       <input 
         type="text" 
@@ -37,7 +37,7 @@
         class="search-button">
         🔍
       </button>
-    </div>
+    </div>-->
 
     <!-- Filtri -->
     <div class="filters-section">
@@ -97,7 +97,7 @@
       <!-- Contenuto -->
       <h2 class="palestra-nome">{{ palestra.nome }}</h2>
       <p class="palestra-indirizzo">📍 {{ palestra.indirizzo }}</p>
-      <p class="palestra-descrizione">{{ palestra.descrizione | slice:0:120 }}{{ palestra.descrizione.length > 120 ? '...' : '' }}</p>
+     <!-- <p class="palestra-descrizione">{{ palestra.descrizione | slice:0:120 }}{{ palestra.descrizione.length > 120 ? '...' : '' }}</p>-->
       
       <!-- Tag Servizi -->
       <div class="palestra-servizi" *ngIf="palestra.servizi.length > 0">
@@ -187,7 +187,7 @@
         {{ selectedPalestra.indirizzo }}
       </p>
       
-      <p class="modal-description">{{ selectedPalestra.descrizione }}</p>
+   <!--    <p class="modal-description">{{ selectedPalestra.descrizione }}</p> -->
       
       <!-- Servizi -->
       <div class="servizi-section" *ngIf="selectedPalestra.servizi.length > 0">

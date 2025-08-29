@@ -9,7 +9,7 @@
 
     <!-- Desktop navbar - left side (ORIGINALE) -->
     <div class="navbar-left">
-      <div *ngFor="let item of navItems.slice(0, 4)" class="nav-item" (mouseenter)="showSubmenu(item.label)">
+      <div *ngFor="let item of navItems.slice(0, 3)" class="nav-item" (mouseenter)="showSubmenu(item.label)">
         <a [routerLink]="item.route">{{ item.label }}</a>
 
         <div class="submenu" *ngIf="activeSubmenu === item.label" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
@@ -49,13 +49,19 @@
     <!-- Logo centrale (ORIGINALE) -->
     <div class="navbar-center">
       <a class="navbar-logo" routerLink="/">
-        <img src="assets/logo-virtus-taranto.svg" alt="Virtus Taranto Logo">
-      </a>
+        <img src="assets/support_o2022 (1).png" alt="Virtus Taranto Logo">
+      </a> 
+      <a class="navbar-logo" routerLink="/">
+        <img src="assets/logo-virtus-taranto.png" alt="Virtus Taranto Logo">
+      </a> 
+      <a class="navbar-logo-2" routerLink="/">
+        <img src="assets/poliLogo.png" alt="Virtus Taranto Logo">
+      </a> 
     </div>
 
     <!-- Desktop navbar - right side (ORIGINALE) -->
     <div class="navbar-right">
-      <div *ngFor="let item of navItems.slice(4)" class="nav-item" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
+      <div *ngFor="let item of navItems.slice(3)" class="nav-item" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">
         <a [routerLink]="item.route">{{ item.label }}</a>
 
         <div class="submenu" *ngIf="activeSubmenu === item.label" (mouseenter)="showSubmenu(item.label)" (mouseleave)="hideSubmenu()">

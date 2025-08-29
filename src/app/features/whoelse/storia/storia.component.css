@@ -1,7 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
-    padding-top: 8vh;
+  padding-top: 8vh;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
   padding: 40px 15px;
   color: white;
@@ -13,9 +13,13 @@
   padding-top: 9vh;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   line-height: 1.2;
-  color: #ffffff;
+  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .sottotitolo {
@@ -24,22 +28,22 @@
   font-weight: 300;
   color: #b0b0b0;
   margin-top: 0.5rem;
+  margin-bottom: 3rem;
   text-transform: none;
   letter-spacing: normal;
 }
 
 .storia-valori-container {
-  
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1rem;
 }
 
-/* === NUOVO DESIGN SOCIETÀ SELECTOR (da achievements) === */
+/* Società Selector */
 .societa-selector {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;
 }
@@ -47,225 +51,219 @@
 .societa-tab {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: 0.75rem;
+  padding: 1rem 1.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid transparent;
   border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .societa-tab:hover {
   background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
 }
 
 .societa-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
 }
 
 .societa-logo {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.societa-tab.active .societa-logo {
+  transform: scale(1.1);
 }
 
 .societa-tab span {
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #ffffff;
-}
-/* === FINE NUOVO DESIGN SOCIETÀ SELECTOR === */
-
-/* Tab Navigation */
-.tab-navigation {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.tab-button {
-  padding: 0.75rem 1.5rem;
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.tab-button.active {
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-  border-color: transparent;
-}
-
-.tab-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.5px;
 }
 
 /* Content Section */
+.main-content {
+  animation: slideIn 0.6s ease-out;
+}
+
 .content-section {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 3rem;
   margin-bottom: 2rem;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .content-section h2 {
-  color: #fde68a;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+  color: #60a5fa;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
   text-align: center;
+  font-weight: 700;
+  position: relative;
 }
 
-/* Formattazione Storia con white-space: pre-line */
+.content-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 2px;
+}
+
+/* Storia formattata */
 .storia-formatted {
-  white-space: pre-line; /* Rispetta i line break del JSON */
+  white-space: pre-line;
   font-family: 'fantasy,sans-serif', sans-serif;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.15rem;
   text-align: justify;
   margin: 0;
   padding: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  text-indent: 2rem;
 }
 
-/* Valori Grid */
-.valori-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+/* Responsive */
+@media (max-width: 968px) {
+  .titolo {
+    font-size: 2.8rem;
+  }
+  
+  .sottotitolo {
+    font-size: 1.1rem;
+  }
+  
+  .societa-selector {
+    gap: 1rem;
+  }
+  
+  .societa-tab {
+    padding: 0.8rem 1.4rem;
+  }
+  
+  .societa-logo {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .content-section {
+    padding: 2.5rem;
+  }
+  
+  .content-section h2 {
+    font-size: 2rem;
+  }
+  
+  .storia-formatted {
+    font-size: 1.1rem;
+  }
 }
 
-.valore-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.valore-card:hover {
-  transform: translateY(-5px);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
-}
-
-/* Timeline */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.achievement-card {
-  display: flex;
-  gap: 2rem;
-  padding: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.achievement-card:hover {
-  transform: translateX(10px);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.achievement-year {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fde68a;
-  min-width: 100px;
-}
-
-/* Quick Links */
-.quick-links {
-  margin-top: 3rem;
-  text-align: center;
-}
-
-.links-container {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-
-.link-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-  border: none;
-  border-radius: 0.5rem;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.link-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-
-.link-icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* Mobile Responsive */
 @media (max-width: 768px) {
+  .storia-valori-container {
+    padding: 2rem 0.5rem;
+  }
+  
   .titolo {
     font-size: 2.5rem;
   }
-
-  .sottotitolo {
-    font-size: 1.25rem;
-  }
-
-  /* Società selector responsive (nuovo design) */
+  
   .societa-selector {
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
   }
   
   .societa-tab {
     width: 100%;
     max-width: 300px;
     justify-content: center;
+    padding: 1rem 1.5rem;
   }
-
-  .links-container {
-    flex-direction: column;
-    align-items: center;
+  
+  .content-section {
+    padding: 2rem;
+    border-radius: 15px;
   }
-
-  .tab-navigation {
-    flex-wrap: wrap;
+  
+  .content-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .storia-formatted {
+    font-size: 1rem;
+    line-height: 1.7;
+    text-indent: 1rem;
   }
 }
 
-@keyframes shine {
-  0% {
-    opacity: 0.5;
-    transform: scaleX(0.95);
+@media (max-width: 480px) {
+  .titolo {
+    font-size: 2rem;
   }
-  50% {
+  
+  .sottotitolo {
+    font-size: 1rem;
+  }
+  
+  .societa-tab {
+    padding: 0.8rem 1.2rem;
+  }
+  
+  .societa-logo {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .content-section {
+    padding: 1.5rem;
+  }
+  
+  .content-section h2 {
+    font-size: 1.6rem;
+  }
+  
+  .storia-formatted {
+    font-size: 0.95rem;
+    text-indent: 0.5rem;
+  }
+}
+
+/* Animazioni */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
     opacity: 1;
-    transform: scaleX(1);
-  }
-  100% {
-    opacity: 0.5;
-    transform: scaleX(0.95);
+    transform: translateY(0);
   }
 }

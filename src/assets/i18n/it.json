@@ -20,7 +20,7 @@
     "SOCIETA": {
       "VIRTUS TARANTO": {
         "nome": "Virtus Taranto",
-        "logo": "assets/virtusLogo.png",
+        "logo": "assets/logo-virtus-taranto.png",
         "storia": "L’ASD Virtus Pallacanestro Taranto nasce il 28 febbraio 2009 per volere di una coppia di amici appassionati alla Pallacanestro.\n\nLa Asd per statuto svolge attività esclusivamente per minori nella fascia di età compresa fra i 5 e 18 anni.\n\nAzioni e Finalità\n\nSin dalla creazione l’Associazione si è prefigurata il compito di offrire ai ragazzi della provincia jonica la possibilità di svolgere attività sportiva nella migliore condizione possibile prescindendo dalle possibilità economiche delle famiglie e dall’ambiente sociale di provenienza. Tale principio ispiratore trae origine dalla convinzione di dare a tutti, la possibilità di impiegare il proprio tempo libero in palestra ove crescere e formarsi sia dal punto di vista sportivo che umano.\n\nObiettivo primario è dunque quello di collaborare con le famiglie alla formazione dei giovani atleti nel riconoscimento di valori fondamentali quali la solidarietà, la lealtà, il rispetto delle regole e degli altri.\n\nPer ottenere tali risultati tutte le compagini Virtus, sono seguite da tecnici qualificati Fip e partecipano a campionati regionali al fine di consentire un confronto / incontro con coetanei delle altre provincie e di conseguenza favorire la loro crescita sportiva e personale.\n\nLa Virtus è Società satellite del Cus Jonico, società sportiva senior, massima rappresentativa di categoria a Taranto nell’ambito della Pallacanestro, nella quale i nostri atleti, superati i 18 anni hanno la possibilità di giocare.\n\nSuperati i 17 anni, al termine del percorso scolastico, molti nostri ragazzi, inoltre, hanno e hanno avuto la possibilità di continuare gli studi usufruendo delle agevolazioni previste ex legge per gli studenti come giocatori delle rappresentative universitarie o comunque di continuare a giocare in rappresentative delle massime serie in altre città del territorio nazionale.\n\nSempre la ASD svolge, mediante accordi dedicati, attività di inclusione per i ragazzi disabili con la Società Basket in carrozzina Boys Taranto e Baskin ASH Taranto.\n\nTale collaborazione si concretizza nel programmare incontri e allenamenti che vedono la partecipazione simultanea di ragazzi normodotati tesserati Virtus e disabili tesserati con le due Società su menzionate.",
         "valori": [
           "Eccellenza sportiva e umana",
@@ -162,13 +162,13 @@
 ,
  "CONTATTI": {
         "titolo": "Contatti Società",
-        "sottotitolo":"Trova qui i contatti delle nostre società sportive. Siamo sempre pronti ad ascoltarti e a rispondere alle tue domande.",
+        "sottotitolo":"Trovi qui i contatti delle nostre società sportive. Siamo sempre pronti ad ascoltarti e a rispondere alle tue domande.",
         "descrizione": "",
         "societa": {
         "VIRTUS TARANTO": {
             "nome": "Virtus Taranto",
-            "logo": "assets/logo-virtus-taranto.svg",
-            "descrizione": "La storica società di basket di Taranto, impegnata nella promozione dello sport e dei valori del fairplay.",
+            "logo": "assets/logo-virtus-taranto.png",
+            "descrizione": "",
             "indirizzo": "Via delle Palestre, 123 - 74121 Taranto",
             "telefono": "+39 099 1234567",
             "email": "info@virtustaranto.it",
@@ -178,7 +178,7 @@
           {
             "nome": "Support_o",
             "logo": "assets/support_o2022 (1).png",
-            "descrizione": "Associazione sportiva dedicata al supporto e all'inclusione attraverso lo sport.",
+            "descrizione": "",
             "indirizzo": "Viale dello Sport, 45 - 74122 Taranto",
             "telefono": "+39 099 7654321",
             "email": "contatti@supporto.it",
@@ -188,7 +188,7 @@
           {
             "nome": "Polisportiva 74020",
             "logo": "assets/poliLogo.png",
-            "descrizione": "Polisportiva che promuove diverse discipline sportive per tutte le età.",
+            "descrizione": "",
             "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
             "telefono": "+39 099 9876543",
             "email": "info@polisportiva74020.it",
@@ -198,7 +198,7 @@
           {
             "nome": "A.s.h. Baskin",
             "logo": "assets/baskin22.png",
-            "descrizione": "Polisportiva che promuove diverse discipline sportive per tutte le età.",
+            "descrizione": "",
             "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
             "telefono": "+39 099 9876543",
             "email": "info@polisportiva74020.it",
@@ -241,7 +241,7 @@
     "bottoneSupport" : "Iscrizione Support",
     "proceduraSupport1": [
      {"step":"Compila il modulo di pre-iscrizione online sul sito ufficiale Support." },
-     {"step":"Attendi la conferma via email per la disponibilità nel gruppo desiderato."} ,
+     {"step":"Scarica e compila il modulo di iscrizione dal sito web Virtus Taranto."} ,
      {"step": "Effettua il pagamento della quota di iscrizione tramite bonifico bancario."},
      {"step":"Presenta il certificato medico sportivo valido presso la segreteria."},
      {"step":"Ritira il kit sportivo ufficiale Support presso il punto vendita indicato."}
@@ -261,8 +261,8 @@
     "proc" : "Procedura:", 
     "procedura": [
      {"step":"Si riepilogano tutti i metodi per poter svolgere la visita medica agonistica." },
-     {"step":"Prenotazione da parte della famiglia al CMS in Via Lazio (costo attuale 35 euro)"} ,
-     {"step": "⁠Prenotazione tramite associazione Centro Convenzionato Otosalus - Panacea (prezzo a noi riservato di 35 euro)'"},
+     {"step":"Prenotazione da parte della famiglia al CMS in Via Lazio"} ,
+     {"step": "⁠Prenotazione tramite associazione Centro Convenzionato Otosalus - Panacea'"},
      {"step":"In entrambi i casi sopra riportati i certificato viene spedito all’associazione"},
      {"step":"⁠Recarsi presso il proprio medico curante con Istanza della Società. Per emissione ricetta bianca, con la quale potrete prenotare presso il CUP in una struttura ASL (Via Ancona, Tramontone…) del territorio. La visita in dovrebbe essere gratuita e il certificato verrà consegnato all’atleta dopo un dato periodo e deve essere consegnato all’associazione'"},
      {"step":"In tutti i casi la Società deve rilasciare istanza in seguito a richiesta dell’atleta (sul drive sotto riportato). L’istanza sarà spedita direttamente alla mail indicata sul drive"},

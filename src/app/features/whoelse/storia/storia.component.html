@@ -5,7 +5,7 @@
     <span class="sottotitolo">{{ 'STORIA.SOTTOTITOLO' | translate }}</span>
   </h1>
 
-  <!-- Società Selector (nuovo design da achievements) -->
+  <!-- Società Selector -->
   <div class="societa-selector">
     <div *ngFor="let s of societaOptions" 
          class="societa-tab"
@@ -17,77 +17,11 @@
     </div>
   </div>
 
-  <!-- Contenuto principale -->
+  <!-- Contenuto Storia -->
   <div class="main-content" *ngIf="selectedSocieta" [@slideIn]>
-    <!-- Tab navigation -->
-    <div class="tab-navigation">
-      <button class="tab-button" 
-              [class.active]="activeTab === 'storia'"
-              (click)="setActiveTab('storia')">
-        Storia
-      </button>
-      <button class="tab-button" 
-              [class.active]="activeTab === 'valori'"
-              (click)="setActiveTab('valori')">
-        Valori
-      </button>
-      <button class="tab-button" 
-              [class.active]="activeTab === 'palmares'"
-              (click)="setActiveTab('palmares')">
-        Palmares
-      </button>
-    </div>
-
-    <!-- Tab content -->
-    <div class="tab-content">
-      <!-- Storia -->
-      <div *ngIf="activeTab === 'storia'" class="content-section" [@fadeIn]>
-        <h2>{{ 'STORIA.SEZIONI.STORIA_TITOLO' | translate }}</h2>
+    <div class="content-section">
+      <h2>{{ selectedSocieta.nome }}</h2>
         <div class="storia-formatted">{{ 'STORIA.SOCIETA.' + selectedSocieta.nome.toUpperCase() + '.storia' | translate }}</div>
-      </div>
-
-      <!-- Valori -->
-      <div *ngIf="activeTab === 'valori'" class="content-section" [@fadeIn]>
-        <h2>{{ 'STORIA.SEZIONI.VALORI_TITOLO' | translate }}</h2>
-        <div class="valori-grid">
-          <div class="valore-card" *ngFor="let valore of selectedSocieta?.valori">
-            {{ valore }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Palmares -->
-      <div *ngIf="activeTab === 'palmares'" class="content-section" [@fadeIn]>
-        <h2>{{ 'STORIA.SEZIONI.PALMARES_TITOLO' | translate }}</h2>
-        <div class="timeline">
-          <div class="achievement-card" *ngFor="let achievement of selectedSocieta?.palmares">
-            <div class="achievement-year">{{ achievement.anno }}</div>
-            <div class="achievement-content">
-              <h3>{{ achievement.titolo }}</h3>
-              <p>{{ achievement.descrizione }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Links -->
-  <div class="quick-links" [@fadeIn]>
-    <h3>{{ 'STORIA.QUICK_LINKS.TITOLO' | translate }}</h3>
-    <div class="links-container">
-      <button class="link-button" (click)="navigateTo('/contatti')">
-        <svg xmlns="http://www.w3.org/2000/svg" class="link-icon" viewBox="0 0 24 24">
-          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>
-        </svg>
-        {{ 'STORIA.QUICK_LINKS.CONTATTI' | translate }}
-      </button>
-      <button class="link-button" (click)="navigateTo('/palestre')">
-        <svg xmlns="http://www.w3.org/2000/svg" class="link-icon" viewBox="0 0 24 24">
-          <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
-        </svg>
-        {{ 'STORIA.QUICK_LINKS.PALESTRE' | translate }}
-      </button>
     </div>
   </div>
 </div>

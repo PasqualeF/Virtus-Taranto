@@ -857,3 +857,148 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* AGGIUNGI QUESTI STILI AL TUO calendario.component.css esistente */
+
+/* ===== TEAM FILTER SECTION ===== */
+.team-filter-section {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.team-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-filter-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.team-filter-btn:hover {
+  transform: translateY(-5px);
+}
+
+.team-filter-btn.active {
+  transform: translateY(-3px);
+}
+
+.team-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  filter: grayscale(50%) opacity(0.7);
+}
+
+.team-filter-btn:hover .team-logo {
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.1);
+}
+
+.team-filter-btn.active .team-logo {
+  filter: grayscale(0%) opacity(1) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4));
+  transform: scale(1.15);
+}
+
+.team-name {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.team-filter-btn:hover .team-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.team-filter-btn.active .team-name {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+/* Indicatore attivo */
+.team-filter-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 2px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 40px;
+    opacity: 1;
+  }
+}
+
+/* Responsive per mobile */
+@media (max-width: 768px) {
+  .team-filters {
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .team-logo {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .team-name {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-filters {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .team-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .team-name {
+    font-size: 0.7rem;
+  }
+  
+  .team-filter-btn.active::after {
+    width: 30px;
+  }
+}
+
+/* Nascondi i vecchi stili .societa-selector */
+.societa-selector {
+  display: none !important;
+}

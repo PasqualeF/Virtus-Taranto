@@ -4,10 +4,10 @@
   <div class="section-header">
     <h2 class="section-title">
       <span class="title-icon">🏢</span>
-      Le Nostre Palestre
+      Dove puoi trovarci
     </h2>
     <p class="section-subtitle">
-      Scopri le nostre strutture
+      Scopri le nostre palestre
     </p>
   </div>
 
@@ -20,7 +20,7 @@
   <!-- Error State -->
   <div *ngIf="error && !isLoading" class="error-container">
     <div class="error-icon">⚠️</div>
-    <p class="error-text">Problema nel caricamento, mostriamo le nostre palestre principali</p>
+    <p class="error-text">Problema nel caricamento, mostriamo Dove puoi trovarci principali</p>
   </div>
 
   <!-- Palestre Cards -->
@@ -57,9 +57,9 @@
           {{ palestra.indirizzo }}
         </p>
         
-        <p class="palestra-description">
+      <!-- <p class="palestra-description">
           {{ getShortDescription(palestra.descrizione) }}
-        </p>
+        </p>--> 
         
         <!-- Quick Info -->
         <div class="quick-info" *ngIf="palestra.servizi.length > 0">

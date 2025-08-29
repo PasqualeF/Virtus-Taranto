@@ -6,6 +6,9 @@
   padding: 2rem 1rem;
   background: linear-gradient(135deg, #131e33 0%, #002b49 100%);
 }
+* {
+  box-sizing: border-box; /* Assicura che padding e border siano inclusi nel width */
+}
 
 .home-container {
     padding-top: 9vh;
@@ -82,6 +85,14 @@
   flex-direction: column;
   align-items: center;
   gap: 3rem;
+}
+
+.logo-container:nth-child(3) .loading-logo {
+  /* Specifico per poliLogo (secondo logo nel loading) */
+  object-fit: contain;
+  max-width: 83%;
+  max-height: 83%;
+  padding: 7%;
 }
 
 .loading-progress-container {
@@ -267,7 +278,6 @@
   height: 60px;
   margin: 0 20px;
   flex-shrink: 0;
-  filter: grayscale(100%) brightness(1.2);
   transition: filter 0.3s ease;
 }
 
@@ -362,7 +372,7 @@
 
 .typewriter-text {
   font-size: 2rem;
-  color: #fde68a;
+  color: #f0f0f0;
   margin: 0;
 }
 
@@ -528,6 +538,9 @@
   
   .logo-wrapper:nth-child(3) {
     top: 75%; /* Terzo logo in basso */
+    max-width: 80%;
+  max-height: 80%;
+  padding: 10%;
   }
 }
 
@@ -547,6 +560,9 @@
   
   .logo-wrapper:nth-child(3) {
     top: 80%;
+    max-width: 80%;
+  max-height: 80%;
+  padding: 10%;
   }
 }
 
@@ -571,6 +587,9 @@
   
   .logo-wrapper:nth-child(3) {
     top: 76%;
+    max-width: 80%;
+  max-height: 80%;
+  padding: 10%;
   }
 }
 
@@ -583,7 +602,7 @@
   margin: 1.5rem 0 2rem;
   padding: 0;
   max-width: 85%;
-  font-style: italic;
+
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.8s ease-out;
@@ -624,11 +643,12 @@
 .title-highlight {
   display: block;
   font-size: 1.3em;
-  background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+  background: linear-gradient(45deg, rgb(218 94 65), rgb(218 94 65), rgb(218 94 65));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 2px;
+  
 }
 
 /* Desktop Match Banner */
@@ -717,7 +737,7 @@
 .desktop-no-matches-text {
   color: #64748b;
   font-size: 0.95rem;
-  font-style: italic;
+
 }
 
 /* Stats Counter */
@@ -742,7 +762,7 @@
 .stat-value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #3b82f6;
+  color: rgb(202 115 84);
   line-height: 1;
 }
 
@@ -810,7 +830,10 @@
     flex-direction: column;
     justify-content: flex-start;
   }
-
+.home-container {
+    padding-top: 5vh;
+  
+}
   .logos-container {
     height: auto;
     width: 100%;
@@ -983,7 +1006,10 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
-
+.home-container {
+    padding-top: 5vh;
+  
+}
   .loading-screen .logo-container {
     width: 80px;
     height: 80px;
@@ -995,7 +1021,7 @@
   }
 }
 
-/* Mobile Version CSS - Basketball Theme */
+/* Mobile Version CSS - Basketball Theme 
 .mobile-view {
   width: 100%;
   min-height: 110vh;
@@ -1010,7 +1036,7 @@
 .mobile-content {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 88vh;
   height: auto;
   padding: 0;
   z-index: 2;
@@ -1055,7 +1081,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
-  background: linear-gradient(45deg, #2563eb, #3b82f6, #60a5fa);
+  background: linear-gradient(45deg, rgb(218 94 65), rgb(218 94 65), rgb(218 94 65));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1087,9 +1113,9 @@
   filter: blur(6px);
   opacity: 0.2;
 }
-
+*/
 .virtus-text::after {
-  content: '🏀';
+
   position: absolute;
   top: -15px;
   right: -25px;
@@ -1111,7 +1137,7 @@
   margin: 0.5rem 0 1.5rem;
   padding: 0;
   max-width: 90%;
-  font-style: italic;
+
 }
 
 .next-match-banner {
@@ -1234,7 +1260,7 @@
 /* Typewriter Styling */
 .mobile-typewriter {
   margin: 1rem 0;
-  color: #f7931e;
+  color: #f4f4f4;
   font-size: 1.2rem;
   font-weight: 600;
   min-height: 30px;
@@ -1244,12 +1270,12 @@
 }
 
 .typewriter-prefix {
-  color: #f7931e;
+  color: #f1efed;
 }
 
 /* CTA Button Styling */
 .mobile-cta-btn {
-  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, rgb(218 94 65), rgb(218 94 65), rgb(218 94 65));
   color: white;
   border: none;
   border-radius: 30px;
@@ -1360,11 +1386,18 @@
 }
 
 .bottom-logo {
-  width: 35px;
-  height: 35px;
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
   filter: brightness(0.8);
   transition: all 0.3s ease;
+}
+.bottom-logo:nth-child(3) {
+  /* Specifico per poliLogo nei bottom logos */
+  object-fit: contain;
+  max-width: 85%;
+  max-height: 85%;
+  padding: 2%;
 }
 
 .bottom-logo:hover {
@@ -1402,4 +1435,486 @@
 .social-btn svg {
   width: 24px;
   height: 24px;
+}
+/* Aggiungi all'inizio del CSS un reset globale per mobile */
+* {
+  box-sizing: border-box; /* Assicura che padding e border siano inclusi nel width */
+}
+
+/* Previeni scroll orizzontale globalmente nella sezione mobile */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+  
+  .home-container {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+}
+.mobile-view {
+  width: 100%;
+  max-width: 100%; /* Previene overflow orizzontale */
+  min-height: 100vh; /* Usa vh invece di valore fisso */
+  background: linear-gradient(135deg, #061228 0%, #0c2747 100%);
+  overflow-x: hidden; /* Blocca scroll orizzontale */
+  overflow-y: auto; /* Permette scroll verticale */
+  position: relative;
+  padding: 0;
+  margin: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Pieno schermo */
+  height: 100%;
+  width: 100%;
+  max-width: 100%; /* Previene overflow */
+  padding: 0;
+  z-index: 2;
+  position: relative;
+  overflow-x: hidden; /* Blocca scroll orizzontale */
+}
+
+/* Top Logo Container - Ridotto per più spazio contenuto */
+.top-logo-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.4rem 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  flex-shrink: 0; /* Non si restringe */
+}
+
+.top-logo {
+  height: 35px; /* Ridotto */
+  width: auto;
+}
+
+/* Mobile Text Content - Sistema Flex migliorato */
+.mobile-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribuisce meglio lo spazio */
+  align-items: center;
+  text-align: center;
+  padding: 1rem 1.2rem;
+  width: 100%;
+  max-width: 100%; /* Previene overflow */
+  box-sizing: border-box; /* Include padding nel width */
+  z-index: 3;
+  overflow-y: auto; /* Permette scroll se necessario */
+  overflow-x: hidden; /* Blocca scroll orizzontale */
+  -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+}
+
+/* Mobile Title - Responsive sizing */
+.mobile-title {
+  margin: 1rem 0 0.8rem 0;
+  padding: 0;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.virtus-text {
+  font-family: 'fantasy,sans-serif', 'Arial Black', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 2.8rem); /* Responsive font size */
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, rgb(218 94 65), rgb(218 94 65), rgb(218 94 65));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: inline-block;
+  line-height: 1.1;
+}
+
+.sottotitolo {
+  display: block;
+  font-size: clamp(1.2rem, 3vw, 1.2rem);
+  font-weight: 300;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Basketball emoji animation - Nascosto su schermi molto piccoli */
+.virtus-text::after {
+
+  position: absolute;
+  top: -15px;
+  right: -15px; /* Ridotto per evitare overflow */
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  animation: bounce 2s infinite;
+  display: none; /* Nascosto di default */
+}
+
+@media (min-width: 375px) {
+  .virtus-text::after {
+    display: block; /* Mostra solo su schermi più grandi */
+  }
+}
+
+/* Mobile Slogan */
+.mobile-slogan {
+  color: #e2e8f0;
+  font-size: clamp(1.45rem, 3vw, 1.1rem);
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0.5rem 0 1rem;
+  padding: 0 0.5rem;
+  max-width: 90%;
+  flex-shrink: 0;
+}
+
+/* Stats Row - Responsive */
+.mobile-stats-row {
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 1rem); /* Sottrae padding per evitare overflow */
+  max-width: 100%;
+  margin: 0.8rem auto; /* Centra con margin auto */
+  gap: 0.4rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.mobile-stat {
+  flex: 1;
+  text-align: center;
+  padding: clamp(0.5rem, 2vw, 0.8rem) 0.3rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-number {
+  color: white;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.stat-label {
+  color: #94a3b8;
+  font-size: clamp(0.55rem, 1.8vw, 0.65rem);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+/* CTA Button - Responsive */
+.mobile-cta-btn {
+  background: linear-gradient(45deg, rgb(218 94 65), rgb(218 94 65), rgb(218 94 65));
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: clamp(0.7rem, 2.5vw, 0.9rem) clamp(1.5rem, 5vw, 2.5rem);
+  font-size: clamp(0.85rem, 2.8vw, 1rem);
+  font-weight: 700;
+  margin: 0.8rem 0;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  width: auto;
+  max-width: 90%;
+}
+
+/* Social Connect Area - Compatto */
+.social-connect-area {
+  width: calc(100% - 2rem); /* Sottrae il padding del contenitore */
+  max-width: 100%;
+  margin: 0.5rem auto; /* Centra con margin auto */
+  padding: clamp(0.7rem, 2vw, 1rem);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  text-align: center;
+  flex-shrink: 0;
+  box-sizing: border-box; /* Include padding e border nel width */
+}
+
+.social-connect-title {
+  color: white;
+  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.6rem, 2vw, 1rem);
+}
+
+.social-btn {
+  width: clamp(35px, 10vw, 45px);
+  height: clamp(35px, 10vw, 45px);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.9rem, 3vw, 1.2rem);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Bottom Logos - Sempre in fondo */
+.bottom-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(0.5rem, 2vw, 0.8rem) 0;
+  gap: clamp(0.8rem, 3vw, 1.5rem);
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  margin-top: auto; /* Spinge in fondo */
+  flex-shrink: 0;
+}
+
+.bottom-logo {
+  width: clamp(3.5rem, 12vw, 5rem);
+  height: clamp(3.5rem, 12vw, 5rem);
+  object-fit: contain;
+  filter: brightness(0.8);
+  transition: all 0.3s ease;
+}
+
+/* BREAKPOINTS SPECIFICI */
+
+/* iPhone SE e telefoni molto piccoli (320-374px) */
+@media (max-width: 374px) {
+  .mobile-content {
+    min-height: 100vh;
+  }
+  
+  .mobile-text-content {
+    padding: 0.8rem 1rem;
+    justify-content: flex-start;
+  }
+  
+  .mobile-title {
+    margin: 0.5rem 0;
+  }
+  
+  .virtus-text {
+    font-size: 1.8rem;
+  }
+  
+  .sottotitolo {
+    font-size: 0.85rem;
+  }
+  
+  .mobile-slogan {
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0.8rem;
+  }
+  
+  .mobile-stats-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .mobile-stat {
+    padding: 0.6rem;
+  }
+  
+  .stat-number {
+    font-size: 1.2rem;
+  }
+  
+  .mobile-cta-btn {
+    padding: 0.7rem 1.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .social-connect-area {
+    padding: 0.6rem;
+  }
+  
+  .social-btn {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .bottom-logos {
+    padding: 0.5rem 0;
+    gap: 0.8rem;
+  }
+  
+  .bottom-logo {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* iPhone standard (375-414px) */
+@media (min-width: 375px) and (max-width: 414px) {
+  .mobile-text-content {
+    padding: 1rem 1.2rem;
+  }
+  
+  .virtus-text {
+    font-size: 2.2rem;
+  }
+  
+  .mobile-stats-row {
+    gap: 0.5rem;
+  }
+  
+  .stat-number {
+    font-size: 1.3rem;
+  }
+  
+  .mobile-cta-btn {
+    padding: 0.8rem 2rem;
+  }
+}
+
+/* Telefoni medi (415-480px) */
+@media (min-width: 415px) and (max-width: 480px) {
+  .mobile-text-content {
+    padding: 1.2rem 1.5rem;
+  }
+  
+  .virtus-text {
+    font-size: 2.5rem;
+  }
+  
+  .mobile-stats-row {
+    margin: 1rem 0;
+  }
+  
+  .stat-number {
+    font-size: 1.35rem;
+  }
+}
+
+/* Telefoni grandi e piccoli tablet (481-768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .mobile-text-content {
+    padding: 1.5rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .virtus-text {
+    font-size: 2.8rem;
+  }
+  
+  .sottotitolo {
+    font-size: 1.2rem;
+  }
+  
+  .mobile-slogan {
+    font-size: 1.1rem;
+  }
+  
+  .mobile-stats-row {
+    margin: 1.2rem 0;
+    max-width: 500px;
+  }
+  
+  .stat-number {
+    font-size: 1.4rem;
+  }
+  
+  .mobile-cta-btn {
+    padding: 0.9rem 2.5rem;
+    font-size: 1rem;
+  }
+  
+  .social-btn {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .bottom-logo {
+    width: 5rem;
+    height: 5rem;
+  }
+}
+
+/* Gestione altezza viewport per dispositivi con notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .mobile-view {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  .mobile-content {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Landscape mode per mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-view {
+    min-height: 100vh;
+  }
+  
+  .mobile-content {
+    min-height: 100vh;
+  }
+  
+  .mobile-text-content {
+    padding: 0.5rem 1.5rem;
+  }
+  
+  .mobile-title {
+    margin: 0.5rem 0;
+  }
+  
+  .virtus-text {
+    font-size: 2rem;
+  }
+  
+  .mobile-stats-row {
+    margin: 0.5rem 0;
+  }
+  
+  .mobile-stat {
+    padding: 0.5rem 0.3rem;
+  }
+  
+  .social-connect-area {
+    padding: 0.5rem;
+    margin: 0.3rem 0;
+  }
+  
+  .bottom-logos {
+    padding: 0.4rem 0;
+  }
+  
+  .bottom-logo {
+    width: 3rem;
+    height: 3rem;
+  }
 }

@@ -53,10 +53,6 @@ import { PrivacyPolicyComponent } from './shared/components/privacy-policy/priva
 import { AuthInterceptor } from './features/servizi/prenotazioni/core/interceptors/auth.interceptor';
 import { PalestrePreviewComponent } from './features/home/palestre-preview/palestre-preview.component';
 
-// ========================================
-// RIMOSSO: Import dei componenti prenotazioni (ora sono nel loro modulo separato)
-// RIMOSSO: AuthService, AuthGuard, LoggedInGuard, AuthInterceptor (ora sono nel modulo prenotazioni)
-// ========================================
 
 // Factory function per il TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {

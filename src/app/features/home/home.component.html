@@ -40,7 +40,7 @@
             Cresciamo insieme, un allenamento alla volta.
           </p>
           
-          <!-- Enhanced Match Banner with Fallback -->
+          <!-- Enhanced Match Banner with Fallback 
           <div class="next-match-banner" *ngIf="upcomingMatches && upcomingMatches.length > 0">
             <div class="next-match-title">🏀 Prossima Partita</div>
             <div class="next-match-teams">
@@ -51,17 +51,17 @@
             </div>
           </div>
 
-          <!-- No Matches Fallback -->
+          No Matches Fallback 
           <div class="no-matches-banner" *ngIf="!upcomingMatches || upcomingMatches.length === 0">
             <div class="no-matches-icon">🏀</div>
             <div class="no-matches-title">Calendario in Aggiornamento</div>
             <div class="no-matches-text">Seguici sui social per tutti gli aggiornamenti!</div>
-          </div>
+          </div> -->
           
           <!-- Stats Row -->
           <div class="mobile-stats-row">
             <div class="mobile-stat">
-              <div class="stat-number">16+</div>
+              <div class="stat-number">14+</div>
               <div class="stat-label">Anni di Storia</div>
             </div>
             <div class="mobile-stat">
@@ -69,20 +69,20 @@
               <div class="stat-label">Giovani Atleti</div>
             </div>
             <div class="mobile-stat">
-              <div class="stat-number">25+</div>
-              <div class="stat-label">Trofei Vinti</div>
+              <div class="stat-number">18+</div>
+              <div class="stat-label">Gruppi Gestiti</div>
             </div>
           </div>
           
-          <!-- Typewriter Text -->
+          <!-- Typewriter Text 
           <div class="mobile-typewriter">
             <span class="typewriter-text" #mobileTypewriterText></span>
             <span class="cursor" [class.typing]="isTyping"></span>
-          </div>
+          </div>-->
           
           <!-- CTA Button -->
           <button class="mobile-cta-btn" (click)="scrollToSection('story')">
-            🏆 LA NOSTRA STORIA
+           LA NOSTRA STORIA
           </button>
           
           <!-- Social Connect Area (replacing newsletter) -->
@@ -144,14 +144,16 @@
           <h1 class="main-title" [class.appear]="titleAnimationState">
             <span class="title-highlight">Benvenuti in</span>
             <span class="title-highlight">Casa Orange</span>
+            
           </h1>
+            <span class="sottotitolo">Gruppo Support_O Virtus VPS</span>
 
           <!-- NEW: Desktop Motivational Slogan -->
           <p class="desktop-slogan" [class.appear]="titleAnimationState">
             Cresciamo insieme, un allenamento alla volta.
           </p>
 
-          <!-- NEW: Desktop Match Banner with Fallback -->
+          <!-- NEW: Desktop Match Banner with Fallback 
           <div class="desktop-match-banner" *ngIf="upcomingMatches && upcomingMatches.length > 0">
             <div class="desktop-match-title">🏀 Prossima Partita</div>
             <div class="desktop-match-teams">
@@ -164,17 +166,17 @@
             </div>
           </div>
 
-          <!-- Desktop No Matches Fallback -->
+          Desktop No Matches Fallback 
           <div class="desktop-no-matches-banner" *ngIf="!upcomingMatches || upcomingMatches.length === 0">
             <div class="desktop-no-matches-icon">🏀</div>
             <div class="desktop-no-matches-title">Calendario in Aggiornamento</div>
             <div class="desktop-no-matches-text">Seguici sui nostri canali per rimanere sempre aggiornato sulle prossime partite</div>
-          </div>
+          </div>-->
 
           <!-- Stats Counter -->
           <div class="hero-stats" [class.appear]="titleAnimationState">
             <div class="stat-item">
-              <div class="stat-value">16+</div>
+              <div class="stat-value">14+</div>
               <div class="stat-label">Anni di Storia</div>
             </div>
             <div class="stat-item">
@@ -182,16 +184,16 @@
               <div class="stat-label">Giovani Atleti</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value">25+</div>
-              <div class="stat-label">Trofei Vinti</div>
+              <div class="stat-value">18+</div>
+              <div class="stat-label">Gruppi Gestiti</div>
             </div>
           </div>
-
+<!-- Typewriter Text --> 
           <div class="typewriter-container">
             <span class="typewriter-text" #typewriterText></span>
             <span class="cursor" [class.typing]="isTyping"></span>
           </div>
-
+        
           <div class="cta-container" [class.appear]="buttonAnimationState">
             <button class="cta-button" (mouseenter)="handleButtonHover($event)">
               Scopri la Nostra Storia

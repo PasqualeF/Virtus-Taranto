@@ -26,7 +26,12 @@
         </div>
         <div class="news-content">
           <h3 class="news-title">{{ news.titolo }}</h3>
-          <p class="news-excerpt" *ngIf="news.excerpt">{{ news.excerpt }}</p>
+          <!-- MODIFICATO: Descrizione breve per elementi normali -->
+          <p class="news-excerpt" *ngIf="!(i === 0 && currentPage === 1) && news.excerpt">{{ news.excerpt }}</p>
+          <!-- NUOVO: Descrizione estesa per il primo elemento -->
+          <p class="news-excerpt featured-excerpt" *ngIf="i === 0 && currentPage === 1 && news.contenuto">
+            {{ getFeaturedExcerpt(news.contenuto) }}
+          </p>
           <a class="read-more">Leggi tutto <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>

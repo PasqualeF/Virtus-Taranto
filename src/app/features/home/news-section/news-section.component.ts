@@ -124,6 +124,22 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
     return descrizione.substring(0, maxLength).trim() + '...';
   }
 
+  // NUOVO METODO: Crea un excerpt più lungo per l'elemento featured
+  getFeaturedExcerpt(contenuto: string): string {
+    if (!contenuto) return '';
+    
+    const maxLength = 1000; // Molto più lungo per il featured
+    if (contenuto.length <= maxLength) {
+      return contenuto;
+    }
+    
+    // Trova l'ultimo spazio prima del limite per non tagliare a metà parola
+    let cutoff = contenuto.lastIndexOf(' ', maxLength);
+    if (cutoff === -1) cutoff = maxLength;
+    
+    return contenuto.substring(0, cutoff).trim() + '...';
+  }
+
   private loadStubData() {
     this.newsItems = [
       { 
@@ -131,42 +147,48 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
         immagine: 'assets/news/1.jpg', 
         data: '2023-05-01', 
         titolo: 'Vittoria schiacciante nell\'ultima partita',
-        excerpt: 'La nostra squadra ha dominato sul campo avversario con un punteggio finale di 92-78. Una prestazione eccezionale da parte di tutta la squadra che ha saputo mantenere il controllo per tutti i quarti.'
+        excerpt: 'La nostra squadra ha dominato sul campo avversario con un punteggio finale di 92-78. Una prestazione eccezionale da parte di tutta la squadra che ha saputo mantenere il controllo per tutti i quarti.',
+        contenuto: 'La nostra squadra ha dominato sul campo avversario con un punteggio finale di 92-78. Una prestazione eccezionale da parte di tutta la squadra che ha saputo mantenere il controllo per tutti i quarti. Il capitano Marco Rossi ha segnato 28 punti, mentre il giovane talento Luca Bianchi ha contribuito con 19 punti e 12 rimbalzi. Una serata memorabile per tutti i tifosi presenti al palazzetto che hanno sostenuto la squadra fino all\'ultimo secondo.'
       },
       { 
         id: 2, 
         immagine: 'assets/news/2.jpg', 
         data: '2023-04-28', 
         titolo: 'Nuovo sponsor per la stagione 2023/2024',
-        excerpt: 'Siamo lieti di annunciare la partnership con un nuovo sponsor che supporterà la nostra squadra durante la prossima stagione. Un accordo importante per il futuro del club.'
+        excerpt: 'Siamo lieti di annunciare la partnership con un nuovo sponsor che supporterà la nostra squadra durante la prossima stagione. Un accordo importante per il futuro del club.',
+        contenuto: 'Siamo lieti di annunciare la partnership con un nuovo sponsor che supporterà la nostra squadra durante la prossima stagione. Un accordo importante per il futuro del club che permetterà di investire nel settore giovanile e migliorare le strutture del palazzetto.'
       },
       { 
         id: 3, 
         immagine: 'assets/news/3.jpg', 
         data: '2023-04-25', 
         titolo: 'Inizia il campus estivo per giovani atleti',
-        excerpt: 'Dal 15 giugno inizierà il campus estivo per ragazzi dai 8 ai 16 anni. Un\'occasione unica per imparare e divertirsi con il basket sotto la guida dei nostri migliori allenatori.'
+        excerpt: 'Dal 15 giugno inizierà il campus estivo per ragazzi dai 8 ai 16 anni. Un\'occasione unica per imparare e divertirsi con il basket sotto la guida dei nostri migliori allenatori.',
+        contenuto: 'Dal 15 giugno inizierà il campus estivo per ragazzi dai 8 ai 16 anni. Un\'occasione unica per imparare e divertirsi con il basket sotto la guida dei nostri migliori allenatori. Il programma prevede allenamenti mattutini, tornei pomeridiani e attività ricreative serali.'
       },
       { 
         id: 4, 
         immagine: 'assets/news/4.jpg', 
         data: '2023-04-22', 
         titolo: 'Intervista esclusiva con il nostro capitano',
-        excerpt: 'Abbiamo incontrato il capitano Marco Rossi che ci ha parlato degli obiettivi per il finale di stagione e dei progetti futuri della squadra. Una chiacchierata interessante.'
+        excerpt: 'Abbiamo incontrato il capitano Marco Rossi che ci ha parlato degli obiettivi per il finale di stagione e dei progetti futuri della squadra. Una chiacchierata interessante.',
+        contenuto: 'Abbiamo incontrato il capitano Marco Rossi che ci ha parlato degli obiettivi per il finale di stagione e dei progetti futuri della squadra. Una chiacchierata interessante che ha rivelato la determinazione del gruppo e la voglia di raggiungere i playoff.'
       },
       { 
         id: 5, 
         immagine: 'assets/news/5.jpg', 
         data: '2023-04-18', 
         titolo: 'Nuovo allenatore per la squadra Under 16',
-        excerpt: 'Diamo il benvenuto a coach Luca Bianchi che guiderà i nostri giovani talenti della categoria Under 16. Un professionista con grande esperienza nel settore giovanile.'
+        excerpt: 'Diamo il benvenuto a coach Luca Bianchi che guiderà i nostri giovani talenti della categoria Under 16. Un professionista con grande esperienza nel settore giovanile.',
+        contenuto: 'Diamo il benvenuto a coach Luca Bianchi che guiderà i nostri giovani talenti della categoria Under 16. Un professionista con grande esperienza nel settore giovanile che ha già vinto diversi campionati regionali.'
       },
       { 
         id: 6, 
         immagine: 'assets/news/6.jpg', 
         data: '2023-04-15', 
         titolo: 'Ristrutturazione del palazzetto quasi completata',
-        excerpt: 'I lavori di ristrutturazione del nostro palazzetto sono quasi terminati. Presto potremo tornare a giocare nella nostra casa con strutture completamente rinnovate.'
+        excerpt: 'I lavori di ristrutturazione del nostro palazzetto sono quasi terminati. Presto potremo tornare a giocare nella nostra casa con strutture completamente rinnovate.',
+        contenuto: 'I lavori di ristrutturazione del nostro palazzetto sono quasi terminati. Presto potremo tornare a giocare nella nostra casa con strutture completamente rinnovate. I nuovi spogliatoi, il parquet rinnovato e l\'impianto di illuminazione LED renderanno l\'esperienza ancora più coinvolgente per atleti e tifosi.'
       }
     ];
   }
@@ -199,7 +221,7 @@ export class NewsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openNewsDetail(news: NewsItem) {
-    this.router.navigate(['/news/ultimissime']);
+    this.router.navigate(['/who-else/news']);
   }
 
   // GESTIONE TOUCH MIGLIORATA

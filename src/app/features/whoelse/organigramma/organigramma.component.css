@@ -15,12 +15,16 @@
 }
 
 .titolo {
-         padding-top: 9vh;
+  padding-top: 9vh;
   text-align: center;
   font-size: 3rem;
   font-weight: 700;
-  margin-bottom: 3rem;
-  color: #ffffff;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #6a7de2 0%, #3ac5dc 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -31,15 +35,16 @@
   font-weight: 300;
   color: #b0b0b0;
   margin-top: 0.5rem;
+  margin-bottom: 3rem;
   text-transform: none;
   letter-spacing: normal;
 }
 
-/* === NUOVO DESIGN SOCIETÀ SELECTOR (da achievements) === */
+/* Società Selector */
 .societa-selector {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;
 }
@@ -47,75 +52,48 @@
 .societa-tab {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: 0.75rem;
+  padding: 1rem 1.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid transparent;
   border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .societa-tab:hover {
   background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
 }
 
 .societa-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
 }
 
 .societa-logo {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.societa-tab.active .societa-logo {
+  transform: scale(1.1);
 }
 
 .societa-tab span {
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #ffffff;
-}
-/* === FINE NUOVO DESIGN SOCIETÀ SELECTOR === */
-
-/* View toggle */
-.view-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.toggle-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.875rem;
-}
-
-.toggle-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-}
-
-.toggle-button.active {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
-}
-
-.view-icon {
-  width: 20px;
-  height: 20px;
-  stroke-width: 1.5;
+  letter-spacing: 0.5px;
 }
 
 /* Staff grid */
@@ -125,23 +103,49 @@
   margin: 0 auto;
 }
 
+.level-section {
+  margin-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.level-title {
+  font-size: 2.25rem;
+  color: #60a5fa;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1.5rem;
+  margin-bottom: 3rem;
+  font-weight: 700;
+}
+
 .level-title::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
+  width: 80px;
   height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #fde68a);
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   border-radius: 3px;
 }
 
-/* Presidente section - FIXED FOR 2 CARD CENTERING */
-.presidente-section .staff-cards {
-  grid-template-columns: repeat(auto-fit, 320px);
-  justify-content: center;
+/* Staff cards - NUOVE CARD SENZA FOTO MA ACCATTIVANTI */
+.staff-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.presidente-section .staff-cards {
+  justify-content: center;
 }
 
 .presidente-section.two-cards .staff-cards {
@@ -151,127 +155,221 @@
 }
 
 .staff-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
+  backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
-}
-
-.staff-card.presidente {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(253, 230, 138, 0.1) 100%);
-  border: 2px solid rgba(253, 230, 138, 0.2);
-}
-
-.member-photo-container {
   position: relative;
-  width: 100%;
-  height: 200px; /* Altezza fissa per tutte le immagini */
   overflow: hidden;
+  cursor: pointer;
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 
-.member-photo {
+.staff-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
 }
 
-.member-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  align-items: flex-end;
-  padding: 1.5rem;
+.staff-card:hover::before {
+  left: 100%;
 }
 
-.staff-card:hover .member-photo {
-  transform: scale(1.1);
-}
-
-.staff-card:hover .member-overlay {
-  opacity: 1;
-}
-
-/* Hover effects migliorati */
 .staff-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.staff-card:hover .member-photo {
-  transform: scale(1.05);
+/* Card Presidente */
+.staff-card.presidente {
+  background: linear-gradient(135deg, rgba(253, 230, 138, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 2px solid rgba(253, 230, 138, 0.3);
 }
 
-/* Assicurarsi che il contenuto non si estenda oltre i limiti */
-.member-contact {
-  margin-top: auto;
-  padding-top: 1rem;
+.staff-card.presidente:hover {
+  box-shadow: 0 20px 40px rgba(253, 230, 138, 0.2);
+  border-color: rgba(253, 230, 138, 0.5);
 }
 
-.contact-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Card Staff Tecnico */
+.staff-card.staff-tecnico {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.3);
 }
 
-.member-info {
-  padding: 1.5rem;
+.staff-card.staff-tecnico:hover {
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Card Dirigenza */
+.staff-card.dirigenza {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.staff-card.dirigenza:hover {
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+/* Card Staff Medico */
+.staff-card.staff-medico {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.staff-card.staff-medico:hover {
+  box-shadow: 0 20px 40px rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Member Header con icone */
+.member-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.member-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.member-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke-width: 2;
+}
+
+.staff-card:hover .member-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Icona Presidente */
+.presidente-icon {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: 3px solid rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+}
+
+.presidente-icon svg {
+  stroke: #ffffff;
+  fill: #ffffff;
+}
+
+/* Icona Staff */
+.staff-icon {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: 3px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.staff-icon svg {
+  stroke: #ffffff;
+}
+
+/* Icona Dirigenza */
+.dirigenza-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: 3px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.dirigenza-icon svg {
+  stroke: #ffffff;
+}
+
+/* Icona Medico */
+.medico-icon {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: 3px solid rgba(239, 68, 68, 0.5);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+.medico-icon svg {
+  stroke: #ffffff;
+}
+
+/* Member Content */
+.member-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  text-align: center;
 }
 
 .member-name {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #fde68a;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
   margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .member-role {
   display: block;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #60a5fa;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .member-description {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 1.5rem;
+  text-align: justify;
+  flex: 1;
 }
 
 .member-contact {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
+  margin-top: auto;
 }
 
 .contact-link {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
   transition: all 0.3s ease;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .contact-link:hover {
-  color: #3b82f6;
-  transform: translateX(5px);
+  color: #ffffff;
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
 }
 
 .contact-icon {
@@ -301,281 +399,6 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .titolo {
-    font-size: 2.5rem;
-  }
-
-  .sottotitolo {
-    font-size: 1.25rem;
-  }
-
-  /* Società selector responsive (nuovo design) */
-  .societa-selector {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .societa-tab {
-    width: 100%;
-    max-width: 300px;
-    justify-content: center;
-  }
-
-  .organigramma-container {
-    padding: 1rem;
-  }
-  
-  .staff-cards,
-  .presidente-section .staff-cards {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  
-  .presidente-section.two-cards .staff-cards {
-    grid-template-columns: 1fr 1fr;
-    max-width: 100%;
-  }
-
-  .member-photo-container {
-    height: 150px;
-  }
-
-  .member-name {
-    font-size: 1.125rem;
-  }
-
-  .member-info {
-    padding: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .staff-cards,
-  .presidente-section .staff-cards {
-    grid-template-columns: 1fr;
-    max-width: 320px;
-    margin: 0 auto;
-  }
-  
-  .presidente-section.two-cards .staff-cards {
-    grid-template-columns: 1fr;
-    max-width: 320px;
-  }
-
-  .member-photo-container {
-    height: 180px;
-  }
-}
-
-/* Aggiornamento spaziatura sezioni */
-.level-section {
-  margin-bottom: 5rem; /* Aumentato lo spazio tra le sezioni */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.level-title {
-  font-size: 2.25rem; /* Leggermente più grande */
-  color: #fde68a;
-  text-align: center;
-  position: relative;
-  padding-bottom: 1.5rem;
-  margin-bottom: 3rem; /* Aumentato lo spazio dopo il titolo */
-}
-
-/* Centraggio e dimensione fissa delle card */
-.staff-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 320px); /* Dimensione fissa */
-  gap: 2rem;
-  justify-content: center;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* Vista ad albero - IMPROVED FOR MOBILE */
-.org-tree {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
-  overflow-x: auto;
-}
-
-.tree-container {
-  min-width: 900px; /* Minimum width to prevent overcrowding */
-  min-height: 600px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem 2rem 2rem;
-}
-
-.tree-node {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tree-level {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 4rem;
-  position: relative;
-}
-
-.tree-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  width: 280px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.tree-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: #fde68a;
-}
-
-.tree-card.presidente {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(253, 230, 138, 0.1) 100%);
-  border: 2px solid rgba(253, 230, 138, 0.2);
-}
-
-.tree-connector {
-  position: absolute;
-  width: 2px;
-  background: rgba(253, 230, 138, 0.3);
-  animation: connectLine 1s ease forwards;
-  transform-origin: top;
-}
-
-.tree-connector-horizontal {
-  position: absolute;
-  height: 2px;
-  background: rgba(253, 230, 138, 0.3);
-  animation: connectHorizontal 1s ease forwards;
-  transform-origin: left;
-}
-
-@keyframes connectLine {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@keyframes connectHorizontal {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.tree-photo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-  border: 2px solid rgba(253, 230, 138, 0.3);
-  object-fit: cover;
-}
-
-.tree-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fde68a;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.tree-role {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-}
-
-/* Animations for tree view */
-.tree-appear {
-  animation: treeAppear 0.5s ease forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-@keyframes treeAppear {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* MOBILE TREE VIEW IMPROVEMENTS */
-@media (max-width: 768px) {
-  .org-tree {
-    padding: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 0.5rem;
-  }
-  
-  /* Add mobile scroll hint */
-  .org-tree::before {
-    content: 'Scorri orizzontalmente per vedere tutto l\'organigramma';
-    display: block;
-    text-align: center;
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 0.5rem;
-  }
-  
-  .tree-card {
-    width: 220px;
-    padding: 1rem;
-  }
-  
-  .tree-photo {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .tree-level {
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-  
-  /* Improved connector positions for mobile */
-  .tree-connector {
-    height: 40px !important;
-  }
-  
-  /* Force horizontal scroll indicator on iOS */
-  .tree-container::-webkit-scrollbar {
-    -webkit-appearance: none;
-    height: 4px;
-  }
-  
-  .tree-container::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.3);
   }
 }
 
@@ -751,11 +574,11 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Animations */
-@keyframes fadeIn {
+/* Animazioni */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -763,24 +586,104 @@
   }
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+.staff-card:nth-child(1) { animation-delay: 0.1s; }
+.staff-card:nth-child(2) { animation-delay: 0.2s; }
+.staff-card:nth-child(3) { animation-delay: 0.3s; }
+.staff-card:nth-child(4) { animation-delay: 0.4s; }
+.staff-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .titolo {
+    font-size: 2.5rem;
   }
-  50% {
-    transform: scale(1.05);
+
+  .sottotitolo {
+    font-size: 1rem;
   }
-  100% {
-    transform: scale(1);
+
+  .societa-selector {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .societa-tab {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+    padding: 0.8rem 1.4rem;
+  }
+  
+  .societa-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .organigramma-container {
+    padding: 1rem;
+  }
+  
+  .staff-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .presidente-section .staff-cards,
+  .presidente-section.two-cards .staff-cards {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .level-title {
+    font-size: 2rem;
+  }
+
+  .staff-card {
+    padding: 1.5rem;
+  }
+
+  .member-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .member-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .member-name {
+    font-size: 1.2rem;
   }
 }
 
-@keyframes shine {
-  0% {
-    background-position: -100% 0;
+@media (max-width: 480px) {
+  .titolo {
+    font-size: 2rem;
   }
-  100% {
-    background-position: 200% 0;
+  
+  .societa-tab {
+    padding: 0.6rem 1rem;
+  }
+  
+  .societa-logo {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .staff-card {
+    padding: 1.2rem;
+  }
+  
+  .member-name {
+    font-size: 1.1rem;
+  }
+  
+  .member-description {
+    font-size: 0.9rem;
   }
 }
 
@@ -801,55 +704,4 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
-}
-
-/* Animation improvements */
-.staff-card {
-  animation: fadeInUp 0.6s ease-out backwards;
-  cursor: pointer;
-}
-
-.staff-card:nth-child(1) { animation-delay: 0.1s; }
-.staff-card:nth-child(2) { animation-delay: 0.2s; }
-.staff-card:nth-child(3) { animation-delay: 0.3s; }
-.staff-card:nth-child(4) { animation-delay: 0.4s; }
-.staff-card:nth-child(5) { animation-delay: 0.5s; }
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.staff-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.staff-card.presidente:hover {
-  box-shadow: 0 15px 35px rgba(253, 230, 138, 0.2);
-}
-
-/* Skeleton loading for images */
-.member-photo-container.loading {
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
-    rgba(255, 255, 255, 0.2) 50%, 
-    rgba(255, 255, 255, 0.1) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
 }

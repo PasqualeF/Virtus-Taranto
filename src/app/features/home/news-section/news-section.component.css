@@ -468,3 +468,42 @@
     font-size: 0.9rem;
   }
 }
+
+/* Aggiungi questi stili al file news-section.component.css esistente */
+
+/* Featured excerpt styles */
+.news-card.featured .news-excerpt {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+}
+
+.news-card.featured .news-excerpt.featured-excerpt {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.95);
+  max-height: none;
+  display: block;
+}
+
+/* Aggiustamenti per il contenuto featured */
+.news-card.featured .news-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.news-card.featured .news-title {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.news-card.featured .read-more {
+  font-size: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}

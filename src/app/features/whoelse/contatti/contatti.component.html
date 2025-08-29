@@ -10,17 +10,18 @@
            [@flipIn]
            [style.animation-delay]="i * 200 + 'ms'"
            class="societa-box">
+        
         <div class="societa-header">
           <img [src]="s.logo" [alt]="s.nome + ' logo'" class="societa-logo">
           <h2 class="societa-nome">{{ s.nome }}</h2>
         </div>
-        <p class="societa-descrizione">{{ s.descrizione }}</p>
+        
         <div class="contatti-dettagli">
           <div class="contatti-content">
-            <p><strong>Indirizzo:</strong> {{ s.indirizzo }}</p>
-            <p><strong>Telefono:</strong> {{ s.telefono }}</p>
-            <p><strong>Email:</strong> {{ s.email }}</p>
-            <p><strong>Sito web:</strong> {{ s.sito }}</p>
+            <p data-type="indirizzo"><strong>Indirizzo:</strong> {{ s.indirizzo }}</p>
+            <p data-type="telefono"><strong>Telefono:</strong> {{ s.telefono }}</p>
+            <p data-type="email"><strong>Email:</strong> {{ s.email }}</p>
+            <!-- Rimossa la riga del sito web -->
           </div>
         </div>
       </div>

@@ -3,29 +3,9 @@
   <!-- Header con titolo animato -->
   <div class="header-section" [@fadeIn]>
     <h1 class="titolo">
-      🏀 Calendario Partite
+       Calendario Partite
       <span class="sottotitolo">Tutte le partite delle nostre squadre</span>
     </h1>
-    
-    <!-- Statistiche rapide -->
-    <div class="stats-section" *ngIf="hasEvents && !isLoading">
-      <div class="stat-card">
-        <span class="stat-number">{{ matchStats.total }}</span>
-        <span class="stat-label">Totale</span>
-      </div>
-      <div class="stat-card upcoming">
-        <span class="stat-number">{{ matchStats.upcoming }}</span>
-        <span class="stat-label">Prossime</span>
-      </div>
-      <div class="stat-card ongoing" *ngIf="matchStats.ongoing > 0">
-        <span class="stat-number">{{ matchStats.ongoing }}</span>
-        <span class="stat-label">In Corso</span>
-      </div>
-      <div class="stat-card past">
-        <span class="stat-number">{{ matchStats.past }}</span>
-        <span class="stat-label">Concluse</span>
-      </div>
-    </div>
   </div>
 
   <!-- Loading indicator -->
@@ -43,22 +23,18 @@
     </div>
   </div>
 
-  <!-- Selettore squadre -->
-  <div class="societa-selector" *ngIf="!isLoading" [@fadeIn]>
-    <div 
-      *ngFor="let s of societa; trackBy: trackBySocieta"
-      class="societa-tab"
-      [class.active]="selectedSocieta?.nome === s.nome"
-      (click)="selectSocieta(s)"
-      [@fadeIn]>
-      <div class="societa-content">
-        <img [src]="s.logo" [alt]="s.nome" class="societa-logo" 
-             onerror="this.src='assets/default-logo.png'">
-        <span class="societa-name">{{ s.nome }}</span>
-        <div class="societa-indicator" *ngIf="selectedSocieta?.nome === s.nome">
-          <span>✓</span>
-        </div>
-      </div>
+  <!-- Selettore squadre MIGLIORATO - Solo loghi senza cerchi -->
+  <div class="team-filter-section" *ngIf="!isLoading" [@fadeIn]>
+    <div class="team-filters">
+      <button 
+        *ngFor="let s of societa; trackBy: trackBySocieta"
+        class="team-filter-btn"
+        [class.active]="selectedSocieta?.nome === s.nome"
+        (click)="selectSocieta(s)"
+        [@fadeIn]>
+        <img [src]="s.logo" [alt]="s.nome" class="team-logo">
+        <span class="team-name">{{ s.nome }}</span>
+      </button>
     </div>
   </div>
 
@@ -74,7 +50,7 @@
       
       <!-- Istruzioni per l'utente -->
       <div class="instructions" *ngIf="hasEvents">
-        <p>💡 <strong>Clicca su una partita</strong> per aggiungerla al tuo calendario personale</p>
+        <p>💡 <strong>Tocca una partita</strong> per aggiungerla al tuo calendario</p>
       </div>
     </div>
 
@@ -124,10 +100,9 @@
       <div class="info-card">
         <h4>📱 Come aggiungere al calendario</h4>
         <ol>
-          <li>Clicca su una partita nel calendario</li>
+          <li>Tocca una partita nel calendario</li>
           <li>Conferma l'aggiunta nel popup</li>
-          <li>L'evento si aprirà in Google Calendar</li>
-          <li>Opzionalmente scarica il file .ics per dispositivi mobile</li>
+          <li>L'evento verrà aggiunto al tuo calendario</li>
         </ol>
       </div>
       

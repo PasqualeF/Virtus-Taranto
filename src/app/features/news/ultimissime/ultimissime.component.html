@@ -66,8 +66,13 @@
       </div>
       <div class="news-content">
         <h3 class="news-title">{{ item.titolo }}</h3>
-        <!-- FIXED: Corretto il pipe slice -->
-        <p class="news-excerpt">{{ (item.descrizione | slice:0:100) + (item.descrizione.length > 100 ? '...' : '') }}</p>
+        <!-- MODIFICATO: Descrizione estesa per il primo elemento, breve per gli altri -->
+        <p class="news-excerpt" *ngIf="!(i === 0 && currentPage === 1)">
+          {{ (item.descrizione | slice:0:100) + (item.descrizione.length > 100 ? '...' : '') }}
+        </p>
+        <p class="news-excerpt featured-excerpt" *ngIf="i === 0 && currentPage === 1">
+          {{ (item.descrizione | slice:0:500) + (item.descrizione.length > 500 ? '...' : '') }}
+        </p>
         <button class="read-more-button">
           Leggi di più
           <svg xmlns="http://www.w3.org/2000/svg" class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">

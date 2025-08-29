@@ -99,14 +99,14 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     {
       id: 1,
       nome: 'Tutte le Squadre',
-      logo: 'assets/logo-virtus-taranto.svg',
+      logo: '',
       coloreEventi: '#3b82f6',
       eventi: []
     },
     {
       id: 2,
       nome: 'Virtus Taranto',
-      logo: 'assets/logo-virtus-taranto.svg',
+      logo: 'assets/logo-virtus-taranto.png',
       coloreEventi: '#3b82f6',
       eventi: []
     },

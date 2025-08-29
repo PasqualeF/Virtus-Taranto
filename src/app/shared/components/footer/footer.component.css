@@ -23,6 +23,7 @@
   background-color: #002b49a0;
   margin-bottom: 3rem;
   width: 100%;
+  text-align: center;
 }
 
 .sponsor-title {
@@ -197,7 +198,6 @@
   height: 40px;
   margin: 0 20px;
   flex-shrink: 0;
-  filter: grayscale(100%);
   opacity: 0.8;
   transition: all 0.3s ease;
   object-fit: contain;
@@ -205,7 +205,6 @@
 }
 
 .sponsor-carousel img:hover {
-  filter: grayscale(0%);
   opacity: 1;
   transform: scale(1.05);
 }
@@ -233,6 +232,7 @@
 .social-title {
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  margin-left: 4rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #ffffff;
@@ -373,24 +373,29 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* DESKTOP - Modifica per centrare sponsor e bottone sotto */
 @media (min-width: 768px) {
   .footer-content {
     padding: 0 7%;
   }
 
   .sponsor-section {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column; /* Cambio da row a column */
+    justify-content: center; /* Centra tutto */
     align-items: center;
+    text-align: center;
   }
 
   .sponsor-title {
     font-size: 2.5rem;
-    text-align: left;
+    text-align: center; /* Forza il centro anche su desktop */
+    margin-bottom: 2rem; /* Più spazio sotto il titolo */
   }
-  
-}
 
+  .sponsor-button {
+    margin-top: 2rem; /* Spazio sopra il bottone */
+  }
+}
 
 .social-buttons {
   display: flex;

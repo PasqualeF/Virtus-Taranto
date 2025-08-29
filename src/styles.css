@@ -8,6 +8,10 @@ html, body {
     display: flex;
     flex-direction: column;
   }
+
+  * {
+  font-family: 'Roboto', Arial, sans-serif !important;
+}
   
   .page-container {
     display: flex;
@@ -103,3 +107,5 @@ html, body {
 .login-container {
   font-family: 'fantasy,sans-serif', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');

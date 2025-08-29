@@ -1,12 +1,79 @@
-
-
-<div class="card-container">
+<!-- Desktop Version (unchanged) -->
+<div class="card-container" *ngIf="!isMobile">
   <div class="card-single" *ngFor="let card of storyCards">
     <img [src]="card.image" [alt]="card.title">
     <div class="card-content">
       <h3 class="card-title">{{ card.title }}</h3>
-      <p class="card-brief">{{ card.brief }}</p>
-      <a [routerLink]="card.link" class="read-more">Continua a leggere</a>
+      <!--<p class="card-brief">{{ card.brief }}</p> -->
+      <a [routerLink]="card.link" class="read-more">Scopri di più</a>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Carousel Version -->
+<div class="mobile-carousel-wrapper" *ngIf="isMobile">
+  <!-- Header -->
+  <div class="carousel-header">
+    <h2 class="carousel-title"></h2>
+    <div class="carousel-progress">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+      </div>
+      <span class="progress-text">{{ currentSlide + 1 }}/{{ storyCards.length }}</span>
+    </div>
+  </div>
+
+  <!-- Carousel Container -->
+  <div class="carousel-container" #carouselContainer>
+    <div class="carousel-track" #carouselTrack>
+      <div class="carousel-slide" 
+           *ngFor="let card of storyCards; let i = index"
+           [class.active]="i === currentSlide"
+           (click)="onCardClick(card)">
+        
+        <div class="slide-image-container">
+          <img [src]="card.image" [alt]="card.title" class="slide-image">
+          <div class="slide-overlay"></div>
+        </div>
+        
+        <div class="slide-content">
+          <h3 class="slide-title">{{ card.title }}</h3>
+         <!-- <p class="slide-brief">{{ card.brief }}</p> -->
+          
+          <div class="slide-actions">
+            <button class="slide-cta" (click)="onCardClick(card)">
+              <span>Scopri di più</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button class="carousel-nav prev" (click)="prevSlide()" [disabled]="isTransitioning">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-nav next" (click)="nextSlide()" [disabled]="isTransitioning">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Dots Indicator -->
+  <div class="carousel-dots">
+    <button class="dot" 
+            *ngFor="let card of storyCards; let i = index"
+            [class.active]="i === currentSlide"
+            (click)="goToSlide(i)">
+      <span class="sr-only">Vai al slide {{ i + 1 }}</span>
+    </button>
+  </div>
+
+  <!-- Swipe Hint (shows only on first visit) -->
+  <div class="swipe-hint" *ngIf="currentSlide === 0">
+    <div class="swipe-animation">
+      <i class="fas fa-hand-pointer"></i>
+      <span>Scorri per vedere di più</span>
     </div>
   </div>
 </div>

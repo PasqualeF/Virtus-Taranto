@@ -94,7 +94,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private matchService = inject(MatchService);
   
   // Assets
-  logos = ['assets/logo-virtus-taranto.png', 'assets/poliLogo.png', 'assets/support_o2022 (1).png'];
+  logos = [ 'assets/support_o2022 (1).png' ,'assets/logo-virtus-taranto.png','assets/poliLogo.png'];
 
   // Navigation Sections
   sections = [
