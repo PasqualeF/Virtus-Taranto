@@ -22,10 +22,10 @@ export class Squad {
   constructor(
     public id: number,
     public name: string,
-    public photoUrl: string,
-    public results: Result[],
-    public standings: Standing[],
-    public roster: Player[],
+    public photoUrl?: string,
+    public results?: Result[],
+    public standings?: Standing[],
+    public roster?: Player[],
     public foto?: string
   ) {}
 }

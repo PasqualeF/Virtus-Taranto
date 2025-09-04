@@ -309,8 +309,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // NEW: Method to handle social media links
   openSocialLink(platform: string): void {
     const socialLinks = {
-      instagram: 'https://www.instagram.com/virtustaranto/', // Sostituisci con il link reale
-      facebook: 'https://www.facebook.com/virtustaranto/', // Sostituisci con il link reale
+      instagram: 'https://www.instagram.com/virtus__taranto/', // Sostituisci con il link reale
+      facebook: 'https://www.facebook.com/VirtusTaranto', // Sostituisci con il link reale
       youtube: 'https://www.youtube.com/channel/UCxxxxx', // Sostituisci con il link reale
       tiktok: 'https://www.tiktok.com/@virtustaranto' // Sostituisci con il link reale
     };

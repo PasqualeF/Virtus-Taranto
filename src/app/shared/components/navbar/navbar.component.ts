@@ -153,7 +153,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
               { name: 'Procedura visita medica', route: '/servizi/visitaMedica' },
               { name: 'Iscrizione Giovanili', route: '/servizi/iscrizioni' },
               { name: 'Modelli Organizzativi e codice etico', route: '/servizi/codiceEtico' },
-              
+               { name: 'Safeguarding Policy', route: 'servizi/safeguarding' },
             ]
           },
         ] 
@@ -167,7 +167,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
               { name: 'News', route: '/who-else/news' },
               { name: 'Comunicazioni', route: '/who-else/comunicazioni' },
               { name: 'Storia', route: '/who-else/storia' },
-              { name: 'Achivements', route: '/who-else/achivements'},
+        /*      { name: 'Achivements', route: '/who-else/achivements'},*/
               { name: 'Partner', route: '/who-else/partner' },
  /*             { name: 'Palestre', route: '/who-else/palestre' },*/
               { name: 'Organigramma', route: '/who-else/organigramma' },

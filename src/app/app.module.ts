@@ -52,6 +52,7 @@ import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-
 import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
 import { AuthInterceptor } from './features/servizi/prenotazioni/core/interceptors/auth.interceptor';
 import { PalestrePreviewComponent } from './features/home/palestre-preview/palestre-preview.component';
+import { Safeguardpol } from './features/servizi/safeguardingpolicy/safeguardpol.component';
 
 
 // Factory function per il TranslateHttpLoader
@@ -97,7 +98,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AchievementsComponent,
     CookieBannerComponent,
     PrivacyPolicyComponent,
-    PalestrePreviewComponent
+    PalestrePreviewComponent,
+    Safeguardpol
     ],
   imports: [
     BrowserModule,

@@ -12,6 +12,13 @@ interface Tab {
   value: ViewType;
 }
 
+interface CountdownTime {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 @Component({
   selector: 'app-squad',
   templateUrl: './squad.component.html',
@@ -24,15 +31,20 @@ export class SquadComponent implements OnInit, OnDestroy {
   
   loading = false;
   selectedSquad: Squad | null = null;
-  selectedView: ViewType = 'roster'; // Cambiato da 'results' a 'roster' come default
+  selectedView: ViewType = 'roster';
   showSponsors = true;
   
   mobileView = false;
   
+  // Variabili per il Coming Soon
+  showComingSoon = true; // Cambia a false quando vuoi tornare al componente normale
+  countdownTime: CountdownTime = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  targetDate: Date;
+  private countdownInterval: any;
+  
   private routeSubscription: Subscription | null = null;
   private paramSubscription: Subscription | null = null;
 
-  // Riordinati i tab con roster come primo
   tabs: Tab[] = [
     { label: 'Roster', value: 'roster' },
     { label: 'Risultati', value: 'results' },
@@ -41,7 +53,6 @@ export class SquadComponent implements OnInit, OnDestroy {
   
   error: string | null = null;
   
-  // Mappatura per i nomi dei campi - invariata
   headerMappings: {[key: string]: string} = {
     // Roster
     'numero': 'N°',
@@ -66,12 +77,23 @@ export class SquadComponent implements OnInit, OnDestroy {
     'sconfitte': 'S'
   };
 
+  constructor() {
+    // Imposta la data target a 30 giorni da oggi (04/09/2025)
+    this.targetDate = new Date('2025-10-04T00:00:00');
+  }
+
   ngOnInit() {
     // Sottoscrivi ai parametri della route
     this.paramSubscription = this.route.paramMap.subscribe(params => {
       const squadName = params.get('id');
       if (squadName) {
-        this.loadSquad(squadName);
+        if (this.showComingSoon) {
+          // Se siamo in modalità Coming Soon, simula il caricamento della squadra per il nome
+          this.simulateSquadLoading(squadName);
+          this.startCountdown();
+        } else {
+          this.loadSquad(squadName);
+        }
       } else {
         this.error = 'Nessun nome squadra fornito nella route';
       }
@@ -95,6 +117,9 @@ export class SquadComponent implements OnInit, OnDestroy {
     if (this.paramSubscription) {
       this.paramSubscription.unsubscribe();
     }
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
   }
   
   @HostListener('window:resize', ['$event'])
@@ -111,18 +136,83 @@ export class SquadComponent implements OnInit, OnDestroy {
     this.showSponsors = window.innerWidth > 480;
   }
 
+  // Simula il caricamento di una squadra per il Coming Soon
+  simulateSquadLoading(name: string) {
+    this.loading = true;
+    this.error = null;
+    
+    // Decodifica il nome dalla URL (gestisce %20, %2013, ecc.)
+    const decodedName = decodeURIComponent(name).replace(/\+/g, ' ');
+    
+    // Simula un breve caricamento
+    setTimeout(() => {
+      this.selectedSquad = {
+        id: 0,
+        name: decodedName,
+        foto: '', // Puoi aggiungere un'immagine placeholder se necessario
+        roster: [],
+        results: [],
+        standings: []
+      };
+      this.loading = false;
+    }, 500);
+  }
+
+  // Avvia il countdown
+  startCountdown() {
+    this.updateCountdown(); // Aggiorna immediatamente
+    
+    this.countdownInterval = setInterval(() => {
+      this.updateCountdown();
+    }, 1000);
+  }
+
+  // Aggiorna i valori del countdown
+  updateCountdown() {
+    const now = new Date().getTime();
+    const target = this.targetDate.getTime();
+    const difference = target - now;
+
+    if (difference > 0) {
+      this.countdownTime = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000)
+      };
+    } else {
+      // Il countdown è finito
+      this.countdownTime = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+      }
+    }
+  }
+
+  // Metodo per passare dalla modalità Coming Soon a quella normale
+  // Puoi chiamare questo metodo quando vuoi attivare il componente normale
+  enableNormalMode() {
+    this.showComingSoon = false;
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+    
+    // Ricarica la squadra in modalità normale
+    const squadName = this.route.snapshot.paramMap.get('id');
+    if (squadName) {
+      this.loadSquad(squadName);
+    }
+  }
+
   loadSquad(name: string) {
     this.loading = true;
     this.error = null;
-    this.selectedSquad = null; // Reset squadra precedente
-    
+    this.selectedSquad = null;
     
     this.squadService.getSquadByName(name).subscribe({
       next: (squad) => {
         if (squad) {
           this.selectedSquad = squad;
-          
-          // Seleziona automaticamente il tab appropriato dopo il caricamento
           this.selectBestAvailableTab();
         } else {
           this.error = `Nessuna squadra trovata con il nome: ${name}`;
@@ -137,38 +227,27 @@ export class SquadComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Seleziona automaticamente il tab migliore disponibile
-   * Priorità: roster -> results -> standings
-   */
   private selectBestAvailableTab() {
     if (!this.selectedSquad) return;
 
-    // Controlla se il roster ha dati
     if (this.selectedSquad.roster && this.selectedSquad.roster.length > 0) {
       this.selectedView = 'roster';
       return;
     }
 
-    // Se roster è vuoto, prova con i risultati
     if (this.selectedSquad.results && this.selectedSquad.results.length > 0) {
       this.selectedView = 'results';
       return;
     }
 
-    // Se anche i risultati sono vuoti, usa la classifica
     if (this.selectedSquad.standings && this.selectedSquad.standings.length > 0) {
       this.selectedView = 'standings';
       return;
     }
 
-    // Se tutto è vuoto, mantieni roster come default
     this.selectedView = 'roster';
   }
 
-  /**
-   * Verifica se una sezione ha dati disponibili
-   */
   hasSectionData(section: ViewType): boolean {
     if (!this.selectedSquad) return false;
 
@@ -184,9 +263,6 @@ export class SquadComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Ottieni i tab disponibili (solo quelli con dati)
-   */
   getAvailableTabs(): Tab[] {
     return this.tabs.filter(tab => this.hasSectionData(tab.value));
   }
@@ -210,7 +286,6 @@ export class SquadComponent implements OnInit, OnDestroy {
     const data = this.getDisplayData();
     if (data.length === 0) return [];
     
-    // Personalizza l'ordine delle colonne per ogni vista
     const customOrder: { [key: string]: string[] } = {
       roster: ['numero', 'nome', 'cognome', 'posizione', 'dataNascita', 'altezza'],
       results: ['data', 'casa', 'risultato', 'trasferta', 'luogo'],
@@ -219,9 +294,7 @@ export class SquadComponent implements OnInit, OnDestroy {
     
     const defaultHeaders = Object.keys(data[0]);
     
-    // Se esiste un ordine personalizzato per questa vista e tutti i campi necessari sono presenti
     if (customOrder[this.selectedView]) {
-      // Filtra solo le chiavi che esistono effettivamente nei dati
       return customOrder[this.selectedView].filter(key => defaultHeaders.includes(key));
     }
     
@@ -237,9 +310,7 @@ export class SquadComponent implements OnInit, OnDestroy {
       return '';
     }
     
-    // Se è una data in formato ISO o stringa di data
     if (typeof value === 'string') {
-      // Formato ISO completo (2025-06-03T00:00:00.000Z)
       if (value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/)) {
         const date = new Date(value);
         if (!isNaN(date.getTime())) {
@@ -251,7 +322,6 @@ export class SquadComponent implements OnInit, OnDestroy {
         }
       }
       
-      // Formato data semplice (2025-06-03)
       if (value.match(/^\d{4}-\d{2}-\d{2}$/)) {
         const date = new Date(value);
         if (!isNaN(date.getTime())) {
@@ -263,7 +333,6 @@ export class SquadComponent implements OnInit, OnDestroy {
         }
       }
       
-      // Prova a parsare qualsiasi altra stringa che potrebbe essere una data
       const parsedDate = new Date(value);
       if (!isNaN(parsedDate.getTime()) && value.includes('-')) {
         return parsedDate.toLocaleDateString('it-IT', { 
@@ -274,7 +343,6 @@ export class SquadComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Se è già un oggetto Date
     if (value instanceof Date && !isNaN(value.getTime())) {
       return value.toLocaleDateString('it-IT', { 
         day: '2-digit', 
@@ -287,7 +355,6 @@ export class SquadComponent implements OnInit, OnDestroy {
   }
 
   setView(view: ViewType) {
-    // Verifica se la sezione ha dati prima di permettere il cambio
     if (this.hasSectionData(view)) {
       this.selectedView = view;
     }

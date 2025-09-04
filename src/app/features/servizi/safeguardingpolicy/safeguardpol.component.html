@@ -1,0 +1,26 @@
+<div class="container">
+    <h1 [@fadeIn] class="titolo">
+      {{ 'SERVIZI_SAFEGUARDING.titolo' | translate }}
+      <span class="sottotitolo">{{ 'SERVIZI_SAFEGUARDING.sottotitolo' | translate }}</span>
+    </h1>
+    
+    <p [@fadeIn] class="descrizione-generale"> {{ 'SERVIZI_SAFEGUARDING.descrizione' | translate }}</p>
+  
+    <div class="societa-container">
+      <div *ngFor="let s of societa; let i = index" 
+           [@slideInFromLeft]
+           [style.animation-delay]="i * 200 + 'ms'"
+           class="societa-box">
+        <h2 class="societa-nome">{{ s.nome }}</h2>
+        <p class="societa-descrizione">{{ s.descrizione }}</p>
+        <button (click)="scaricaDocumento(s.documentoUrl)" class="download-button">
+          <span class="button-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </span>
+          <span class="button-text">{{ 'SERVIZI_SAFEGUARDING.bottoneDownload' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </div>

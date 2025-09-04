@@ -1,4 +1,4 @@
-// calendario.component.ts
+// calendario.component.ts - VERSIONE COMPLETA
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CalendarOptions, EventSourceInput, EventClickArg } from '@fullcalendar/core';
@@ -60,6 +60,7 @@ interface CalendarEvent {
 })
 export class CalendarioComponent implements OnInit, AfterViewInit {
   @ViewChild('fullcalendar') fullcalendar!: FullCalendarComponent;
+  
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
     initialView: 'dayGridMonth',
@@ -95,11 +96,12 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   isLoading = false;
   errorMessage = '';
   
-   societa: Societa[] = [
+  // MODIFICATO: Logo default basketball per "Tutte le Squadre"
+  societa: Societa[] = [
     {
       id: 1,
       nome: 'Tutte le Squadre',
-      logo: '',
+      logo: 'assets/basketball.svg',
       coloreEventi: '#3b82f6',
       eventi: []
     },
@@ -125,15 +127,16 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       eventi: []
     }
   ];
+
   constructor(private matchService: MatchService) {}
 
   ngOnInit(): void {
+    this.createDefaultBasketballIcon();
     this.selectSocieta(this.societa[0]);
     this.loadAllMatches();
   }
 
   ngAfterViewInit(): void {
-    // Forza il refresh del calendario dopo l'inizializzazione
     setTimeout(() => {
       if (this.fullcalendar) {
         this.fullcalendar.getApi().render();
@@ -142,18 +145,33 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Carica tutte le partite usando il nuovo metodo ottimizzato per il calendario
+   * Crea un'icona basketball di default usando SVG se non esiste il file
    */
+  private createDefaultBasketballIcon(): void {
+    // Se il logo default non esiste, usa un data URL SVG
+    if (!this.societa[0].logo || this.societa[0].logo === 'assets/basketball-default.png') {
+      const basketballSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="#FF6B35" stroke="#000" stroke-width="2"/>
+          <path d="M50 5 Q30 25 30 50 T50 95" stroke="#000" stroke-width="2" fill="none"/>
+          <path d="M50 5 Q70 25 70 50 T50 95" stroke="#000" stroke-width="2" fill="none"/>
+          <path d="M5 50 H95" stroke="#000" stroke-width="2"/>
+          <path d="M15 30 Q50 20 85 30" stroke="#000" stroke-width="2" fill="none"/>
+          <path d="M15 70 Q50 80 85 70" stroke="#000" stroke-width="2" fill="none"/>
+        </svg>
+      `;
+      
+      const blob = new Blob([basketballSvg], { type: 'image/svg+xml' });
+      this.societa[0].logo = URL.createObjectURL(blob);
+    }
+  }
+
   loadAllMatches(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-
-    // Usa il nuovo metodo ottimizzato con fallback automatico
     this.matchService.getCalendarMatches(200).subscribe({
       next: (matches) => {
-        
-        // Verifica la completezza dei dati
         const isComplete = this.matchService.isCalendarDataComplete(matches);
         
         if (!isComplete && matches.length < 10) {
@@ -164,27 +182,18 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         this.allMatches = matches;
         this.updateCalendarEvents();
         this.isLoading = false;
-
-        // Log statistiche finali
-        const stats = this.matchStats;
       },
       error: (error) => {
         this.errorMessage = 'Errore nel caricamento delle partite del calendario';
         this.isLoading = false;
-        
-        // Prova metodo alternativo
         this.loadMatchesAlternativeMethod();
       }
     });
   }
 
-  /**
-   * Metodo alternativo per caricare le partite se il principale fallisce
-   */
   private loadMatchesAlternativeMethod(): void {    
     const currentYear = new Date().getFullYear();
     
-    // Prova con range di anni specifico
     this.matchService.getMatchesForCalendarByYears(currentYear - 1, currentYear + 1, 150).subscribe({
       next: (matches) => {
         this.allMatches = matches;
@@ -192,15 +201,11 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         this.isLoading = false;
       },
       error: (error) => {        
-        // Ultimo fallback: solo partite future
         this.loadUpcomingMatchesFallback();
       }
     });
   }
 
-  /**
-   * Ultimo fallback: carica solo le partite future
-   */
   private loadUpcomingMatchesFallback(): void {    
     this.matchService.getUpcomingMatches(50).subscribe({
       next: (matches) => {
@@ -208,7 +213,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         this.updateCalendarEvents();
         this.isLoading = false;
         
-        // Mostra un warning all'utente
         if (matches.length > 0) {
           this.errorMessage = 'Visualizzate solo le partite future. Ricarica per tentare di recuperare tutte le partite.';
         }
@@ -220,21 +224,13 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * Seleziona una società e filtra gli eventi
-   */
   selectSocieta(societa: Societa): void {
     this.selectedSocieta = societa;
     this.updateCalendarEvents();
   }
 
-  /**
-   * Aggiorna gli eventi del calendario in base alla società selezionata
-   * IMPORTANTE: FullCalendar Angular richiede di ricreare l'oggetto calendarOptions
-   */
   private updateCalendarEvents(): void {
     if (!this.selectedSocieta || this.allMatches.length === 0) {
-      // Ricrea l'oggetto calendarOptions anche per array vuoto
       this.calendarOptions = {
         ...this.calendarOptions,
         events: []
@@ -244,7 +240,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
 
     let filteredMatches = this.allMatches;
 
-    // Filtra per squadra se non è "Tutte le Squadre"
     if (this.selectedSocieta.nome !== 'Tutte le Squadre') {
       filteredMatches = this.allMatches.filter(match => 
         match.squadName?.toLowerCase().includes(this.selectedSocieta!.nome.toLowerCase()) ||
@@ -253,43 +248,15 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       );
     }
 
-    // Converti le partite in eventi del calendario
     const calendarEvents: CalendarEvent[] = filteredMatches.map(match => 
       this.convertMatchToCalendarEvent(match)
     );
     
-    // SOLUZIONE: Ricrea completamente l'oggetto calendarOptions per triggare la reattività
     this.calendarOptions = {
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
-      initialView: 'dayGridMonth',
-      locale: itLocale,
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,listWeek'
-      },
-      weekends: true,
-      editable: false,
-      selectable: false,
-      selectMirror: false,
-      dayMaxEvents: 3,
-      events: calendarEvents, // Nuovi eventi
-      eventClick: this.handleEventClick.bind(this),
-      height: 'auto',
-      eventDisplay: 'block',
-      eventTimeFormat: {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      },
-      slotLabelFormat: {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      },
+      ...this.calendarOptions,
+      events: calendarEvents
     };
 
-    // Forza il refresh del calendario se disponibile
     setTimeout(() => {
       if (this.fullcalendar) {
         this.fullcalendar.getApi().render();
@@ -297,27 +264,21 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     }, 50);
   }
 
-  /**
-   * Converte una partita in evento del calendario con validazione extra
-   */
   private convertMatchToCalendarEvent(match: Match): CalendarEvent {
     const now = new Date();
     const matchDateTime = new Date(match.date);
     
-    // Validazione data
     if (isNaN(matchDateTime.getTime())) {
-      // Usa una data di fallback
       matchDateTime.setTime(now.getTime());
     }
     
-    // Determina il tipo di partita
     let tipo: 'PARTITA_FUTURA' | 'PARTITA_PASSATA' | 'PARTITA_IN_CORSO';
     let backgroundColor: string;
     let borderColor: string;
     
     if (this.matchService.isMatchInProgress(match)) {
       tipo = 'PARTITA_IN_CORSO';
-      backgroundColor = '#ef4444'; // Rosso per partite in corso
+      backgroundColor = '#ef4444';
       borderColor = '#dc2626';
     } else if (this.matchService.isMatchUpcoming(match)) {
       tipo = 'PARTITA_FUTURA';
@@ -325,20 +286,17 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       borderColor = backgroundColor;
     } else {
       tipo = 'PARTITA_PASSATA';
-      backgroundColor = '#6b7280'; // Grigio per partite passate
+      backgroundColor = '#6b7280';
       borderColor = '#4b5563';
     }
 
-    // Titolo dell'evento con validazione
     const homeTeam = match.homeTeam || 'Casa';
     const awayTeam = match.awayTeam || 'Trasferta';
     const title = `${homeTeam} vs ${awayTeam}`;
     
-    // Icona basata sullo stato
     const icon = tipo === 'PARTITA_IN_CORSO' ? '🔴 ' : 
                  tipo === 'PARTITA_FUTURA' ? '🏀 ' : '✅ ';
 
-    // Crea l'evento
     const event: CalendarEvent = {
       id: `match-${homeTeam}-${awayTeam}-${matchDateTime.getTime()}`,
       title: `${icon}${title}`,
@@ -361,14 +319,18 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Gestisce il click su un evento del calendario
+   * MODIFICATO: Gestione migliorata per dispositivi mobile
    */
   handleEventClick(arg: EventClickArg): void {
     const evento = arg.event;
     const matchData = evento.extendedProps as CalendarEvent['extendedProps'];
-        
-    // Crea il dettaglio della partita
     const match = matchData.match;
+    
+    // Rileva se siamo su dispositivo mobile
+    const isMobile = this.isMobileDevice();
+    const isIOS = this.isIOSDevice();
+    const isAndroid = this.isAndroidDevice();
+    
     const matchDate = new Date(match.date);
     const dateStr = matchDate.toLocaleDateString('it-IT', {
       weekday: 'long',
@@ -376,10 +338,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       month: 'long',
       day: 'numeric'
     });
-    const timeStr = match.time;
-    
-    const isVirtusMatch = match.homeTeam.toLowerCase().includes('virtus') || 
-                         match.awayTeam.toLowerCase().includes('virtus');
     
     const statusText = matchData.tipo === 'PARTITA_IN_CORSO' ? 'IN CORSO' :
                       matchData.tipo === 'PARTITA_FUTURA' ? 'PROSSIMA' : 'CONCLUSA';
@@ -387,68 +345,125 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     const message = `
 🏀 ${match.homeTeam} vs ${match.awayTeam}
 📅 ${dateStr}
-🕒 ${timeStr}
+🕐 ${match.time}
 📍 ${match.venue}
 🏆 ${match.league}
 ⚡ Status: ${statusText}
-${isVirtusMatch ? '🔥 Partita Virtus Taranto' : ''}
     `.trim();
 
-    // Mostra il popup nativo
-    if (confirm(`${message}\n\n📱 Vuoi aggiungere questo evento al tuo calendario?`)) {
-      this.addToDeviceCalendar(match);
-    }
-  }
+    // Messaggio personalizzato per dispositivo
+    const confirmMessage = isIOS ? 
+      `${message}\n\n📱 Vuoi aggiungere questo evento al tuo calendario?` :
+      isAndroid ?
+      `${message}\n\n📱 Vuoi aggiungere questo evento al tuo calendario?` :
+      `${message}\n\n📅 Vuoi aggiungere questo evento al tuo calendario?`;
 
-  /**
-   * Aggiunge l'evento al calendario del dispositivo
-   */
-  addToDeviceCalendar(match: Match): void {
-    try {
-      const startDate = new Date(match.date);
-      const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000)); // +2 ore
-
-      // Formato per Google Calendar / iCal
-      const startDateStr = this.formatDateForCalendar(startDate);
-      const endDateStr = this.formatDateForCalendar(endDate);
-      
-      const title = encodeURIComponent(`${match.homeTeam} vs ${match.awayTeam}`);
-      const details = encodeURIComponent(
-        `Partita di ${match.league}\n` +
-        `Luogo: ${match.venue}\n` +
-        `Casa: ${match.homeTeam}\n` +
-        `Trasferta: ${match.awayTeam}`
-      );
-      const location = encodeURIComponent(match.venue);
-
-      // Prova prima con Google Calendar (web)
-      const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${details}&location=${location}`;
-      
-      // Apri in una nuova finestra/tab
-      const newWindow = window.open(googleCalendarUrl, '_blank');
-      
-      if (!newWindow) {
-        // Se il popup è bloccato, prova con il file .ics
-        this.downloadIcsFile(match, startDate, endDate);
-      } else {        
-        // Dopo 3 secondi, offri anche il download del file .ics
-        setTimeout(() => {
-          if (confirm('📱 Vuoi anche scaricare il file .ics per aggiungerlo direttamente al tuo calendario mobile?')) {
-            this.downloadIcsFile(match, startDate, endDate);
-          }
-        }, 3000);
+    if (confirm(confirmMessage)) {
+      if (isMobile) {
+        this.addToMobileCalendar(match, isIOS, isAndroid);
+      } else {
+        this.addToDesktopCalendar(match);
       }
-
-    } catch (error) {
-      console.error('❌ Errore nell\'aggiunta al calendario:', error);
-      alert('❌ Errore nell\'aggiunta al calendario. Riprova.');
     }
   }
 
   /**
-   * Genera e scarica un file .ics per il calendario
+   * NUOVO: Rileva se siamo su dispositivo mobile
    */
-  private downloadIcsFile(match: Match, startDate: Date, endDate: Date): void {
+  private isMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  /**
+   * NUOVO: Rileva se siamo su iOS
+   */
+  private isIOSDevice(): boolean {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent) || 
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
+  /**
+   * NUOVO: Rileva se siamo su Android
+   */
+  private isAndroidDevice(): boolean {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  /**
+   * NUOVO: Gestione calendario per dispositivi mobile
+   */
+  private addToMobileCalendar(match: Match, isIOS: boolean, isAndroid: boolean): void {
+    const startDate = new Date(match.date);
+    const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000));
+    
+    if (isIOS) {
+      // Per iOS, crea direttamente il file .ics
+      this.createAndDownloadIcs(match, startDate, endDate);
+    } else if (isAndroid) {
+      // Per Android, prova prima con intent, poi fallback a .ics
+      this.tryAndroidCalendarIntent(match, startDate, endDate);
+    } else {
+      // Altri dispositivi mobile
+      this.createAndDownloadIcs(match, startDate, endDate);
+    }
+  }
+
+  /**
+   * NUOVO: Prova ad aprire il calendario Android con intent
+   */
+  private tryAndroidCalendarIntent(match: Match, startDate: Date, endDate: Date): void {
+    // Prova con deep link per calendario Android
+    const title = `${match.homeTeam} vs ${match.awayTeam}`;
+    const description = `Partita di ${match.league}`;
+    
+    // Formato data per Android intent
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
+    
+    // Crea URL per intent Android
+    const intentUrl = `intent://add-event?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&beginTime=${startTime}&endTime=${endTime}&location=${encodeURIComponent(match.venue)}#Intent;scheme=content;package=com.google.android.calendar;end`;
+    
+    // Prova ad aprire l'intent
+    window.location.href = intentUrl;
+    
+    // Fallback dopo 2 secondi se l'intent non funziona
+    setTimeout(() => {
+      if (confirm('Se il calendario non si è aperto, vuoi scaricare il file evento?')) {
+        this.createAndDownloadIcs(match, startDate, endDate);
+      }
+    }, 2000);
+  }
+
+  /**
+   * NUOVO: Gestione calendario per desktop
+   */
+  private addToDesktopCalendar(match: Match): void {
+    const startDate = new Date(match.date);
+    const endDate = new Date(startDate.getTime() + (2 * 60 * 60 * 1000));
+    
+    const startDateStr = this.formatDateForCalendar(startDate);
+    const endDateStr = this.formatDateForCalendar(endDate);
+    
+    const title = encodeURIComponent(`${match.homeTeam} vs ${match.awayTeam}`);
+    const details = encodeURIComponent(
+      `Partita di ${match.league}\n` +
+      `Luogo: ${match.venue}\n` +
+      `Casa: ${match.homeTeam}\n` +
+      `Trasferta: ${match.awayTeam}`
+    );
+    const location = encodeURIComponent(match.venue);
+
+    // URL per Google Calendar
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${details}&location=${location}`;
+    
+    // Apri in nuova finestra
+    window.open(googleCalendarUrl, '_blank');
+  }
+
+  /**
+   * MODIFICATO: Crea e scarica direttamente il file .ics
+   */
+  private createAndDownloadIcs(match: Match, startDate: Date, endDate: Date): void {
     const startDateStr = this.formatDateForIcs(startDate);
     const endDateStr = this.formatDateForIcs(endDate);
     const now = this.formatDateForIcs(new Date());
@@ -456,6 +471,7 @@ ${isVirtusMatch ? '🔥 Partita Virtus Taranto' : ''}
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Virtus Taranto//Calendario Partite//IT
+METHOD:PUBLISH
 BEGIN:VEVENT
 UID:match-${match.homeTeam}-${match.awayTeam}-${startDate.getTime()}@virtus-taranto.it
 DTSTAMP:${now}
@@ -469,16 +485,32 @@ TRANSP:OPAQUE
 END:VEVENT
 END:VCALENDAR`;
 
-    // Crea il blob e scarica
+    // Crea il blob
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    
+    // Per iOS, usa un nome file più descrittivo
+    const fileName = `partita-${match.homeTeam.replace(/\s+/g, '-')}-vs-${match.awayTeam.replace(/\s+/g, '-')}.ics`;
+    
+    // Crea il link di download
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `partita-${match.homeTeam}-vs-${match.awayTeam}.ics`;
+    link.download = fileName;
+    
+    // Per iOS, imposta l'attributo per aprire direttamente
+    if (this.isIOSDevice()) {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    }
+    
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    
+    // Cleanup
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+    }, 100);
   }
 
   /**
@@ -496,7 +528,7 @@ END:VCALENDAR`;
   }
 
   /**
-   * Ricarica i dati con opzioni avanzate
+   * Ricarica i dati
    */
   refreshData(): void {
     this.loadAllMatches();
@@ -561,8 +593,6 @@ END:VCALENDAR`;
   trackBySocieta(index: number, societa: Societa): number {
     return societa.id;
   }
-
-  
 
   /**
    * Forza il refresh del calendario

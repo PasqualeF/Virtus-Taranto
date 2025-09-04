@@ -25,6 +25,7 @@ import { ShopComponent } from './features/shop/shop.component';
 import { MediaComponent } from './features/media/media-gallery.component';
 import { AchievementsComponent } from './features/whoelse/achivements/achievements.component';
 import { PrivacyPolicyComponent } from './shared/components/privacy-policy/privacy-policy.component';
+import { Safeguardpol } from './features/servizi/safeguardingpolicy/safeguardpol.component';
 
 export const routes: Routes = [
   // HOME
@@ -69,6 +70,8 @@ export const routes: Routes = [
   { path: 'servizi/iscrizioni', component: IscrizioniGiovaniliComponent }, 
   { path: 'servizi/codiceEtico', component: CodiceEticoComponent },
   { path: 'servizi/assicurazione', component: AperturaInfortuniComponent },
+  { path: 'servizi/safeguarding', component: Safeguardpol },
+
 
   // SHOP E CALENDARIO
   { path: 'shop', component: ShopComponent },

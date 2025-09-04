@@ -286,4 +286,33 @@ constructor(private newsService: NewsService, private http: HttpClient) {}
       }
     });
   }
+
+
+shareOnFacebook(news: any): void {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(news.titolo);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'width=600,height=400');
+}
+
+shareOnX(news: any): void {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(news.titolo);
+  window.open(`https://x.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+}
+
+shareOnWhatsApp(news: any): void {
+  const text = encodeURIComponent(`${news.titolo}\n\n${news.descrizione}\n\nLeggi di più: ${window.location.href}`);
+  
+  // Rileva se siamo su mobile o desktop
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    // Su mobile, apri l'app WhatsApp
+    window.open(`whatsapp://send?text=${text}`, '_blank');
+  } else {
+    // Su desktop, apri WhatsApp Web
+    window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
+  }
+}
+
 }

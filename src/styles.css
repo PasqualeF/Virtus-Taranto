@@ -9,10 +9,16 @@ html, body {
     flex-direction: column;
   }
 
-  * {
+/* In styles.css - sostituisci il tuo codice attuale con questo */
+*:not(.material-icons) {
   font-family: 'Roboto', Arial, sans-serif !important;
 }
-  
+
+/* Assicurati che Material Icons mantengano il loro font */
+.material-icons {
+  font-family: 'Material Icons' !important;
+}
+
   .page-container {
     display: flex;
     flex-direction: column;

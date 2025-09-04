@@ -9,8 +9,71 @@
       <p>{{ error }}</p>
     </div>
     
-    <!-- Contenuto principale quando la squadra è caricata -->
-    <div *ngIf="selectedSquad && !loading">
+    <!-- Coming Soon Section -->
+    <div *ngIf="selectedSquad && !loading && showComingSoon" class="coming-soon-container">
+      <div class="header-section">
+        <h1 class="team-name">{{ selectedSquad.name }}</h1>
+        
+        <div class="team-photo-container" *ngIf="selectedSquad.foto">
+          <img [src]="selectedSquad.foto" 
+               [alt]="'Foto ' + selectedSquad.name" 
+               class="team-photo">
+        </div>
+      </div>
+      
+      <div class="sponsors-section" *ngIf="showSponsors">
+        <app-sposor-section></app-sposor-section>
+      </div>
+
+      <div class="coming-soon-content">
+        <div class="coming-soon-header">
+          <h2 class="coming-soon-title">🚀 COMING SOON</h2>
+          <p class="coming-soon-subtitle">
+            La nuova stagione sta arrivando! <br>
+            Aggiornamenti su roster, risultati e classifiche disponibili presto.
+          </p>
+        </div>
+
+        <div class="countdown-container">
+          <h3 class="countdown-label">Tempo rimanente:</h3>
+          <div class="countdown-display">
+            <div class="countdown-item">
+              <div class="countdown-number">{{ countdownTime.days }}</div>
+              <div class="countdown-text">{{ countdownTime.days === 1 ? 'Giorno' : 'Giorni' }}</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ countdownTime.hours.toString().padStart(2, '0') }}</div>
+              <div class="countdown-text">Ore</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ countdownTime.minutes.toString().padStart(2, '0') }}</div>
+              <div class="countdown-text">Minuti</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ countdownTime.seconds.toString().padStart(2, '0') }}</div>
+              <div class="countdown-text">Secondi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="coming-soon-features">
+          <h3 class="features-title">Cosa troverai presto:</h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">👥</div>
+              <h4>Roster Aggiornato</h4>
+              <p>Tutti i giocatori della nuova stagione con statistiche e informazioni complete</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Contenuto principale normale (nascosto quando showComingSoon è true) -->
+    <div *ngIf="selectedSquad && !loading && !showComingSoon">
       <div class="header-section">
         <h1 class="team-name">{{ selectedSquad.name }}</h1>
         
@@ -27,7 +90,6 @@
     
       <div class="tabs-container">
         <div class="tabs">
-          <!-- Mostra solo i tab che hanno dati disponibili -->
           <button *ngFor="let tab of getAvailableTabs()" 
                   (click)="setView(tab.value)" 
                   [class.active]="selectedView === tab.value"
@@ -35,14 +97,13 @@
             {{ tab.label }}
           </button>
           
-          <!-- Messaggio se nessun tab ha dati -->
           <div *ngIf="getAvailableTabs().length === 0" class="no-data-message">
             <p>Nessun dato disponibile per questa squadra</p>
           </div>
         </div>
     
         <div class="tab-content" *ngIf="getAvailableTabs().length > 0">
-          <!-- Versione desktop della tabella - visibile solo su schermi grandi -->
+          <!-- Versione desktop della tabella -->
           <div *ngIf="!isMobileView() && getDisplayData().length > 0" class="table-container">
             <table>
               <thead>
@@ -58,7 +119,7 @@
             </table>
           </div>
           
-          <!-- Versione mobile: card invece delle tabelle - visibile solo su schermi piccoli -->
+          <!-- Versione mobile: card invece delle tabelle -->
           <div *ngIf="isMobileView() && getDisplayData().length > 0" class="cards-container">
             <div class="data-card" *ngFor="let row of getDisplayData()">
               <ng-container *ngIf="selectedView === 'roster'">
@@ -124,7 +185,6 @@
             </div>
           </div>
           
-          <!-- Messaggio quando la sezione corrente non ha dati -->
           <div *ngIf="getDisplayData().length === 0" class="no-section-data">
             <p>Nessun dato disponibile per {{ selectedView === 'roster' ? 'il roster' : selectedView === 'results' ? 'i risultati' : 'la classifica' }}.</p>
           </div>

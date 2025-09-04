@@ -54,7 +54,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
   object-fit: cover;
-  max-height: 300px; /* Limitare l'altezza dell'immagine */
+  max-height: 300px;
 }
 
 /* Sponsors Section */
@@ -64,6 +64,242 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1rem;
+}
+
+/* Coming Soon Styles */
+.coming-soon-container {
+  width: 100%;
+  animation: fadeInUp 1s ease-out;
+}
+
+.coming-soon-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.coming-soon-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.coming-soon-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #fde68a, #3b82f6, #fde68a);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease-in-out infinite;
+  margin-bottom: 1rem;
+  padding-top : 2rem;
+  padding-bottom : 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 30px rgba(253, 230, 138, 0.3);
+}
+
+.coming-soon-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Countdown Styles */
+.countdown-container {
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.countdown-label {
+  font-size: 1.5rem;
+  color: #fde68a;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.countdown-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
+  border-radius: 15px;
+  padding: 1.5rem 1rem;
+  min-width: 100px;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  transform: translateY(0);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.countdown-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+}
+
+.countdown-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fde68a;
+  text-shadow: 0 0 20px rgba(253, 230, 138, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.countdown-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 0.5rem;
+}
+
+.countdown-separator {
+  font-size: 2rem;
+  color: #3b82f6;
+  font-weight: 700;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+/* Features Section */
+.coming-soon-features {
+  margin-top: 3rem;
+}
+
+.features-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #fde68a;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  justify-items: center;
+}
+
+.feature-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  max-width: 400px;
+  width: 100%;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+  transform: rotate(45deg) translate(50%, 50%);
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.feature-card h4 {
+  color: #fde68a;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.feature-card p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Tabs Container */
@@ -79,13 +315,13 @@
 .tabs {
   display: flex;
   background: rgba(255, 255, 255, 0.2);
-  overflow-x: auto; /* Per garantire che le tab siano scorrevoli su mobile */
+  overflow-x: auto;
 }
 
 .tabs button {
   flex: 1;
   padding: 1rem 0.5rem;
-  min-width: 100px; /* Assicura che il pulsante abbia una larghezza minima */
+  min-width: 100px;
   border: none;
   background: none;
   color: #fff;
@@ -94,7 +330,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  white-space: nowrap; /* Impedisce che il testo vada a capo */
+  white-space: nowrap;
 }
 
 .tabs button:disabled {
@@ -138,14 +374,14 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* Per uno scrolling fluido su iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
-  min-width: 600px; /* Impedisce che la tabella si comprima troppo */
+  min-width: 600px;
 }
 
 th, td {
@@ -348,7 +584,7 @@ tr:hover {
   margin-top: 1rem;
 }
 
-/* Animations */
+/* Animations per contenuto normale */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -363,6 +599,37 @@ tr:hover {
   .team-name {
     font-size: 2rem;
     margin-bottom: 1rem;
+  }
+  
+  .coming-soon-title {
+    font-size: 2.5rem;
+  }
+  
+  .coming-soon-content {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .countdown-display {
+    gap: 0.5rem;
+  }
+  
+  .countdown-item {
+    min-width: 80px;
+    padding: 1rem 0.75rem;
+  }
+  
+  .countdown-number {
+    font-size: 2rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .feature-card {
+    padding: 1.5rem 1rem;
   }
   
   .tabs button {
@@ -380,7 +647,7 @@ tr:hover {
   }
   
   .team-photo {
-    max-height: 200px; /* Altezza ridotta su mobile */
+    max-height: 200px;
   }
   
   .card-header {
@@ -397,8 +664,38 @@ tr:hover {
     font-size: 1.5rem;
   }
   
+  .coming-soon-title {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  .coming-soon-content {
+    padding: 1.5rem 0.75rem;
+    margin: 0.5rem 0.25rem;
+    overflow: visible;
+  }
+  
+  .countdown-display {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .countdown-separator {
+    display: none;
+  }
+  
+  .countdown-item {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  .features-title {
+    font-size: 1.5rem;
+  }
+  
   .tabs {
-    flex-wrap: nowrap; /* Previene il wrap su schermi piccoli */
+    flex-wrap: nowrap;
   }
   
   .tabs button {

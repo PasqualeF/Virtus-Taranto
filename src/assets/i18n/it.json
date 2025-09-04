@@ -169,9 +169,9 @@
             "nome": "Virtus Taranto",
             "logo": "assets/logo-virtus-taranto.png",
             "descrizione": "",
-            "indirizzo": "Via delle Palestre, 123 - 74121 Taranto",
-            "telefono": "+39 099 1234567",
-            "email": "info@virtustaranto.it",
+            "indirizzo": "Via Cugini 9, 74121 - Taranto",
+            "telefono": "+39 338 2809647",
+            "email": "virtustaranto@libero.it",
             "sito": "www.virtustaranto.it"
           },
           "SUPPORT_O": 
@@ -240,18 +240,18 @@
     "bottoneVirtus" : "Iscrizione Virtus",
     "bottoneSupport" : "Iscrizione Support",
     "proceduraSupport1": [
-     {"step":"Compila il modulo di pre-iscrizione online sul sito ufficiale Support." },
+     {"step":"Contatta la segreteria Support per verificare la disponibilità nei gruppi." },
      {"step":"Scarica e compila il modulo di iscrizione dal sito web Virtus Taranto."} ,
-     {"step": "Effettua il pagamento della quota di iscrizione tramite bonifico bancario."},
+     {"step": "Consegna il modulo compilato e il certificato medico sportivo in segreteria."},
      {"step":"Presenta il certificato medico sportivo valido presso la segreteria."},
-     {"step":"Ritira il kit sportivo ufficiale Support presso il punto vendita indicato."}
+     {"step":"Partecipa alla riunione di benvenuto"}
     ],
     "proceduraVirtus1": [
      {"step":"Contatta la segreteria Virtus Taranto per verificare la disponibilità nei gruppi." },
      {"step":"Scarica e compila il modulo di iscrizione dal sito web Virtus Taranto."} ,
      {"step": "Consegna il modulo compilato e il certificato medico sportivo in segreteria."},
-     {"step":"Effettua il pagamento della quota associativa in contanti o con POS."},
-     {"step":"Partecipa alla riunione di benvenuto per ricevere il kit sportivo Virtus."}
+     {"step":"Presenta il certificato medico sportivo valido presso la segreteria.."},
+     {"step":"Partecipa alla riunione di benvenuto"}
     ]
   },
   "SERVIZI_VISITA" : {
@@ -335,6 +335,31 @@
           "description": "Sostiene le iniziative di inclusione sociale attraverso lo sport.",
           "website": "https://www.aziendac.com"
         }
-    ]}
+    ]},
     
+
+"SERVIZI_SAFEGUARDING": {
+  "titolo": "Safeguarding Policy",
+  "sottotitolo": "Politiche di SAFEGUARDING",
+  "descrizione": "Linee guida in tema di SAFEGUARDING POLICY D.lgs n.39/2021 per la prevenzione di abusi, violenze e discriminazioni dell'attività sportiva",
+  "bottoneDownload": "Scarica documento",
+    "societa" : [
+      {
+        "nome": "Support_o",
+        "descrizione": "Linee guida in tema di SAFEGUARDING POLICY D.lgs n.39/2021",
+        "documentoUrl": "https://drive.google.com/file/d/1PPnp_LyffYStFqrs5IjaU7YEoPtfzjFh/view?usp=sharing"
+      },
+      {
+        "nome": "Virtus Taranto",
+        "descrizione": "Linee guida in tema di SAFEGUARDING POLICY D.lgs n.39/2021",
+        "documentoUrl": "https://drive.google.com/file/d/1q3inANPbcRRCAiariUC3EVlBZHtbWOZ6/view?usp=sharing"
+      },
+      {
+        "nome": "Polisportiva 74020",
+        "descrizione": "Linee guida in tema di SAFEGUARDING POLICY D.lgs n.39/2021",
+        "documentoUrl": "https://drive.google.com/file/d/1ukOqWd0hLU2lG1Dir2JEsBtoNTWmWP_E/view?usp=sharing"
+      }
+    ]
+}
   }
+
