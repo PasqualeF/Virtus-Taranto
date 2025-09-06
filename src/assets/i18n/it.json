@@ -179,9 +179,9 @@
             "nome": "Support_o",
             "logo": "assets/support_o2022 (1).png",
             "descrizione": "",
-            "indirizzo": "Viale dello Sport, 45 - 74122 Taranto",
-            "telefono": "+39 099 7654321",
-            "email": "contatti@supporto.it",
+            "indirizzo": "Via Lucania - 74121 Taranto",
+            "telefono": "+39 389 7662382",   
+            "email": "support_o@libero.it",
             "sito": "www.supporto.it"
           },
           "POLISPORTIVA 74020": 
@@ -189,9 +189,9 @@
             "nome": "Polisportiva 74020",
             "logo": "assets/poliLogo.png",
             "descrizione": "",
-            "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
-            "telefono": "+39 099 9876543",
-            "email": "info@polisportiva74020.it",
+            "indirizzo": "Via Genova 50, 74121 - Taranto",
+            "telefono": "+39 380 7578781",
+            "email": "polisportiva74020@gmail.com",
             "sito": "www.polisportiva74020.it"
           },
           "A.S.H. BASKIN": 
@@ -199,9 +199,9 @@
             "nome": "A.s.h. Baskin",
             "logo": "assets/baskin22.png",
             "descrizione": "",
-            "indirizzo": "Piazza dell'Atletica, 78 - 74020 Taranto",
-            "telefono": "+39 099 9876543",
-            "email": "info@polisportiva74020.it",
+            "indirizzo": "Via San Domenico 21 c, 74121- Taranto",
+            "telefono": "+39 329 2396073",
+            "email": "Support_o@libero.it",
             "sito": "www.polisportiva74020.it"
           }
         }
